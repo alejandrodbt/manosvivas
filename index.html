@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Manos Vivas — Masajes a Domicilio</title>
+<meta name="description" content="Masajes profesionales a domicilio en Chile. El bienestar no es negociable. Packs de lanzamiento y suscripción mensual." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="nav">
+  <a href="#" class="logo">
+    <svg class="logo-svg" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Manos Vivas">
+      <path d="M30 52 C18 44 10 34 10 24 C10 16 16 10 24 12 C26 12.5 28 14 30 16 C32 14 34 12.5 36 12 C44 10 50 16 50 24 C50 34 42 44 30 52Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+      <path d="M30 16 L30 38" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M24 20 L24 36" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M36 20 L36 36" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      <circle cx="30" cy="8" r="2" fill="currentColor" opacity="0.5"/>
+    </svg>
+    <span class="logo-text">Manos Vivas</span>
+  </a>
+  <nav class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#packs">Packs</a>
+    <a href="#suscripcion">Suscripción</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a href="#reserva" class="nav-cta">Reservar</a>
+  <button class="burger" aria-label="Menú" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#servicios" onclick="toggleMenu()">Servicios</a>
+  <a href="#packs" onclick="toggleMenu()">Packs</a>
+  <a href="#suscripcion" onclick="toggleMenu()">Suscripción</a>
+  <a href="#nosotros" onclick="toggleMenu()">Nosotros</a>
+  <a href="#faq" onclick="toggleMenu()">FAQ</a>
+  <a href="#reserva" class="mobile-cta" onclick="toggleMenu()">Reservar mi masaje</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <span class="hero-badge">Precio de lanzamiento hasta el 18 de septiembre</span>
+    <h1>El bienestar no es negociable.<br><em>Llega hasta tu puerta.</em></h1>
+    <p>Masajes profesionales a domicilio en Chile. Formación en Chile y Colombia, años de trayectoria en hoteles y spas — ahora en la comodidad de tu hogar.</p>
+    <div class="hero-countdown" id="countdown">
+      <div class="cd-item"><span class="cd-num" id="cd-days">--</span><span class="cd-label">días</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-hours">--</span><span class="cd-label">hrs</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-min">--</span><span class="cd-label">min</span></div>
+      <div class="cd-item"><span class="cd-num" id="cd-sec">--</span><span class="cd-label">seg</span></div>
+    </div>
+    <div class="hero-actions">
+      <a href="#reserva" class="btn-primary">Reservar mi masaje</a>
+      <a href="#servicios" class="btn-ghost">Ver catálogo</a>
+    </div>
+  </div>
+</section>
+
+<!-- POR QUE DOMICILIO -->
+<section class="section why">
+  <div class="container why-grid">
+    <div class="why-item">
+      <span class="why-num">01</span>
+      <h3>Cero traslados</h3>
+      <p>Llevamos la camilla, los aceites y el equipo completo. Vos solo elegís el horario.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-num">02</span>
+      <h3>Nivel hotel &amp; spa</h3>
+      <p>La misma técnica y estándar de un spa cinco estrellas, sin salir de tu casa.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-num">03</span>
+      <h3>Pago simple</h3>
+      <p>Reservás y pagás online al instante con MercadoPago. Sin vueltos, sin transferencias.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="section" id="servicios">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Catálogo</span>
+      <h2>Nuestros Masajes</h2>
+      <p>Ocho tratamientos, cada uno con protocolo propio. Todos a domicilio, individual o en pareja.</p>
+    </div>
+
+    <div class="services-grid">
+
+      <div class="service-card">
+        <span class="service-num">01</span>
+        <h3>Masaje de Relajación</h3>
+        <p>Cuerpo completo. Técnica suave orientada a bajar el estrés y mejorar el sueño.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>30 min · individual</span><strong>$25.000</strong></div>
+          <div class="price-row"><span>60 min · individual</span><strong>$40.000</strong></div>
+          <div class="price-row"><span>60 min · pareja</span><strong>$78.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Masaje de Relajación')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">02</span>
+        <h3>Masaje Descontracturante</h3>
+        <p>Puntos de presión para nudos musculares profundos. Cervical y lumbar.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>30 min · individual</span><strong>$30.000</strong></div>
+          <div class="price-row"><span>60 min · individual</span><strong>$45.000</strong></div>
+          <div class="price-row"><span>90 min · individual</span><strong>$55.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Masaje Descontracturante')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">03</span>
+        <h3>Masaje Mixto</h3>
+        <p>Relajante + descontracturante. Alivio profundo con un cierre suave.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>30 min · individual</span><strong>$35.000</strong></div>
+          <div class="price-row"><span>60 min · individual</span><strong>$45.000</strong></div>
+          <div class="price-row"><span>90 min · individual</span><strong>$55.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Masaje Mixto')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">04</span>
+        <h3>Drenaje Linfático</h3>
+        <p>Reabsorción de fluidos, reduce inflamación y activa las defensas.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>60 min · zona</span><strong>$45.000</strong></div>
+          <div class="price-row"><span>90 min · cuerpo completo</span><strong>$55.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Drenaje Linfático')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">05</span>
+        <h3>Cérvico Craneal</h3>
+        <p>Cráneo y cuello. Ideal contra jaquecas, migrañas y estrés acumulado.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>30 min · individual</span><strong>$28.000</strong></div>
+          <div class="price-row"><span>60 min · individual</span><strong>$45.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Masaje Cérvico Craneal')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">06</span>
+        <h3>Reflexología</h3>
+        <p>Manos y pies. Estimula circulación, baja ansiedad y fortalece el sistema inmune.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>30 min · individual</span><strong>$30.000</strong></div>
+          <div class="price-row"><span>60 min · individual</span><strong>$47.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Masaje Reflexología')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">07</span>
+        <h3>With You Mommy</h3>
+        <p>Masaje para embarazadas desde la semana 14 de gestación. Intensidad suave.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>60 min · individual</span><strong>$45.000</strong></div>
+          <div class="price-row"><span>90 min · individual</span><strong>$70.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('With You Mommy')">Reservar</button>
+      </div>
+
+      <div class="service-card">
+        <span class="service-num">08</span>
+        <h3>Personalizado</h3>
+        <p>Pensado en vos. Se adapta a las áreas específicas que tu cuerpo necesita.</p>
+        <div class="service-prices">
+          <div class="price-row"><span>30 min · individual</span><strong>$30.000</strong></div>
+          <div class="price-row"><span>60 min · individual</span><strong>$50.000</strong></div>
+          <div class="price-row"><span>90 min · individual</span><strong>$70.000</strong></div>
+        </div>
+        <button class="service-btn" onclick="abrirReserva('Masaje Personalizado')">Reservar</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PACKS -->
+<section class="section section--dark" id="packs">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Lanzamiento</span>
+      <h2>Packs de 6 sesiones</h2>
+      <p>Pago único, agendás tus 6 sesiones cuando quieras. Precio de lanzamiento válido hasta Fiestas Patrias.</p>
+    </div>
+    <div class="packs-grid">
+      <div class="pack-card">
+        <h3>Pack Relajante</h3>
+        <p class="pack-sub">6 sesiones · 60 min</p>
+        <div class="pack-price"><span class="pack-old">$240.000</span><span class="pack-new">$220.000</span></div>
+        <button class="pack-btn" onclick="abrirReserva('Pack 6 Masajes Relajantes')">Quiero este pack</button>
+      </div>
+      <div class="pack-card pack-card--featured">
+        <div class="pack-badge">Más elegido</div>
+        <h3>Pack Descontracturante</h3>
+        <p class="pack-sub">6 sesiones · 60 min</p>
+        <div class="pack-price"><span class="pack-old">$270.000</span><span class="pack-new">$250.000</span></div>
+        <button class="pack-btn pack-btn--featured" onclick="abrirReserva('Pack 6 Masajes Descontracturantes')">Quiero este pack</button>
+      </div>
+      <div class="pack-card">
+        <h3>Pack Mixto</h3>
+        <p class="pack-sub">6 sesiones · 60 min</p>
+        <div class="pack-price"><span class="pack-old">$258.000</span><span class="pack-new">$238.000</span></div>
+        <button class="pack-btn" onclick="abrirReserva('Pack 6 Masajes Mixtos')">Quiero este pack</button>
+      </div>
+      <div class="pack-card">
+        <h3>Pack Drenaje Linfático</h3>
+        <p class="pack-sub">6 sesiones · 60 min · 2x/semana</p>
+        <div class="pack-price"><span class="pack-old">$270.000</span><span class="pack-new">$240.000</span></div>
+        <button class="pack-btn" onclick="abrirReserva('Pack 6 Drenaje Linfático')">Quiero este pack</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUSCRIPCION -->
+<section class="section" id="suscripcion">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Recurrente</span>
+      <h2>Suscripción mensual</h2>
+      <p>Bienestar sin pensarlo dos veces. Se cobra cada mes, cancelás cuando quieras.</p>
+    </div>
+    <div class="plans-grid">
+      <div class="plan-card">
+        <h3>Plan Esencial</h3>
+        <p class="plan-sub">1 masaje al mes · 60 min</p>
+        <div class="plan-price">$38.000<span>/mes</span></div>
+        <ul class="plan-list">
+          <li>1 sesión mensual a elección</li>
+          <li>Relajante, descontracturante o mixto</li>
+          <li>Agenda flexible</li>
+        </ul>
+        <button class="plan-btn" onclick="abrirReserva('Suscripción — Plan Esencial')">Suscribirme al Plan Esencial</button>
+      </div>
+      <div class="plan-card plan-card--featured">
+        <div class="pack-badge">Recomendado</div>
+        <h3>Plan Bienestar</h3>
+        <p class="plan-sub">2 masajes al mes · 60 min</p>
+        <div class="plan-price">$70.000<span>/mes</span></div>
+        <ul class="plan-list">
+          <li>2 sesiones mensuales a elección</li>
+          <li>~15% de ahorro vs precio individual</li>
+          <li>Prioridad de horarios</li>
+        </ul>
+        <button class="plan-btn plan-btn--featured" onclick="abrirReserva('Suscripción — Plan Bienestar')">Suscribirme al Plan Bienestar</button>
+      </div>
+      <div class="plan-card">
+        <h3>Plan Vital</h3>
+        <p class="plan-sub">4 masajes al mes · 1 por semana</p>
+        <div class="plan-price">$130.000<span>/mes</span></div>
+        <ul class="plan-list">
+          <li>4 sesiones mensuales a elección</li>
+          <li>~25% de ahorro vs precio individual</li>
+          <li>1 drenaje linfático de regalo</li>
+        </ul>
+        <button class="plan-btn" onclick="abrirReserva('Suscripción — Plan Vital')">Suscribirme al Plan Vital</button>
+      </div>
+    </div>
+    <p class="plans-note">La suscripción se gestiona con seguimiento manual y cobro mensual vía MercadoPago. Podés pausar o cancelar escribiéndonos por WhatsApp.</p>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section class="section section--soft" id="nosotros">
+  <div class="container container--flex">
+    <div class="sobre-text">
+      <span class="section-tag">Quién está detrás</span>
+      <h2>Manos con <em>trayectoria</em></h2>
+      <p>Manos Vivas es el proyecto de <strong>Alejandro Bermúdez</strong>, masajista con formación en Chile y Colombia, y años de experiencia en hoteles de lujo y spas de primer nivel.</p>
+      <p>Esa trayectoria en ambientes de alta exigencia es la que hoy lleva directamente a tu domicilio: mismo nivel de atención, misma técnica, misma dedicación — con la comodidad de que él viene hasta vos.</p>
+      <div class="founder-box">
+        <div class="founder-avatar">AB</div>
+        <div>
+          <p class="founder-name">Alejandro Bermúdez</p>
+          <p class="founder-role">Fundador · Masajista profesional</p>
+        </div>
+      </div>
+    </div>
+    <div class="sobre-visual">
+      <div class="sobre-shape">
+        <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="100" cy="120" rx="80" ry="100" stroke="currentColor" stroke-width="1" opacity="0.15"/>
+          <ellipse cx="100" cy="120" rx="55" ry="70" stroke="currentColor" stroke-width="1" opacity="0.25"/>
+          <path d="M100 170 C70 155 55 130 55 110 C55 85 75 70 100 75 C125 70 145 85 145 110 C145 130 130 155 100 170Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M100 75 L100 145" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+          <path d="M78 90 L78 138" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+          <path d="M122 90 L122 138" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+          <circle cx="100" cy="60" r="5" fill="currentColor" opacity="0.3"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTOS -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Ocasiones</span>
+      <h2>Eventos Especiales</h2>
+    </div>
+    <div class="events-grid">
+      <div class="event-card"><h3>Despedidas de soltera</h3><p>Relajación y diversión para la futura novia y sus amigas.</p></div>
+      <div class="event-card"><h3>Cumpleaños</h3><p>Sesiones que suman cuidado personal a la celebración.</p></div>
+      <div class="event-card"><h3>Matrimonios</h3><p>Regalo de bienestar para los novios o experiencia compartida.</p></div>
+      <div class="event-card"><h3>Corporativos</h3><p>Masajes que alivian tensión y mejoran el ambiente laboral.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section--soft" id="faq">
+  <div class="container container--narrow">
+    <div class="section-header">
+      <span class="section-tag">Dudas</span>
+      <h2>Preguntas frecuentes</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>¿Cómo pago?</summary>
+        <p>Reservás tu horario y pagás online al instante con MercadoPago. Aceptamos tarjetas de débito, crédito y saldo en cuenta.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Qué necesito tener en mi casa?</summary>
+        <p>Nada. Llevamos camilla, aceites, música y todo el equipo necesario. Solo necesitamos un espacio tranquilo de unos 2x3 metros.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Cómo funciona la suscripción?</summary>
+        <p>Elegís un plan mensual, pagás la primera cuota vía MercadoPago y coordinamos tus sesiones por WhatsApp. Podés pausar o cancelar cuando quieras.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Atienden fuera de Santiago?</summary>
+        <p>Escribinos por WhatsApp con tu comuna y coordinamos disponibilidad y costo de traslado si aplica.</p>
+      </details>
+      <details class="faq-item">
+        <summary>¿Hasta cuándo dura el precio de lanzamiento?</summary>
+        <p>Los packs y la suscripción tienen precio de lanzamiento válido hasta el 18 de septiembre.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- RESERVA / CHECKOUT -->
+<section class="section reserva" id="reserva">
+  <div class="container container--narrow">
+    <div class="section-header">
+      <span class="section-tag">Último paso</span>
+      <h2>Reservá tu masaje</h2>
+      <p>Elegí el servicio, completá tus datos y pagá online. Confirmamos tu horario por WhatsApp.</p>
+    </div>
+    <form class="reserva-form" id="reservaForm">
+      <div class="form-group">
+        <label for="servicio">Servicio o plan</label>
+        <select id="servicio" required>
+          <option value="">Seleccioná una opción</option>
+          <optgroup label="Masajes individuales">
+            <option>Masaje de Relajación</option>
+            <option>Masaje Descontracturante</option>
+            <option>Masaje Mixto</option>
+            <option>Drenaje Linfático</option>
+            <option>Masaje Cérvico Craneal</option>
+            <option>Masaje Reflexología</option>
+            <option>With You Mommy</option>
+            <option>Masaje Personalizado</option>
+          </optgroup>
+          <optgroup label="Packs de 6 sesiones">
+            <option>Pack 6 Masajes Relajantes — $220.000</option>
+            <option>Pack 6 Masajes Descontracturantes — $250.000</option>
+            <option>Pack 6 Masajes Mixtos — $238.000</option>
+            <option>Pack 6 Drenaje Linfático — $240.000</option>
+          </optgroup>
+          <optgroup label="Suscripción mensual">
+            <option>Plan Esencial — $38.000/mes</option>
+            <option>Plan Bienestar — $70.000/mes</option>
+            <option>Plan Vital — $130.000/mes</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" placeholder="Tu nombre" required />
+        </div>
+        <div class="form-group">
+          <label for="tel">WhatsApp</label>
+          <input type="tel" id="tel" placeholder="+56 9 ..." required />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="direccion">Dirección / comuna</label>
+        <input type="text" id="direccion" placeholder="Comuna donde querés recibir el masaje" />
+      </div>
+      <a href="https://link.mercadopago.cl/manosvivas" target="_blank" class="btn-pay" id="btnPagar">
+        Pagar con MercadoPago
+      </a>
+      <p class="form-note">Al pagar, escribinos por <a href="https://wa.me/56995742775" target="_blank">WhatsApp</a> con tu comprobante para coordinar el horario.</p>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-logo">
+      <svg class="logo-svg" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M30 52 C18 44 10 34 10 24 C10 16 16 10 24 12 C26 12.5 28 14 30 16 C32 14 34 12.5 36 12 C44 10 50 16 50 24 C50 34 42 44 30 52Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+        <path d="M30 16 L30 38" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M24 20 L24 36" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M36 20 L36 36" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="30" cy="8" r="2" fill="currentColor" opacity="0.5"/>
+      </svg>
+      <span>Manos Vivas</span>
+    </div>
+    <p class="footer-tagline">El bienestar no es negociable.</p>
+    <div class="footer-links">
+      <a href="#servicios">Servicios</a>
+      <a href="#packs">Packs</a>
+      <a href="#suscripcion">Suscripción</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <p class="footer-copy">© 2025 Manos Vivas. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<a class="whatsapp-float" href="https://wa.me/56995742775?text=Hola%20Manos%20Vivas%2C%20quiero%20reservar%20un%20masaje" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="16" cy="16" r="16" fill="#25D366"/>
+    <path d="M22.5 9.5C20.8 7.8 18.5 6.8 16 6.8C10.9 6.8 6.8 10.9 6.8 16C6.8 17.7 7.3 19.4 8.1 20.8L6.7 25.3L11.3 23.9C12.7 24.7 14.3 25.1 16 25.1C21.1 25.1 25.2 21 25.2 15.9C25.2 13.4 24.2 11.1 22.5 9.5ZM16 23.6C14.5 23.6 13 23.2 11.8 22.5L11.5 22.3L8.7 23.1L9.5 20.4L9.3 20.1C8.5 18.8 8.1 17.4 8.1 15.9C8.1 11.6 11.6 8.1 15.9 8.1C18 8.1 19.9 8.9 21.4 10.4C22.8 11.9 23.7 13.8 23.7 15.9C23.8 20.3 20.3 23.6 16 23.6ZM20.3 17.9C20.1 17.8 19 17.2 18.8 17.1C18.6 17 18.5 17 18.4 17.2C18.3 17.4 17.8 18 17.7 18.1C17.6 18.3 17.5 18.3 17.3 18.2C16.3 17.7 15.3 17.1 14.5 16.2C14 15.7 13.5 15.1 13.1 14.4C13 14.2 13.1 14.1 13.2 14C13.3 13.9 13.4 13.7 13.5 13.6C13.6 13.5 13.6 13.4 13.7 13.3C13.8 13.2 13.7 13.1 13.7 13C13.6 12.9 13.1 11.8 12.9 11.3C12.7 10.9 12.5 10.9 12.4 10.9H12C11.9 10.9 11.7 10.9 11.5 11.1C11.3 11.3 10.8 11.8 10.8 12.9C10.8 14 11.6 15.1 11.7 15.2C11.8 15.3 13.1 17.4 15.2 18.4C15.7 18.6 16.1 18.8 16.4 18.9C16.9 19.1 17.4 19.1 17.8 19C18.2 19 19.1 18.5 19.3 18C19.5 17.5 19.5 17.1 19.4 17C19.4 17.9 20.4 17.9 20.3 17.9Z" fill="white"/>
+  </svg>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>
