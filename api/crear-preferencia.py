@@ -124,8 +124,9 @@ def crear_reserva_pendiente(datos, producto, complementos, monto_total):
     fila = {
         "servicio": producto.get("nombre"),
         "duracion": datos.get("duracion"),
-        # La columna es text: se guardan los ids separados por coma.
-        "complementos": ",".join(str(c["id"]) for c in complementos),
+        # La columna es text: se guarda legible, para que la reserva se
+        # entienda leyendo la tabla sin cruzarla con otra.
+        "complementos": ", ".join(f"{c['nombre']} · {c['duracion_min']} min" for c in complementos),
         "monto_total": monto_total,
         "nombre_cliente": datos["cliente"]["nombre"],
         "email_cliente": datos["cliente"]["email"],

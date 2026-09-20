@@ -2,6 +2,7 @@ import hashlib
 import hmac
 import json
 import os
+import re
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -145,17 +146,21 @@ def obtener_credenciales_calendar():
     )
 
 
-def obtener_complementos(complementos_texto):
-    """La columna 'complementos' es text: guarda los ids separados por coma."""
-    ids = [t.strip() for t in str(complementos_texto or "").split(",") if t.strip()]
-    if not ids:
-        return []
-    lista = ",".join(urllib.parse.quote(i, safe="") for i in ids)
-    return _supabase_request("GET", f"complementos?id=in.({lista})&select=nombre,duracion_min") or []
+def minutos_de_complementos(complementos_texto):
+    """La columna 'complementos' guarda el texto que escribe
+    crear-preferencia.py: 'Reflexología · 10 min, Drenaje Linfático · 30 min'.
+    El evento tiene que bloquear la sesión más esos minutos."""
+    return sum(int(m) for m in re.findall(r"(\d+)\s*min", str(complementos_texto or "")))
 
 
 def parsear_fecha_hora(valor):
-    dt = datetime.fromisoformat(str(valor).replace("Z", "+00:00"))
+    """Supabase devuelve timestamptz en UTC. El offset puede venir como
+    '+00:00' o como '+00', y esta última forma solo la entiende
+    fromisoformat desde Python 3.11: se normaliza antes de parsear."""
+    texto = str(valor).strip().replace("Z", "+00:00")
+    texto = re.sub(r"([+-]\d{2})$", r"\1:00", texto)
+
+    dt = datetime.fromisoformat(texto)
     if dt.tzinfo is None:
         return dt.replace(tzinfo=ZONA_HORARIA)
     return dt.astimezone(ZONA_HORARIA)
@@ -165,9 +170,9 @@ def crear_evento_calendar(reserva):
     credenciales = obtener_credenciales_calendar()
     credenciales.refresh(GoogleAuthRequest())
 
-    complementos = obtener_complementos(reserva.get("complementos"))
-    minutos_extra = sum(c.get("duracion_min") or 0 for c in complementos)
-    duracion_minutos = (reserva.get("duracion") or DURACION_POR_DEFECTO_MINUTOS) + minutos_extra
+    duracion_minutos = (reserva.get("duracion") or DURACION_POR_DEFECTO_MINUTOS) + minutos_de_complementos(
+        reserva.get("complementos")
+    )
 
     inicio = parsear_fecha_hora(reserva["fecha_hora_solicitada"])
     fin = inicio + timedelta(minutes=duracion_minutos)
@@ -175,9 +180,8 @@ def crear_evento_calendar(reserva):
     descripcion_lineas = [f"Reserva #{reserva['id']} — Manos Vivas"]
     if reserva.get("telefono_cliente"):
         descripcion_lineas.append(f"Teléfono: {reserva['telefono_cliente']}")
-    if complementos:
-        detalle = ", ".join(f"{c['nombre']} ({c['duracion_min']} min)" for c in complementos)
-        descripcion_lineas.append(f"Complementos: {detalle}")
+    if reserva.get("complementos"):
+        descripcion_lineas.append(f"Complementos: {reserva['complementos']}")
     if reserva.get("estacionamiento"):
         descripcion_lineas.append(f"Estacionamiento: {reserva['estacionamiento']}")
 
