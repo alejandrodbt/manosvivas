@@ -1,0 +1,1649 @@
+/* ==========================================================================
+   Manos Vivas — Componentes
+   ========================================================================== */
+
+/* ---------- Textura de grano (fondo global, sutil) ---------- */
+.textura-grano {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- Tipografía utilitaria ---------- */
+.nota-tecnica {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-strong);
+}
+
+.titulo-seccion {
+  font-size: clamp(2rem, 2.6vw + 1.2rem, 3rem);
+  font-weight: 600;
+}
+
+.texto-lead {
+  font-size: clamp(1.05rem, 0.7vw + 0.6rem, 1.2rem);
+  color: var(--text-muted);
+  max-width: 38rem;
+  margin-top: 0.9rem;
+}
+
+.precio {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.precio--grande {
+  font-size: clamp(1.6rem, 1.8vw + 1.1rem, 2.1rem);
+  color: var(--accent-strong);
+}
+
+/* ---------- Botones ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton--primario {
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 10px 24px -10px var(--amber-glow);
+}
+
+.boton--primario:hover {
+  background: var(--accent-strong);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 14px 30px -10px var(--amber-glow);
+}
+
+.boton--secundario {
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+}
+
+.boton--secundario:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.boton--fantasma {
+  padding-inline: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-radius: 0;
+  font-weight: 500;
+}
+
+.boton--fantasma:hover {
+  border-color: var(--accent-strong);
+  color: var(--accent-strong);
+}
+
+.boton--pequeno {
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+}
+
+.boton--bloque {
+  width: 100%;
+  justify-content: center;
+}
+
+.boton[disabled] {
+  transform: none;
+}
+
+/* ---------- Nav ---------- */
+.nav__logo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.nav__links a {
+  position: relative;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: -4px;
+  height: 1px;
+  background: var(--accent-strong);
+  transition: right var(--dur-med) var(--ease-soft);
+}
+
+.nav__links a:hover {
+  color: var(--text);
+}
+
+.nav__links a:hover::after {
+  right: 0;
+}
+
+.util-btn {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease);
+}
+
+.util-btn:hover {
+  color: var(--accent-strong);
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.util-btn[aria-pressed='true'] {
+  color: var(--accent-strong);
+  border-color: var(--accent);
+}
+
+.util-btn svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.nav__menu-movil span,
+.nav__menu-movil span::before,
+.nav__menu-movil span::after {
+  content: '';
+  display: block;
+  width: 1.15rem;
+  height: 1px;
+  background: currentColor;
+  position: relative;
+  transition: transform var(--dur-fast) var(--ease), opacity var(--dur-fast) var(--ease);
+}
+
+.nav__menu-movil span::before {
+  position: absolute;
+  top: -6px;
+}
+
+.nav__menu-movil span::after {
+  position: absolute;
+  top: 6px;
+}
+
+.nav--menu-abierto .nav__menu-movil span {
+  background: transparent;
+}
+
+.nav--menu-abierto .nav__menu-movil span::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.nav--menu-abierto .nav__menu-movil span::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+/* ---------- Hero ----------
+   El degradado cálido vive detrás del video: si todavía no hay archivo de
+   video o falla la carga, el hero se sigue viendo intencional. */
+.hero__fondo {
+  background:
+    radial-gradient(120% 90% at 15% 10%, color-mix(in srgb, var(--amber) 28%, transparent), transparent 60%),
+    radial-gradient(100% 80% at 85% 90%, color-mix(in srgb, var(--olive) 55%, transparent), transparent 65%),
+    linear-gradient(170deg, var(--umber-soft), var(--umber-deep));
+  transition: background var(--dur-med) var(--ease);
+}
+
+[data-tema='dia'] .hero__fondo {
+  background:
+    radial-gradient(120% 90% at 15% 10%, color-mix(in srgb, var(--amber) 22%, transparent), transparent 60%),
+    radial-gradient(100% 80% at 85% 90%, color-mix(in srgb, var(--logo-dorado) 45%, transparent), transparent 65%),
+    linear-gradient(170deg, var(--logo-crema), var(--bg-deep));
+}
+
+.hero__marca {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 0.4vw + 0.7rem, 0.95rem);
+  letter-spacing: 0.5em;
+  color: var(--hero-texto-suave);
+  margin-bottom: 1.4rem;
+}
+
+.hero__titulo {
+  font-size: clamp(2.6rem, 4vw + 1.8rem, 4.6rem);
+  color: var(--hero-texto);
+}
+
+.hero__subtitulo {
+  margin-top: 1.1rem;
+  font-size: clamp(1.05rem, 0.8vw + 0.7rem, 1.3rem);
+  color: var(--hero-texto-suave);
+  max-width: 32rem;
+}
+
+.hero__badge-precio {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--hero-texto);
+}
+
+.hero__badge-precio strong {
+  color: var(--accent-strong);
+  font-size: 1.15em;
+}
+
+.hero__urgencia {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--hero-texto-suave);
+  padding: 0.4rem 0.85rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+/* ---------- Bento (ventajas) ---------- */
+.tarjeta-cristal {
+  position: relative;
+  height: 100%;
+  padding: clamp(1.5rem, 2.4vw, 2.1rem);
+  border-radius: var(--radius-l);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  overflow: hidden;
+  transition: border-color var(--dur-med) var(--ease);
+}
+
+.tarjeta-cristal::before {
+  content: '';
+  position: absolute;
+  inset: -40% -40% auto auto;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(circle, var(--amber-glow), transparent 70%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.tarjeta-cristal:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--glass-border));
+}
+
+.ventaja__marca {
+  color: var(--accent);
+  opacity: 0.75;
+  margin-bottom: 1.25rem;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.ventaja__numero {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+.ventaja__titulo {
+  margin-top: 0.35rem;
+  font-size: clamp(1.2rem, 0.9vw + 0.85rem, 1.5rem);
+}
+
+.ventaja__texto {
+  margin-top: 0.6rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  max-width: 30rem;
+}
+
+/* ---------- Acordeón (compartido: catálogo + FAQ) ---------- */
+.fila-acordeon {
+  border-bottom: 1px solid var(--border);
+}
+
+.fila-acordeon__cabecera {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 1.5rem;
+  text-align: left;
+}
+
+.fila-acordeon__chevron {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--accent-strong);
+  transition: transform var(--dur-med) var(--ease-soft);
+}
+
+.fila-acordeon__cabecera[aria-expanded='true'] .fila-acordeon__chevron {
+  transform: rotate(45deg);
+}
+
+.fila-acordeon__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-med) var(--ease-soft);
+}
+
+.fila-acordeon__panel.esta-abierto {
+  grid-template-rows: 1fr;
+}
+
+.fila-acordeon__cuerpo {
+  overflow: hidden;
+  min-height: 0;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.fila-acordeon__panel.esta-abierto .fila-acordeon__cuerpo {
+  opacity: 1;
+  transition-delay: 0.14s;
+}
+
+/* ---- Catálogo: contenido de cada fila ---- */
+.catalogo__titulo-fila {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.15rem, 1vw + 0.8rem, 1.45rem);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.catalogo__resumen {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  max-width: 34rem;
+}
+
+.catalogo__precios-mini {
+  flex: none;
+  display: flex;
+  gap: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+@media (max-width: 500px) {
+  .catalogo__precios-mini {
+    display: none;
+  }
+}
+
+.catalogo__cuerpo-interior {
+  padding-bottom: 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.catalogo__descripcion {
+  color: var(--text-muted);
+  max-width: 42rem;
+}
+
+.catalogo__duraciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.opcion-duracion {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.opcion-duracion__tiempo {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.opcion-duracion__precio {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--accent-strong);
+}
+
+.catalogo__etiqueta-complementos {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.chip-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--olive) 40%, transparent);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.catalogo__nota {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  margin-top: 0.6rem;
+}
+
+/* ---- Adicionales ---- */
+.adicional {
+  padding: 1.35rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+}
+
+.adicional__titulo {
+  font-size: 1.1rem;
+}
+
+.adicional__texto {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.adicional__precios {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-strong);
+}
+
+/* ---------- Lanzamiento ---------- */
+.lanzamiento__panel {
+  background: linear-gradient(160deg, var(--surface) 0%, var(--bg) 65%);
+  border-radius: var(--radius-l);
+  border: 1px solid var(--border);
+  padding: clamp(2.25rem, 5vw, 4rem);
+}
+
+.lanzamiento__insignia {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--teal) 60%, var(--text));
+  background: color-mix(in srgb, var(--teal) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--teal) 50%, transparent);
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+}
+
+.lanzamiento__titulo {
+  margin-top: 1.25rem;
+  font-size: clamp(1.9rem, 2.2vw + 1.2rem, 2.7rem);
+}
+
+.lanzamiento__lista {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.lanzamiento__lista li {
+  padding-left: 1.2rem;
+  position: relative;
+}
+
+.lanzamiento__lista li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.75em;
+  width: 7px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.lanzamiento__precio-panel {
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--radius-m);
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+}
+
+.lanzamiento__ahorro {
+  margin-top: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--teal) 55%, var(--text));
+}
+
+.lanzamiento__condiciones {
+  margin-top: 1.5rem;
+}
+
+.lanzamiento__condiciones summary {
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.lanzamiento__condiciones ul {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  padding-left: 1.1rem;
+}
+
+.lanzamiento__condiciones li {
+  list-style: disc;
+}
+
+/* ---------- Rituales (packs) ---------- */
+.ritual-tarjeta {
+  padding: clamp(1.5rem, 2.6vw, 2rem);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  transition: border-color var(--dur-med) var(--ease);
+}
+
+.ritual-tarjeta--destacado {
+  border-top-color: var(--accent);
+  background: var(--surface);
+}
+
+.ritual-tarjeta__nombre {
+  font-size: 1.3rem;
+}
+
+.ritual-tarjeta__detalle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+.ritual-tarjeta__ahorro {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--teal) 55%, var(--text));
+}
+
+.ritual-tarjeta--destacado .ritual-tarjeta__ahorro {
+  color: var(--accent-strong);
+}
+
+.ritual-tarjeta__texto {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  flex-grow: 1;
+}
+
+.nota-legal {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  max-width: 48rem;
+}
+
+/* ---------- Suscripciones ---------- */
+.plan-fila {
+  display: grid;
+  grid-template-columns: 1.5fr 0.9fr 1.3fr auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.plan-fila--destacada {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%);
+}
+
+.plan-fila__nombre {
+  font-size: 1.15rem;
+}
+
+.plan-fila__por-sesion {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  margin-top: 0.2rem;
+}
+
+.plan-fila__condicion {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .plan-fila {
+    grid-template-columns: 1fr auto;
+    row-gap: 0.7rem;
+  }
+  .plan-fila__accion {
+    grid-column: span 2;
+  }
+  .plan-fila__accion .boton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ---------- Bienestar ---------- */
+.complemento-ritual {
+  padding: 1.1rem;
+  border-radius: var(--radius-m);
+  background: var(--surface);
+}
+
+.complemento-ritual__titulo {
+  font-size: 0.98rem;
+}
+
+.complemento-ritual__texto {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.beneficio {
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
+}
+
+.beneficio__numero {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-strong);
+}
+
+.beneficio__titulo {
+  margin-top: 0.35rem;
+  font-size: 1.05rem;
+}
+
+.beneficio__texto {
+  margin-top: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.no-negociable__numero {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+.no-negociable__titulo {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.no-negociable__texto {
+  margin-top: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.94rem;
+}
+
+/* ---------- Historia ---------- */
+.historia__retrato {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-l);
+  background: linear-gradient(155deg, var(--surface-raised), var(--bg-deep));
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.historia__retrato img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.historia__retrato-marca {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--text-faint);
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.historia__texto p {
+  color: var(--text-muted);
+}
+
+.historia__firma-nombre {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 600;
+  font-size: clamp(1.7rem, 1.8vw + 1.1rem, 2.2rem);
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.historia__firma-trazo {
+  width: 10rem;
+  height: auto;
+  color: var(--accent);
+  margin-top: 0.35rem;
+  opacity: 0.9;
+}
+
+.historia__firma-cargo {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+/* ---------- Testimonios ---------- */
+.testimonio {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0;
+  transform: translateX(14px);
+  transition: opacity var(--dur-slow) var(--ease-soft), transform var(--dur-slow) var(--ease-soft);
+  pointer-events: none;
+}
+
+.testimonio.esta-activo {
+  position: relative;
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.testimonio__cita {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.4vw + 0.9rem, 1.7rem);
+  font-style: italic;
+  line-height: 1.45;
+  max-width: 40rem;
+}
+
+.testimonio__autor {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+.testimonios__flecha {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.testimonios__flecha:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.testimonios__flecha svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.testimonios__punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--border-strong);
+  transition: background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.testimonios__punto[aria-current='true'] {
+  background: var(--accent-strong);
+  transform: scale(1.4);
+}
+
+.testimonios__vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 0.6rem;
+  color: var(--text-muted);
+}
+
+/* ---------- FAQ ---------- */
+.faq__pregunta {
+  font-size: 1.05rem;
+  padding-right: 1rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.faq__respuesta {
+  padding-bottom: 1.5rem;
+  color: var(--text-muted);
+  max-width: 40rem;
+}
+
+/* ---------- Newsletter ---------- */
+.newsletter__titulo {
+  font-size: clamp(1.9rem, 2.4vw + 1.2rem, 2.8rem);
+}
+
+.formulario-newsletter {
+  display: flex;
+  gap: 0.75rem 1rem;
+  margin-top: 1.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.formulario-newsletter .campo {
+  flex: 1 1 14rem;
+}
+
+/* ---------- Campos ---------- */
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.campo__etiqueta {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.campo__control {
+  padding: 0.8rem 0.1rem;
+  border-bottom: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.98rem;
+  transition: border-color var(--dur-fast) var(--ease);
+  border-radius: 0;
+}
+
+.campo__control:focus-visible {
+  outline: none;
+  border-color: var(--accent-strong);
+}
+
+.campo__control::placeholder {
+  color: var(--text-faint);
+}
+
+textarea.campo__control {
+  resize: vertical;
+  min-height: 4.5rem;
+}
+
+.campo__error {
+  font-size: 0.78rem;
+  color: var(--accent-strong);
+  min-height: 1.1em;
+}
+
+/* ---------- Footer ---------- */
+.footer__logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+}
+
+.footer__links a {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.footer__links a:hover {
+  color: var(--accent-strong);
+}
+
+.boton-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 0.88rem;
+  transition: border-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.boton-whatsapp:hover {
+  border-color: color-mix(in srgb, var(--teal) 70%, var(--border));
+  transform: translateY(-1px);
+}
+
+.boton-whatsapp svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: color-mix(in srgb, var(--teal) 60%, var(--text));
+}
+
+/* ---------- CTA flotante ---------- */
+.cta-flotante {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+  box-shadow: 0 14px 30px -12px var(--amber-glow);
+  opacity: 0;
+  transform: translateY(12px) scale(0.94);
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease), transform var(--dur-med) var(--ease-spring);
+}
+
+.cta-flotante.esta-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(1.25rem, 4vw, 2rem);
+  z-index: 120;
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1.4rem;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 18px 40px -16px rgba(0, 0, 0, 0.5);
+  font-size: 0.92rem;
+  max-width: min(90vw, 26rem);
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease-soft), transform var(--dur-med) var(--ease-soft);
+}
+
+.toast.esta-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.toast__punto {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent-strong);
+}
+
+/* ---------- Overlay de reserva ---------- */
+.reserva {
+  background: color-mix(in srgb, var(--umber-deep) 80%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-med) var(--ease);
+}
+
+.reserva.esta-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.reserva__panel {
+  position: relative;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-l);
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.6);
+  transform: translateY(18px) scale(0.98);
+  opacity: 0;
+  transition: transform var(--dur-med) var(--ease-spring), opacity var(--dur-med) var(--ease);
+}
+
+.reserva.esta-visible .reserva__panel {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.reserva__cerrar {
+  position: absolute;
+  top: 1.1rem;
+  right: 1.1rem;
+  width: 2.2rem;
+  height: 2.2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--text-muted);
+  z-index: 2;
+}
+
+.reserva__cerrar:hover {
+  color: var(--accent-strong);
+  background: var(--surface);
+}
+
+.reserva__cerrar svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.reserva__titulo {
+  font-size: 1.4rem;
+  padding: 1.5rem clamp(1.5rem, 4vw, 2.5rem) 0;
+  padding-right: 3.5rem;
+}
+
+.reserva__paso-indicador {
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.reserva__paso-indicador span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width var(--dur-med) var(--ease-soft);
+}
+
+.reserva__paso-indicador.esta-activo span,
+.reserva__paso-indicador.esta-completo span {
+  width: 100%;
+}
+
+.paso-reserva {
+  display: none;
+}
+
+.paso-reserva.esta-activo {
+  display: block;
+}
+
+.paso-reserva__titulo {
+  font-size: 1.15rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.paso-reserva__ayuda {
+  margin-top: 0.4rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.resumen-reserva {
+  margin-top: 1.5rem;
+  padding: 1.1rem;
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.resumen-reserva__fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--text-muted);
+}
+
+.resumen-reserva__total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.6rem;
+  margin-top: 0.3rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.opcion-servicio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  text-align: left;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.opcion-servicio + .opcion-servicio {
+  margin-top: 0.6rem;
+}
+
+.opcion-servicio:hover {
+  border-color: var(--accent);
+}
+
+.opcion-servicio[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.opcion-complemento {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.opcion-complemento:hover {
+  border-color: var(--accent);
+}
+
+.opcion-complemento input {
+  accent-color: var(--accent);
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.opcion-complemento.esta-marcado {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.opcion-complemento__etiqueta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.92rem;
+}
+
+.opcion-complemento__precio {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent-strong);
+}
+
+.horario-slot {
+  padding: 0.65rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-align: center;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.horario-slot:hover {
+  border-color: var(--accent);
+}
+
+.horario-slot[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
+
+.reserva__estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding-block: 2rem;
+  color: var(--text-muted);
+}
+
+.brick-pago {
+  margin-top: 1.25rem;
+  min-height: 3rem;
+}
+
+/* ==========================================================================
+   ESTADOS DE BOTONES
+   Regla: ningún control queda sin decir qué pasó. Cada uno tiene reposo,
+   hover, presionado (:active) y, si guarda una elección, estado marcado.
+   ========================================================================== */
+
+/* ---- Foco visible: mismo lenguaje en todo el sitio ---- */
+.boton:focus-visible,
+.util-btn:focus-visible,
+.opcion-servicio:focus-visible,
+.opcion-complemento:focus-visible,
+.horario-slot:focus-visible,
+.testimonios__flecha:focus-visible,
+.cta-flotante:focus-visible,
+.boton-whatsapp:focus-visible,
+.fila-acordeon__cabecera:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 3px;
+}
+
+/* ---- Botones principales ---- */
+.boton--primario:active {
+  background: color-mix(in srgb, var(--accent) 82%, black);
+  box-shadow: 0 2px 6px -4px var(--amber-glow) inset;
+  transform: scale(0.97);
+}
+
+.boton--secundario:hover {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.boton--secundario:active {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent-strong);
+  transform: scale(0.97);
+}
+
+.boton--fantasma:active {
+  color: var(--accent);
+  transform: none;
+  opacity: 0.8;
+}
+
+/* Botón que ya hizo su trabajo (elegido / en curso) */
+.boton[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+
+.boton[disabled] {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* ---- Controles de la barra superior ---- */
+.util-btn:active {
+  transform: scale(0.9);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: var(--accent);
+}
+
+.util-btn[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* Destello corto cuando el control aplica un cambio: confirma el click
+   incluso cuando el efecto en pantalla es sutil. */
+.util-btn.acaba-de-cambiar {
+  animation: destello-control 0.5s var(--ease-soft);
+}
+
+/* ---- Enlaces de navegación ---- */
+.nav__links a:active {
+  color: var(--accent);
+}
+
+.nav__links a[aria-current='true'] {
+  color: var(--text);
+}
+
+.nav__links a[aria-current='true']::after {
+  right: 0;
+  background: var(--accent);
+}
+
+/* ---- Acordeón: la fila abierta se nota ---- */
+.fila-acordeon__cabecera:hover .catalogo__titulo-fila,
+.fila-acordeon__cabecera:hover .faq__pregunta {
+  color: var(--accent-strong);
+}
+
+.fila-acordeon__cabecera:active {
+  opacity: 0.8;
+}
+
+.fila-acordeon__cabecera[aria-expanded='true'] .catalogo__titulo-fila,
+.fila-acordeon__cabecera[aria-expanded='true'] .faq__pregunta {
+  color: var(--accent-strong);
+}
+
+.fila-acordeon:has(.fila-acordeon__cabecera[aria-expanded='true']) {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%);
+}
+
+/* ---- Elegir masaje / duración / horario ---- */
+.opcion-servicio:active,
+.horario-slot:active,
+.opcion-complemento:active {
+  transform: scale(0.985);
+}
+
+.opcion-servicio[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.opcion-servicio[aria-pressed='true']::after,
+.horario-slot[aria-pressed='true']::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--accent-punto);
+  flex: none;
+}
+
+.horario-slot[aria-pressed='true'] {
+  font-weight: 600;
+}
+
+.horario-slot:disabled {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.opcion-duracion:has(.boton[aria-pressed='true']) {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+/* ---- Complementos: marcar y desmarcar libremente ---- */
+.opcion-complemento.esta-marcado .opcion-complemento__precio {
+  color: var(--accent-punto);
+  font-weight: 600;
+}
+
+.opcion-complemento:active {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+/* ---- Carrusel ---- */
+.testimonios__flecha:active {
+  transform: scale(0.9);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.testimonios__punto:hover {
+  background: var(--accent);
+  transform: scale(1.3);
+}
+
+/* ---- CTA flotante ---- */
+.cta-flotante:hover {
+  background: var(--accent-strong);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.cta-flotante.esta-visible:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* ---- WhatsApp ---- */
+.boton-whatsapp:active {
+  transform: translateY(0) scale(0.98);
+  background: color-mix(in srgb, var(--teal) 14%, var(--surface));
+}
+
+/* ---- Formularios ---- */
+.campo__control:hover {
+  border-color: var(--border-strong);
+}
+
+.campo__control:focus {
+  outline: none;
+  border-color: var(--accent-strong);
+  box-shadow: 0 1px 0 var(--accent-strong);
+}
+
+.campo__control[aria-invalid='true'] {
+  border-color: var(--accent-strong);
+}
+
+/* ==========================================================================
+   LOGO — identidad repetida en todo el sitio
+   ========================================================================== */
+
+.logo-marca {
+  display: block;
+  width: auto;
+}
+
+/* El mismo archivo sirve en ambos modos: se muestra el que corresponde. */
+[data-tema='noche'] .logo--claro,
+[data-tema='dia'] .logo--oscuro {
+  display: block;
+}
+
+[data-tema='noche'] .logo--oscuro,
+[data-tema='dia'] .logo--claro {
+  display: none;
+}
+
+/* ---- Nav ---- */
+.nav__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.nav__logo:hover {
+  opacity: 0.75;
+}
+
+.nav__logo:active {
+  opacity: 0.55;
+}
+
+.nav__logo img {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.nav__logo-texto {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 500px) {
+  .nav__logo-texto {
+    display: none;
+  }
+}
+
+/* ---- Logo del hero: el que abre la experiencia ---- */
+.hero__logo {
+  width: clamp(5rem, 8vw + 2rem, 8.5rem);
+  height: auto;
+  margin-bottom: 1.5rem;
+  overflow: visible;
+}
+
+.hero__logo .logo-trazo {
+  fill: none;
+  stroke: var(--hero-texto);
+  stroke-width: 4.6;
+  stroke-linecap: round;
+}
+
+.hero__logo .logo-punto {
+  fill: var(--accent-punto);
+}
+
+/* ---- Marca de agua: el logo como textura de sección ---- */
+.marca-agua {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.045;
+  width: clamp(14rem, 30vw, 26rem);
+  height: auto;
+  z-index: 0;
+}
+
+.marca-agua--derecha {
+  top: 8%;
+  right: -6%;
+  transform: rotate(8deg);
+}
+
+.marca-agua--izquierda {
+  bottom: 6%;
+  left: -7%;
+  transform: rotate(-10deg);
+}
+
+.marca-agua .logo-trazo {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 4.6;
+  stroke-linecap: round;
+}
+
+.marca-agua .logo-punto {
+  fill: var(--accent);
+}
+
+/* El contenido siempre por encima de la marca de agua */
+.catalogo .contenedor,
+.bienestar .contenedor,
+.historia .contenedor,
+.newsletter .contenedor {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Separador de secciones con el logo ---- */
+.separador-logo {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.separador-logo::before,
+.separador-logo::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+
+.separador-logo img {
+  width: 1.8rem;
+  height: 1.8rem;
+  opacity: 0.55;
+}
+
+/* ---- Lockup del footer ---- */
+.footer__lockup {
+  width: clamp(9rem, 14vw, 12rem);
+  height: auto;
+}
+
+/* ---- Insignia del fundador (negativo con fondo propio) ----
+   Selector con dos clases a propósito: `.historia__retrato img` estira
+   cualquier imagen al 100% y taparía la foto con la insignia. */
+.historia__retrato .historia__insignia {
+  position: absolute;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.5);
+}
+
+.historia__retrato {
+  position: relative;
+}
+
+/* ---- Logo en el flujo de reserva ---- */
+.reserva__titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.reserva__titulo img {
+  width: 1.7rem;
+  height: 1.7rem;
+  flex: none;
+}
+
+.separador-logo--lockup img {
+  width: clamp(8rem, 12vw + 2rem, 12rem);
+  height: auto;
+  opacity: 0.8;
+}
+
+.testimonios__punto:active {
+  background: var(--accent-strong);
+  transform: scale(0.9);
+}

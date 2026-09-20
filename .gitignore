@@ -1,0 +1,32 @@
+# ==========================================================================
+# El repositorio es PÚBLICO: todo lo que se commitea queda descargable por
+# cualquiera, y el historial de git lo conserva aunque después se borre.
+# ==========================================================================
+
+# ---- Credenciales y claves ----
+manosvivas-calendar-a2e0e23082e2.json
+*service-account*.json
+*.json.key
+.env
+.env.*
+
+# ---- Documentos personales y datos de clientes ----
+certificado-titularidad_web.pdf
+*.pdf
+*.xlsx
+
+# ---- Documentos internos de trabajo ----
+# Mencionan la cuenta de servicio, el proyecto de Supabase y decisiones de
+# negocio. No contienen claves, pero no tienen por qué ser públicos.
+docs/manosvivas-carpeta-maestra.md
+docs/prompt-maestro.md
+
+# ---- Arte final del logo (material fuente) ----
+# Se queda solo en local: las versiones que el sitio usa están en
+# assets/logo/. Guarda una copia aparte, no vive versionada acá.
+manosvivaslogo/
+
+# ---- Sistema ----
+.DS_Store
+__pycache__/
+*.pyc

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 172" width="440" height="344">
+  <svg x="66" y="0" width="88" height="88" viewBox="20 32.5 60 60">
+    <g fill="none" stroke="#2a2f26" stroke-width="4.6" stroke-linecap="round">
+      <path d="M26 58a24 24 0 0 0 48 0"/><path d="M32 58C37 44 46 44 50 52S63 60 68 46"/></g>
+    <circle cx="68" cy="46" r="4.6" fill="#b5651d"/>
+  </svg>
+  <text x="110" y="126" text-anchor="middle" font-family="'Cormorant Garamond',Georgia,serif" font-size="32" font-weight="600" fill="#2a2f26">Manos Vivas</text>
+  <text x="110" y="145" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="7.6" letter-spacing="4.2" fill="#b5651d">MASAJES A DOMICILIO</text>
+</svg>

@@ -1,0 +1,211 @@
+/* ==========================================================================
+   Manos Vivas — Animaciones
+   El contenido solo se oculta para animar si JS está activo (.js-activo),
+   así la página sigue siendo legible si el script falla.
+   ========================================================================== */
+
+/* ---------- Revelado por scroll ---------- */
+.js-activo .revelar {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity var(--dur-slow) var(--ease-soft), transform var(--dur-slow) var(--ease-soft);
+}
+
+.js-activo .revelar.esta-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   ENTRADA DEL HERO — el logo dibuja la marca y de ahí nace todo lo demás.
+   Sigue el significado del arte final: el arco es la mano que sostiene,
+   la onda es la caricia en movimiento, el punto es la vida que asciende.
+   ========================================================================== */
+
+@keyframes trazar-logo {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ascender-punto {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.2);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.25);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes respirar-punto {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.js-activo .hero__logo .logo-trazo {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: trazar-logo 1s var(--ease-soft) forwards;
+}
+
+/* El arco primero: la mano que sostiene. */
+.js-activo .hero__logo .logo-arco {
+  animation-delay: 0.2s;
+}
+
+/* Después la onda: la caricia. */
+.js-activo .hero__logo .logo-onda {
+  animation-delay: 0.95s;
+}
+
+/* Y al final el punto asciende y se queda respirando. */
+.js-activo .hero__logo .logo-punto {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: ascender-punto 0.75s var(--ease-spring) 1.75s forwards,
+    respirar-punto 4.5s var(--ease-soft) 3.2s infinite;
+}
+
+/* El texto del hero entra después de que el logo terminó de dibujarse:
+   una sola secuencia continua, no dos animaciones compitiendo. */
+@keyframes entrada-hero {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.js-activo .hero__contenido > *:not(.hero__logo) {
+  animation: entrada-hero 1s var(--ease-soft) backwards;
+}
+
+.js-activo .hero__marca {
+  animation-delay: 2.1s;
+}
+
+.js-activo .hero__titulo {
+  animation-delay: 2.25s;
+}
+
+.js-activo .hero__subtitulo {
+  animation-delay: 2.4s;
+}
+
+.js-activo .hero__meta {
+  animation-delay: 2.55s;
+}
+
+.js-activo .hero__acciones {
+  animation-delay: 2.7s;
+}
+
+/* Si el visitante vuelve al sitio, no se le repite la intro completa. */
+.js-activo.intro-vista .hero__logo .logo-trazo {
+  animation-duration: 0.45s;
+  animation-delay: 0s;
+}
+
+.js-activo.intro-vista .hero__logo .logo-punto {
+  animation-delay: 0.45s, 2s;
+}
+
+.js-activo.intro-vista .hero__contenido > *:not(.hero__logo) {
+  animation-delay: 0.5s;
+}
+
+/* ---------- Confirmación de los controles de accesibilidad ---------- */
+@keyframes destello-control {
+  0% {
+    box-shadow: 0 0 0 0 var(--amber-glow);
+  }
+  100% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+
+/* ---------- Pulso del CTA flotante ---------- */
+@keyframes pulso-cta {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+.cta-flotante::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid var(--accent-strong);
+  animation: pulso-cta 2.6s var(--ease-soft) infinite;
+  pointer-events: none;
+}
+
+.cta-flotante:hover::after {
+  animation-play-state: paused;
+}
+
+/* ---------- Carga de disponibilidad ---------- */
+@keyframes latido-carga {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.esta-cargando {
+  animation: latido-carga 1.4s var(--ease-soft) infinite;
+}
+
+/* ---------- Respeto por reduced-motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .js-activo .revelar,
+  .js-activo .hero__contenido > * {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .js-activo .hero__logo .logo-trazo {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .js-activo .hero__logo .logo-punto {
+    opacity: 1;
+    animation: none;
+  }
+
+  .cta-flotante::after,
+  .util-btn.acaba-de-cambiar {
+    animation: none;
+  }
+}

@@ -1,0 +1,220 @@
+/* ==========================================================================
+   Manos Vivas — Tokens + Reset
+   Las custom properties de marca (color) viven únicamente aquí.
+   ========================================================================== */
+
+:root {
+  /* ---- Marca (fija, no negociable) ---- */
+  --amber: #B8622E;
+  --umber: #2A1D14;
+  --bone: #F0E6D8;
+  --olive: #3A3F2C;
+  --teal: #2F4A44;
+
+  /* ---- Colores del arte final del logo (manosvivaslogo/LEEME.txt) ---- */
+  --logo-oliva: #2a2f26; /* trazo sobre fondo claro */
+  --logo-terracota: #b5651d; /* el punto sobre fondo claro */
+  --logo-dorado: #d4a574; /* el punto sobre fondo oscuro */
+  --logo-crema: #f5f0e8;
+
+  /* ---- Derivados de marca ----
+     El modo noche se construye oscureciendo el umber, nunca con negro:
+     todos los fondos oscuros conservan el rojo/amarillo del ámbar. */
+  --umber-deep: #1B120A;
+  --umber-soft: #38271A;
+  --amber-bright: #D9864B;
+  --amber-glow: rgba(184, 98, 46, 0.38);
+  --bone-soft: rgba(240, 230, 216, 0.85);
+
+  /* ---- Semánticos (modo noche = default) ---- */
+  --bg: var(--umber);
+  --bg-deep: var(--umber-deep);
+  --surface: var(--umber-soft);
+  --surface-raised: #452F1F;
+  --text: var(--bone);
+  --text-muted: rgba(240, 230, 216, 0.74);
+  --text-faint: rgba(240, 230, 216, 0.48);
+  --border: rgba(240, 230, 216, 0.14);
+  --border-strong: rgba(240, 230, 216, 0.28);
+  --accent: var(--amber);
+  --accent-strong: var(--amber-bright);
+  --accent-punto: var(--logo-dorado); /* el punto del logo sobre oscuro */
+  --on-accent: var(--bone);
+  --glass-bg: rgba(42, 29, 20, 0.55);
+  --glass-border: rgba(240, 230, 216, 0.16);
+  /* El hero también cambia con el tema: si no, el toggle parece no hacer
+     nada, porque los controles están justo encima del hero. */
+  --hero-velo: 27 18 10; /* umber-deep en rgb */
+  --hero-velo-fuerza: 0.92;
+  --hero-texto: var(--bone);
+  --hero-texto-suave: var(--bone-soft);
+  --shadow-color: 20deg 60% 4%;
+
+  /* ---- Tipografía ---- */
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', serif;
+  --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --font-mono: 'Space Mono', ui-monospace, monospace;
+
+  /* ---- Movimiento ---- */
+  --ease: cubic-bezier(0.16, 0.84, 0.44, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-fast: 0.22s;
+  --dur-med: 0.48s;
+  --dur-slow: 0.9s;
+
+  /* ---- Layout ---- */
+  --container: 1180px;
+  --container-wide: 1360px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --radius-s: 6px;
+  --radius-m: 16px;
+  --radius-l: 30px;
+
+  /* ---- Accesibilidad (controlado por JS) ---- */
+  --escala-fuente: 1;
+}
+
+[data-tema='dia'] {
+  --bg: var(--logo-crema);
+  --bg-deep: #e6dbc8;
+  --surface: #fffdf9;
+  --surface-raised: #ffffff;
+  --text: var(--umber);
+  --text-muted: rgba(42, 29, 20, 0.72);
+  --text-faint: rgba(42, 29, 20, 0.5);
+  --border: rgba(42, 29, 20, 0.16);
+  --border-strong: rgba(42, 29, 20, 0.3);
+  --accent: var(--logo-terracota);
+  --accent-strong: var(--amber);
+  --accent-punto: var(--logo-terracota); /* sobre claro el punto va terracota */
+  --on-accent: var(--logo-crema);
+  --glass-bg: rgba(255, 253, 249, 0.62);
+  --glass-border: rgba(42, 29, 20, 0.14);
+  --hero-velo: 245 240 232; /* crema en rgb */
+  --hero-velo-fuerza: 0.88;
+  --hero-texto: var(--umber);
+  --hero-texto-suave: rgba(42, 29, 20, 0.78);
+  --shadow-color: 30deg 30% 70%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: calc(100% * var(--escala-fuente));
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.6;
+  min-height: 100svh;
+  overflow-x: hidden;
+  transition: background-color var(--dur-med) var(--ease), color var(--dur-med) var(--ease);
+}
+
+img,
+picture,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+svg {
+  display: block;
+  fill: currentColor;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bone);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.sr-solo {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

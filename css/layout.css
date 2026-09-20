@@ -1,0 +1,525 @@
+/* ==========================================================================
+   Manos Vivas — Layout
+   Estructura de grillas/flex por sección. Breakpoints: 900px y 500px.
+   ========================================================================== */
+
+.contenedor {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.contenedor--ancho {
+  max-width: var(--container-wide);
+}
+
+/* Solo las secciones de la página: si se deja como `section` a secas, el
+   relleno se cuela en los <section> de los pasos del flujo de reserva. */
+main > section {
+  position: relative;
+  padding-block: clamp(4rem, 9vw, 8rem);
+}
+
+.seccion__cabecera {
+  max-width: 46rem;
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.seccion__cabecera--centrada {
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* ---------- Barra de progreso ---------- */
+.barra-progreso {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 90;
+  background: transparent;
+}
+
+.barra-progreso__relleno {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  transform-origin: left;
+}
+
+/* ---------- Nav ---------- */
+.nav {
+  position: fixed;
+  inset: 3px 0 auto 0;
+  z-index: 80;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  background: color-mix(in srgb, var(--bg) 62%, transparent);
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-med) var(--ease), background-color var(--dur-med) var(--ease);
+}
+
+.nav.nav--con-fondo {
+  border-bottom-color: var(--border);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding-block: 1.1rem;
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.4vw, 2.25rem);
+  font-size: 0.92rem;
+}
+
+.nav__utilidades {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nav__menu-movil {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .nav__links {
+    position: fixed;
+    inset: var(--nav-alto, 64px) 0 auto 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    padding: 0.5rem var(--gutter) 1.25rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    transform: translateY(-8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform var(--dur-med) var(--ease), opacity var(--dur-med) var(--ease);
+  }
+
+  .nav__links a {
+    width: 100%;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav.nav--menu-abierto .nav__links {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .nav__menu-movil {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  padding-block: clamp(6rem, 14vw, 9rem) clamp(3.5rem, 8vw, 6rem);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.hero__fondo {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.hero__video,
+.hero__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El velo es asimétrico a propósito: la columna izquierda queda casi sólida
+   para que el texto se lea siempre, y el video respira a la derecha. */
+/* z-index positivo: el velo vive dentro de .hero__fondo, que ya crea su
+   propio contexto de apilamiento. Con un valor negativo quedaba detrás del
+   video y no velaba nada. */
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgb(var(--hero-velo) / 0.3) 0%, rgb(var(--hero-velo) / 0.25) 45%, rgb(var(--hero-velo) / 0.85) 100%),
+    linear-gradient(
+      100deg,
+      rgb(var(--hero-velo) / 0.94) 0%,
+      rgb(var(--hero-velo) / 0.8) 32%,
+      rgb(var(--hero-velo) / 0.06) 72%
+    );
+  transition: background var(--dur-med) var(--ease);
+}
+
+[data-tema='dia'] .hero__overlay {
+  background:
+    linear-gradient(180deg, rgb(var(--hero-velo) / 0.25) 0%, rgb(var(--hero-velo) / 0.2) 50%, rgb(var(--hero-velo) / 0.6) 100%),
+    linear-gradient(
+      100deg,
+      rgb(var(--hero-velo) / 0.97) 0%,
+      rgb(var(--hero-velo) / 0.93) 38%,
+      rgb(var(--hero-velo) / 0.08) 82%
+    );
+}
+
+.hero__contenido {
+  max-width: 40rem;
+}
+
+.hero__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.4rem;
+  align-items: center;
+  margin-top: 2.25rem;
+}
+
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  align-items: baseline;
+  margin-top: 1.6rem;
+}
+
+@media (max-width: 500px) {
+  .hero {
+    align-items: flex-end;
+    padding-bottom: 3rem;
+  }
+}
+
+/* ---------- Ventajas (bento) ---------- */
+.ventajas__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: minmax(11rem, auto);
+  gap: 1rem;
+}
+
+.ventajas__item {
+  grid-column: span 2;
+}
+
+.ventajas__item--amplio {
+  grid-column: span 4;
+}
+
+@media (max-width: 900px) {
+  .ventajas__grid {
+    grid-template-columns: 1fr;
+  }
+  .ventajas__item,
+  .ventajas__item--amplio {
+    grid-column: 1;
+  }
+}
+
+/* ---------- Catálogo (acordeón) ---------- */
+.catalogo__lista {
+  border-top: 1px solid var(--border);
+}
+
+.catalogo__adicionales {
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .catalogo__adicionales {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .catalogo__adicionales {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Lanzamiento ---------- */
+.lanzamiento__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .lanzamiento__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Rituales / Suscripciones ---------- */
+.rituales__fila {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .rituales__fila {
+    grid-template-columns: 1fr;
+  }
+}
+
+.suscripciones__fila {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Bienestar (cuerpo, mente y tacto) ---------- */
+.bienestar__intro {
+  max-width: 42rem;
+}
+
+.bienestar__complementos {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .bienestar__complementos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .bienestar__complementos {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bienestar__beneficios {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .bienestar__beneficios {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.bienestar__no-negociable {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .bienestar__no-negociable {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Historia ---------- */
+.historia__grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(2.5rem, 6vw, 5rem);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .historia__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.historia__texto > * + * {
+  margin-top: 1.15em;
+}
+
+.historia__firma {
+  margin-top: 2.5rem;
+}
+
+/* ---------- Testimonios ---------- */
+.testimonios__carrusel {
+  position: relative;
+  max-width: 46rem;
+  margin-inline: auto;
+}
+
+.testimonios__pista {
+  position: relative;
+  min-height: 14rem;
+}
+
+.testimonios__controles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.testimonios__puntos {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ---------- FAQ ---------- */
+.faq__lista {
+  max-width: 46rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Newsletter ---------- */
+.newsletter__panel {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .newsletter__panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  padding-block: clamp(3rem, 6vw, 4.5rem) 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer__fila {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.footer__base {
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+/* ---------- CTA flotante ---------- */
+.cta-flotante {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: 70;
+}
+
+/* ---------- Overlay de reserva ---------- */
+.reserva {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 2.5rem);
+}
+
+.reserva__panel {
+  width: min(100%, 40rem);
+  max-height: min(88svh, 46rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.reserva__cuerpo {
+  overflow-y: auto;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.reserva__pasos {
+  display: flex;
+  gap: 0.4rem;
+  padding: 1.25rem clamp(1.5rem, 4vw, 2.5rem) 0;
+}
+
+.reserva__acciones {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem clamp(1.5rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--border);
+}
+
+.reserva__campo + .reserva__campo {
+  margin-top: 1.1rem;
+}
+
+.reserva__fila-campos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 500px) {
+  .reserva__fila-campos {
+    grid-template-columns: 1fr;
+  }
+}
+
+.reserva__complementos {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.reserva__horarios {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+@media (max-width: 500px) {
+  .reserva__horarios {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
