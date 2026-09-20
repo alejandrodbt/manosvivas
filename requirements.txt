@@ -1,2 +1,5 @@
-google-auth==2.35.0
+# El extra [requests] trae la librería `requests`, que google-auth NO instala
+# por defecto y que google.auth.transport.requests necesita para refrescar el
+# token de la cuenta de servicio.
+google-auth[requests]==2.35.0
 tzdata==2024.2
