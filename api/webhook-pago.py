@@ -9,8 +9,15 @@ from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler
 from zoneinfo import ZoneInfo
 
-from google.auth.transport.requests import Request as GoogleAuthRequest
-from google.oauth2 import service_account
+try:
+    from google.auth.transport.requests import Request as GoogleAuthRequest
+    from google.oauth2 import service_account
+
+    ERROR_DEPENDENCIA = None
+except ImportError as error:
+    # Sin esto, una dependencia ausente tumba la función entera y Vercel
+    # solo muestra FUNCTION_INVOCATION_FAILED, sin decir qué faltó.
+    ERROR_DEPENDENCIA = str(error)
 
 MERCADOPAGO_ACCESS_TOKEN = os.environ.get("MERCADOPAGO_ACCESS_TOKEN")
 MERCADOPAGO_WEBHOOK_SECRET = os.environ.get("MERCADOPAGO_WEBHOOK_SECRET")
@@ -120,6 +127,12 @@ def obtener_pago(payment_id):
 # ---------- Google Calendar ----------
 
 def obtener_credenciales_calendar():
+    if ERROR_DEPENDENCIA:
+        raise RuntimeError(
+            f"Falta la dependencia google-auth en el despliegue ({ERROR_DEPENDENCIA}). "
+            "Revisa que requirements.txt se haya instalado en el build."
+        )
+
     if GOOGLE_SERVICE_ACCOUNT_JSON:
         info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
         return service_account.Credentials.from_service_account_info(info, scopes=SCOPES)

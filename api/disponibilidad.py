@@ -7,8 +7,15 @@ from datetime import date, datetime, time, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
 from zoneinfo import ZoneInfo
 
-from google.auth.transport.requests import Request as GoogleAuthRequest
-from google.oauth2 import service_account
+try:
+    from google.auth.transport.requests import Request as GoogleAuthRequest
+    from google.oauth2 import service_account
+
+    ERROR_DEPENDENCIA = None
+except ImportError as error:
+    # Sin esto, una dependencia ausente tumba la función entera y Vercel
+    # solo muestra FUNCTION_INVOCATION_FAILED, sin decir qué faltó.
+    ERROR_DEPENDENCIA = str(error)
 
 GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
 GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(
@@ -30,6 +37,12 @@ def obtener_credenciales():
     En producción vive en la variable de entorno GOOGLE_SERVICE_ACCOUNT_JSON;
     el archivo local en la raíz del proyecto solo sirve para pruebas locales.
     """
+    if ERROR_DEPENDENCIA:
+        raise RuntimeError(
+            f"Falta la dependencia google-auth en el despliegue ({ERROR_DEPENDENCIA}). "
+            "Revisa que requirements.txt se haya instalado en el build."
+        )
+
     if GOOGLE_SERVICE_ACCOUNT_JSON:
         info = json.loads(GOOGLE_SERVICE_ACCOUNT_JSON)
         return service_account.Credentials.from_service_account_info(info, scopes=SCOPES)
