@@ -561,7 +561,10 @@
         paymentMethods: {
           creditCard: 'all',
           debitCard: 'all',
-          wallet_purchase: 'all',
+          // Cuenta Mercado Pago: la clave es 'mercadoPago' y su valor es
+          // 'wallet_purchase', no al revés. Requiere el preferenceId que
+          // se pasa arriba en initialization.
+          mercadoPago: 'wallet_purchase',
         },
       },
       callbacks: {
