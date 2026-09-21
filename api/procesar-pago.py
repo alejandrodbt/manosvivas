@@ -12,7 +12,7 @@ MERCADOPAGO_PAGOS_URL = "https://api.mercadopago.com/v1/payments"
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
-SITE_URL = os.environ.get("SITE_URL", "https://manosvivas.vercel.app")
+SITE_URL = os.environ.get("SITE_URL", "https://manosvivas.cl")
 
 ESTADOS_RESPUESTA = {
     "approved": "aprobado",

@@ -15,7 +15,7 @@ PLAN = {
         "transaction_amount": 350000,
         "currency_id": "CLP",
     },
-    "back_url": "https://manosvivas.vercel.app",
+    "back_url": "https://manosvivas.cl",
 }
 
 
