@@ -561,12 +561,16 @@
         paymentMethods: {
           creditCard: 'all',
           debitCard: 'all',
+          wallet_purchase: 'all',
         },
       },
       callbacks: {
         onReady: () => {
           brickCreado = true;
         },
+        // El SDK espera una promesa para saber cuándo terminó el cobro:
+        // sin devolverla, el brick apaga su spinner de inmediato y el
+        // cliente puede pensar que el pago falló y volver a enviarlo.
         onSubmit: (datosPago) => procesarPago(datosPago),
         onError: () => {
           estadoPago.textContent = 'Hubo un problema con el medio de pago. Revisa los datos e inténtalo otra vez.';
