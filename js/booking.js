@@ -572,7 +572,11 @@
         // sin devolverla, el brick apaga su spinner de inmediato y el
         // cliente puede pensar que el pago falló y volver a enviarlo.
         onSubmit: (datosPago) => procesarPago(datosPago),
-        onError: () => {
+        // El detalle va a la consola porque el SDK avisa acá cuando ignora
+        // una opción de customization o cuando un medio de pago no está
+        // disponible para el país de la cuenta.
+        onError: (error) => {
+          console.error('[Manos Vivas] Payment Brick:', error);
           estadoPago.textContent = 'Hubo un problema con el medio de pago. Revisa los datos e inténtalo otra vez.';
         },
       },
