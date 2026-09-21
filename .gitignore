@@ -9,6 +9,8 @@ manosvivas-calendar-a2e0e23082e2.json
 *.json.key
 .env
 .env.*
+# La plantilla sí se versiona: no lleva valores, solo los nombres.
+!.env.example
 
 # ---- Documentos personales y datos de clientes ----
 certificado-titularidad_web.pdf
