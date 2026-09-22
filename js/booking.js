@@ -15,10 +15,10 @@
      filas reales de Supabase: sin ellos el backend rechaza la reserva. */
 
   const CONFIG = {
-    /* Public Key de producción (APP_USR-...). Es pública por diseño: va en
-       el navegador y solo sirve para tokenizar la tarjeta. El Access Token,
-       en cambio, es secreto y vive únicamente en las variables de entorno
-       de Vercel, nunca en este archivo. */
+    /* Respaldo de la Public Key. La que se usa de verdad llega desde
+       /api/crear-preferencia, para que cambiar entre modo prueba y
+       producción sea solo tocar variables de entorno en Vercel: si se
+       edita acá, hay que desplegar y acordarse de revertir. */
     publicKeyMercadoPago: 'APP_USR-5ab79e49-c68a-414e-9614-78e3a9886984',
 
     // tabla catalogo → columna id (bigint), por nombre de servicio.
@@ -534,14 +534,20 @@
       estadoPago.classList.remove('esta-cargando');
       estadoPago.textContent = '';
 
-      await montarBrick(datos.preference_id, datos.monto_total);
+      if (datos.modo_prueba) {
+        // Aviso visible: en modo prueba ningún pago es real, y nadie debería
+        // creer que compró algo.
+        estadoPago.textContent = 'Modo de prueba: este pago no es real.';
+      }
+
+      await montarBrick(datos.preference_id, datos.monto_total, datos.public_key);
     } catch (error) {
       estadoPago.classList.remove('esta-cargando');
       estadoPago.textContent = error.message + ' Escríbeme por WhatsApp y lo resolvemos.';
     }
   }
 
-  async function montarBrick(preferenceId, monto) {
+  async function montarBrick(preferenceId, monto, publicKey) {
     if (brickCreado) return;
 
     if (typeof window.MercadoPago === 'undefined') {
@@ -549,7 +555,7 @@
       return;
     }
 
-    const mercadoPago = new window.MercadoPago(CONFIG.publicKeyMercadoPago, { locale: 'es-CL' });
+    const mercadoPago = new window.MercadoPago(publicKey || CONFIG.publicKeyMercadoPago, { locale: 'es-CL' });
     const bricks = mercadoPago.bricks();
 
     await bricks.create('payment', contenedorBrick.id || crearIdBrick(), {

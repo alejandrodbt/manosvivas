@@ -10,6 +10,10 @@ from zoneinfo import ZoneInfo
 ZONA_HORARIA = ZoneInfo("America/Santiago")
 
 MERCADOPAGO_ACCESS_TOKEN = os.environ.get("MERCADOPAGO_ACCESS_TOKEN")
+# La Public Key es pública, pero viaja desde acá para que el modo (prueba o
+# producción) lo defina una variable de entorno y no una edición de código:
+# así cambiar de modo no exige desplegar ni acordarse de revertir nada.
+MERCADOPAGO_PUBLIC_KEY = os.environ.get("MERCADOPAGO_PUBLIC_KEY")
 MERCADOPAGO_PREFERENCIAS_URL = "https://api.mercadopago.com/checkout/preferences"
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -245,6 +249,8 @@ def procesar_solicitud(datos):
         "preference_id": preferencia["id"],
         "init_point": preferencia.get("init_point"),
         "monto_total": monto_total,
+        "public_key": MERCADOPAGO_PUBLIC_KEY,
+        "modo_prueba": bool(MERCADOPAGO_ACCESS_TOKEN and MERCADOPAGO_ACCESS_TOKEN.startswith("TEST-")),
     }
 
 
