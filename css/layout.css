@@ -72,7 +72,13 @@ main > section {
   align-items: center;
   justify-content: space-between;
   gap: clamp(1rem, 3vw, 2.5rem);
-  padding-block: 1.1rem;
+  padding-block: 0.85rem;
+}
+
+.nav__grupo {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
 }
 
 .nav__links {
@@ -82,10 +88,19 @@ main > section {
   font-size: 0.92rem;
 }
 
+/* Los controles de accesibilidad se agrupan por función: el par de
+   tamaño de texto va unido, y los tres interruptores quedan aparte. */
 .nav__utilidades {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+}
+
+.util-par {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
 }
 
 .nav__menu-movil {
@@ -93,13 +108,15 @@ main > section {
 }
 
 @media (max-width: 900px) {
-  .nav__links {
+  /* En pantallas chicas los controles no compiten con el logo en la barra:
+     bajan al menú, donde hay espacio para mostrarlos con su etiqueta. */
+  .nav__grupo {
     position: fixed;
     inset: var(--nav-alto, 64px) 0 auto 0;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 0;
-    padding: 0.5rem var(--gutter) 1.25rem;
+    padding: 0.5rem var(--gutter) 1.5rem;
     background: var(--bg);
     border-bottom: 1px solid var(--border);
     transform: translateY(-8px);
@@ -108,23 +125,43 @@ main > section {
     transition: transform var(--dur-med) var(--ease), opacity var(--dur-med) var(--ease);
   }
 
-  .nav__links a {
-    width: 100%;
-    padding: 0.85rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav.nav--menu-abierto .nav__links {
+  .nav.nav--menu-abierto .nav__grupo {
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
   }
 
+  .nav__links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav__links a {
+    width: 100%;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav__utilidades {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    margin-top: 0.5rem;
+  }
+
+  .util-par {
+    justify-content: space-between;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+  }
+
   .nav__menu-movil {
     display: grid;
     place-items: center;
-    width: 2.4rem;
-    height: 2.4rem;
+    width: 2.75rem;
+    height: 2.75rem;
   }
 }
 

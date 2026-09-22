@@ -33,13 +33,14 @@
   --surface-raised: #452F1F;
   --text: var(--bone);
   --text-muted: rgba(240, 230, 216, 0.74);
-  --text-faint: rgba(240, 230, 216, 0.48);
+  --text-faint: rgba(240, 230, 216, 0.56);
   --border: rgba(240, 230, 216, 0.14);
   --border-strong: rgba(240, 230, 216, 0.28);
   --accent: var(--amber);
+  --accent-relleno: #B25F2D; /* ámbar de marca, 3% más oscuro */
   --accent-strong: var(--amber-bright);
   --accent-punto: var(--logo-dorado); /* el punto del logo sobre oscuro */
-  --on-accent: var(--bone);
+  --on-accent: #ffffff;
   --glass-bg: rgba(42, 29, 20, 0.55);
   --glass-border: rgba(240, 230, 216, 0.16);
   /* El hero también cambia con el tema: si no, el toggle parece no hacer
@@ -81,14 +82,15 @@
   --surface: #fffdf9;
   --surface-raised: #ffffff;
   --text: var(--umber);
-  --text-muted: rgba(42, 29, 20, 0.72);
-  --text-faint: rgba(42, 29, 20, 0.5);
+  --text-muted: rgba(42, 29, 20, 0.78);
+  --text-faint: rgba(42, 29, 20, 0.66);
   --border: rgba(42, 29, 20, 0.16);
   --border-strong: rgba(42, 29, 20, 0.3);
   --accent: var(--logo-terracota);
-  --accent-strong: var(--amber);
+  --accent-relleno: #B0621C;
+  --accent-strong: #964C18;
   --accent-punto: var(--logo-terracota); /* sobre claro el punto va terracota */
-  --on-accent: var(--logo-crema);
+  --on-accent: #ffffff;
   --glass-bg: rgba(255, 253, 249, 0.62);
   --glass-border: rgba(42, 29, 20, 0.14);
   --hero-velo: 245 240 232; /* crema en rgb */
