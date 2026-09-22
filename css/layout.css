@@ -19,6 +19,10 @@
 main > section {
   position: relative;
   padding-block: clamp(4rem, 9vw, 8rem);
+  /* Las marcas de agua del logo se posicionan fuera del borde a propósito
+     (right: -6%); sin esto desbordan la página a lo ancho en móvil.
+     `clip` en vez de `hidden` para no crear un contenedor de scroll. */
+  overflow: clip;
 }
 
 .seccion__cabecera {
@@ -225,12 +229,18 @@ main > section {
   grid-column: span 4;
 }
 
+/* Cierra la fila: sin esto quedaba un hueco de 2 columnas abajo. */
+.ventajas__item--completo {
+  grid-column: span 6;
+}
+
 @media (max-width: 900px) {
   .ventajas__grid {
     grid-template-columns: 1fr;
   }
   .ventajas__item,
-  .ventajas__item--amplio {
+  .ventajas__item--amplio,
+  .ventajas__item--completo {
     grid-column: 1;
   }
 }
@@ -293,54 +303,22 @@ main > section {
   border-top: 1px solid var(--border);
 }
 
-/* ---------- Bienestar (cuerpo, mente y tacto) ---------- */
-.bienestar__intro {
-  max-width: 42rem;
-}
-
-.bienestar__complementos {
-  margin-top: clamp(2.5rem, 5vw, 4rem);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
-}
-
-@media (max-width: 900px) {
-  .bienestar__complementos {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 500px) {
-  .bienestar__complementos {
-    grid-template-columns: 1fr;
-  }
-}
-
-.bienestar__beneficios {
-  margin-top: clamp(2.5rem, 5vw, 4rem);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem 1.25rem;
-}
-
-@media (max-width: 900px) {
-  .bienestar__beneficios {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-.bienestar__no-negociable {
+/* ---------- Historia: cierre con los no negociables ---------- */
+.historia__no-negociable {
   margin-top: clamp(3rem, 6vw, 5rem);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
   padding-top: clamp(2.5rem, 5vw, 3.5rem);
   border-top: 1px solid var(--border);
 }
 
+.no-negociable__grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
 @media (max-width: 900px) {
-  .bienestar__no-negociable {
+  .no-negociable__grid {
     grid-template-columns: 1fr;
   }
 }
@@ -521,5 +499,101 @@ main > section {
 @media (max-width: 500px) {
   .reserva__horarios {
     grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---------- Experiencia (video vertical) ---------- */
+.experiencia__grid {
+  display: grid;
+  grid-template-columns: 1fr minmax(16rem, 22rem);
+  gap: clamp(2rem, 6vw, 4.5rem);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .experiencia__grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .experiencia__texto .texto-lead {
+    margin-inline: auto;
+  }
+}
+
+/* ---------- Ventajas: banda de beneficios ---------- */
+.ventajas__beneficios {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--border);
+}
+
+.ventajas__beneficios-grid {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .ventajas__beneficios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .ventajas__beneficios-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Remate del catálogo (5 herramientas) ----------
+   Una sola hilera en todos los anchos: en pantallas chicas se desliza en
+   vez de partirse en filas, porque 5 tarjetas dejan huecos en cualquier
+   grilla parcial (3+2 o 2+2+1). El scroll es nativo del navegador, no
+   está controlado por JS. */
+.remate {
+  margin-top: clamp(3rem, 6vw, 4.5rem);
+  padding-top: clamp(2.5rem, 5vw, 3.5rem);
+  border-top: 1px solid var(--border);
+}
+
+.remate__hilera {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .remate__hilera {
+    grid-template-columns: repeat(5, minmax(13rem, 1fr));
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* El scroll llega hasta el borde de la pantalla, pero las tarjetas
+       respetan el margen lateral del contenedor. */
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-bottom: 0.75rem;
+    scrollbar-width: thin;
+  }
+
+  .remate__item {
+    scroll-snap-align: center;
+  }
+}
+
+/* ---------- Testimonios: video vertical + carrusel ---------- */
+.testimonios__grid {
+  display: grid;
+  grid-template-columns: minmax(15rem, 20rem) 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .testimonios__grid {
+    grid-template-columns: 1fr;
+    justify-items: center;
   }
 }

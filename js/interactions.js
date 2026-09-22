@@ -351,8 +351,46 @@
      arreglo esté vacío, la sección muestra un estado honesto en vez de
      testimonios inventados. */
 
+  /* Reseñas publicadas en Google. Los textos van tal cual los escribieron
+     sus autores, con sus modismos y sus erratas: corregirlos sería
+     reescribir lo que dijo otra persona. */
   const TESTIMONIOS = [
-    // { cita: 'Texto de la reseña real.', autor: 'Nombre · Google' },
+    {
+      cita: 'Llegué agotada, de esos días con la cabeza a mil. Alejandro lo notó al tiro, fue muy respetuoso y toda la sesión la adaptó a lo que yo necesitaba. Ame terminar y poder quedarme acostadita en mi cama, sin tener que volver a salir al taco de Santiago. De verdad lo recomiendo, se pasó.',
+      autor: 'Valentina Sáez',
+      servicio: 'Masaje relajante',
+      estrellas: 5,
+    },
+    {
+      cita: 'Trabajo en el computador y vivo con la espalda cargada. Con Alejandro voy a la segura, presión firme pero cuidada. Ya tengo todos mis martes bloqueados con él, amanezco como nueva al otro día.',
+      autor: 'Catherine Ruz',
+      servicio: 'Masaje descontracturante',
+      estrellas: 5,
+    },
+    {
+      cita: 'estuvo muy bkn. Conversamos un poco antes de empezar y Alejandro entendió perfecto dónde necesitaba relajarme y dónde trabajar más. Muy recomendable. compre un pack para mi pareja',
+      autor: 'Maximiliano Talandriz',
+      servicio: 'Masaje mixto',
+      estrellas: 5,
+    },
+    {
+      cita: 'Alejandro me ayudó un montón, Entreno harto en la semana y necesitaba un masaje. mi amiga pia me lo recomendó y si, esta bueno. harta fuerza y escucha. me suscribí para hacerlo habito. lo recomiendo ya. trabaja bien',
+      autor: 'Nathaly Infante',
+      servicio: 'Masaje deportivo',
+      estrellas: 4,
+    },
+    {
+      cita: 'Me había hecho un masaje con Alejandro y fue la raja, así que no lo pensé dos veces en suscribirme. super recomendado. muy buenas manos',
+      autor: 'Rodrigo Roselló',
+      servicio: 'Ritual profundo',
+      estrellas: 5,
+    },
+    {
+      cita: 'Resultado espectacular en una sola sesión. El trato humano es lo mejor. ale es muy divertido y amoroso',
+      autor: 'Pamela Quiroga',
+      servicio: 'Pack drenaje linfático',
+      estrellas: 5,
+    },
   ];
 
   const pista = document.querySelector('[data-carrusel-pista]');
@@ -371,13 +409,26 @@
       let rotacion = null;
 
       TESTIMONIOS.forEach((testimonio, indice) => {
+        const estrellas = Math.max(0, Math.min(5, testimonio.estrellas || 0));
+        const pie = [testimonio.autor, testimonio.servicio].filter(Boolean).map(escaparHTML).join(' · ');
+
         const slide = document.createElement('figure');
         slide.className = 'testimonio' + (indice === 0 ? ' esta-activo' : '');
         slide.innerHTML =
+          (estrellas
+            ? '<p class="testimonio__estrellas" aria-label="' +
+              estrellas +
+              ' de 5 estrellas">' +
+              '<span aria-hidden="true">' +
+              '★'.repeat(estrellas) +
+              '<span class="testimonio__estrella-vacia">' +
+              '★'.repeat(5 - estrellas) +
+              '</span></span></p>'
+            : '') +
           '<blockquote class="testimonio__cita">' +
           escaparHTML(testimonio.cita) +
           '</blockquote><figcaption class="testimonio__autor">' +
-          escaparHTML(testimonio.autor || '') +
+          pie +
           '</figcaption>';
         pista.appendChild(slide);
 
@@ -440,6 +491,27 @@
         iniciarRotacion();
       }
     }
+  }
+
+  /* ---------------- Marca del hero, letra por letra ----------------
+     El HTML trae el texto normal; acá se parte en spans solo para la
+     entrada. Si esto no corre, el texto igual se lee bien. */
+
+  const marca = document.querySelector('[data-marca-animada]');
+
+  if (marca && !prefiereMenosMovimiento) {
+    const texto = marca.textContent;
+    const retrasoBase = raiz.classList.contains('intro-vista') ? 0.5 : 2.1;
+
+    marca.textContent = '';
+    Array.from(texto).forEach((caracter, indice) => {
+      const span = document.createElement('span');
+      span.className = 'letra';
+      span.textContent = caracter;
+      span.style.animationDelay = retrasoBase + indice * 0.045 + 's';
+      marca.appendChild(span);
+    });
+    marca.setAttribute('aria-label', texto);
   }
 
   /* ---------------- Año del footer ---------------- */

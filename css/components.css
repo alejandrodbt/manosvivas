@@ -228,9 +228,16 @@
 .hero__marca {
   font-family: var(--font-mono);
   font-size: clamp(0.8rem, 0.4vw + 0.7rem, 0.95rem);
-  letter-spacing: 0.5em;
+  letter-spacing: 0.18em;
   color: var(--hero-texto-suave);
   margin-bottom: 1.4rem;
+}
+
+/* Cada letra es un span que arma el JS para la entrada. En reposo se ven
+   como texto corrido: el efecto no deja rastro en el resultado final. */
+.hero__marca .letra {
+  display: inline-block;
+  white-space: pre;
 }
 
 .hero__titulo {
@@ -679,23 +686,7 @@
   }
 }
 
-/* ---------- Bienestar ---------- */
-.complemento-ritual {
-  padding: 1.1rem;
-  border-radius: var(--radius-m);
-  background: var(--surface);
-}
-
-.complemento-ritual__titulo {
-  font-size: 0.98rem;
-}
-
-.complemento-ritual__texto {
-  margin-top: 0.4rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
+/* ---------- Beneficios (banda en #ventajas) ---------- */
 .beneficio {
   padding-top: 1.1rem;
   border-top: 1px solid var(--border);
@@ -1646,4 +1637,163 @@ textarea.campo__control {
 .testimonios__punto:active {
   background: var(--accent-strong);
   transform: scale(0.9);
+}
+
+/* ---------- Experiencia (video vertical) ---------- */
+.experiencia__video {
+  position: relative;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0;
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-deep);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
+}
+
+.experiencia__video video {
+  display: block;
+  width: 100%;
+  /* El archivo es vertical: se reserva su proporción para que no salte
+     el layout mientras carga la metadata. */
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  background: var(--bg-deep);
+}
+
+.experiencia__texto .boton {
+  margin-top: 1.75rem;
+}
+
+/* Título de la banda de beneficios: más chico que un título de sección,
+   porque es un subtema dentro de #ventajas, no una sección propia. */
+.ventajas__beneficios-titulo {
+  font-size: clamp(1.3rem, 1vw + 0.9rem, 1.7rem);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* ---------- FAQ: listas de detalle ----------
+   El detalle técnico vive solo acá, así que necesita jerarquía propia. */
+.faq__respuesta > * + * {
+  margin-top: 1rem;
+}
+
+.faq__lista-detalle dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.8rem;
+  margin-top: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.faq__lista-detalle dd {
+  margin-top: 0.3rem;
+  margin-left: 0;
+  font-size: 0.92rem;
+}
+
+.faq__precio {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--accent-strong);
+}
+
+/* ---------- Remate del catálogo ---------- */
+.remate__titulo {
+  font-size: clamp(1.3rem, 1vw + 0.9rem, 1.7rem);
+  font-weight: 600;
+}
+
+.remate__intro {
+  margin-top: 0.6rem;
+  max-width: 40rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.remate__item {
+  padding: 1.4rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  transition: border-color var(--dur-med) var(--ease);
+}
+
+.remate__item:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+.remate__icono {
+  width: 2.1rem;
+  height: 2.1rem;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+.remate__nombre {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.remate__texto {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-wrap: pretty;
+}
+
+/* ---------- Testimonios: video y estrellas ---------- */
+.testimonios__video {
+  width: 100%;
+  max-width: 20rem;
+  margin: 0;
+  border-radius: var(--radius-l);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg-deep);
+  box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.55);
+}
+
+.testimonios__video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  background: var(--bg-deep);
+}
+
+.testimonio__estrellas {
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: var(--accent-strong);
+  margin-bottom: 1rem;
+}
+
+/* Las estrellas que faltan se atenúan en vez de desaparecer: así se ve
+   que la nota es sobre 5 y no queda ambiguo. */
+.testimonio__estrella-vacia {
+  color: var(--border-strong);
+}
+
+.testimonios__fuente {
+  margin-top: 2.5rem;
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+.nota-legal a {
+  color: var(--accent-strong);
+  border-bottom: 1px solid currentColor;
+}
+
+.nota-legal a:hover {
+  color: var(--accent);
 }

@@ -87,7 +87,10 @@
             <circle class="logo-punto" cx="68" cy="46" r="4.6"/>
           </svg>
 
-          <p class="hero__marca">m a n o s&nbsp; v i v a s</p>
+          <!-- Texto normal a propósito: el despliegue letra por letra lo
+               arma interactions.js solo como efecto de entrada. Si el JS no
+               corre, se lee "Manos Vivas" sin espacios raros. -->
+          <p class="hero__marca" data-marca-animada>Manos Vivas</p>
           <h1 class="hero__titulo">Tu bienestar no es negociable.</h1>
           <p class="hero__subtitulo">Masajes a la medida de tu tiempo y espacio. La pausa real que necesitas para regular el estrés y liberar tensión del día a día.</p>
 
@@ -100,6 +103,28 @@
             <a class="boton boton--primario" href="#catalogo">Ver el catálogo</a>
             <a class="boton boton--secundario" href="#lanzamiento">Ver oferta de lanzamiento</a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ EXPERIENCIA (video vertical) ============ -->
+    <section class="experiencia" id="experiencia">
+      <div class="contenedor">
+        <div class="experiencia__grid">
+          <div class="experiencia__texto revelar">
+            <h2 class="titulo-seccion">Así se ve una sesión en tu casa</h2>
+            <p class="texto-lead">Llego con camilla, toallas y todo lo necesario. Tú solo eliges la hora.</p>
+            <a class="boton boton--primario" href="#catalogo">Ver los masajes</a>
+          </div>
+
+          <!-- Video vertical (1080x1920): no es fondo decorativo, dura 36s
+               y tiene audio, así que lleva controles y parte en silencio. -->
+          <figure class="experiencia__video revelar">
+            <video data-video-experiencia controls muted playsinline preload="metadata"
+                   poster="assets/images/camilla-jardin-mar.jpg">
+              <source src="assets/videos/experiencia-diego.mp4" type="video/mp4">
+            </video>
+          </figure>
         </div>
       </div>
     </section>
@@ -125,20 +150,75 @@
             <p class="ventaja__texto">La misma técnica y estándar de un spa cinco estrellas, sin salir de tu comodidad.</p>
           </article>
 
-          <article class="ventajas__item ventajas__item--amplio tarjeta-cristal revelar">
+          <article class="ventajas__item ventajas__item--completo tarjeta-cristal revelar">
             <p class="ventaja__numero">03</p>
             <h2 class="ventaja__titulo">Sin moverte de tu espacio</h2>
             <p class="ventaja__texto">La sesión termina y tú te quedas donde estás: en tu casa, tu departamento o tu hotel. Sin traslados, sin apuro, sin estrés de tráfico. Te levantas de la camilla y sigues en tu ritmo, integrando lo que viviste.</p>
           </article>
 
-          <article class="ventajas__item tarjeta-cristal revelar">
-            <svg class="ventaja__marca" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true">
-              <circle cx="24" cy="24" r="16"/>
-              <circle cx="24" cy="24" r="10"/>
-              <circle cx="24" cy="24" r="4"/>
-            </svg>
-            <p class="ventaja__texto">Siempre las mismas manos, la misma técnica y el mismo cuidado en cada sesión.</p>
-          </article>
+        </div>
+
+        <!-- Qué hace el masaje en el cuerpo. Venía de la sección "Cuerpo,
+             mente y tacto"; acá llega temprano, que es cuando la persona
+             todavía está decidiendo si esto le sirve. -->
+        <div class="ventajas__beneficios revelar">
+          <h2 class="ventajas__beneficios-titulo">Bienestar integral</h2>
+          <div class="ventajas__beneficios-grid">
+            <article class="beneficio">
+              <h3 class="beneficio__titulo">Regulación del estrés</h3>
+              <p class="beneficio__texto">Puede favorecer la activación del sistema parasimpático, asociado al descanso y la recuperación.</p>
+            </article>
+            <article class="beneficio">
+              <h3 class="beneficio__titulo">Menos tensión acumulada</h3>
+              <p class="beneficio__texto">Ayuda a disminuir rigidez y sobrecarga por posturas, entrenamiento, pantallas o estrés sostenido.</p>
+            </article>
+            <article class="beneficio">
+              <h3 class="beneficio__titulo">Mejor descanso</h3>
+              <p class="beneficio__texto">Desacelera el cuerpo y prepara mejores condiciones para dormir y recuperarse.</p>
+            </article>
+            <article class="beneficio">
+              <h3 class="beneficio__titulo">Conexión cuerpo-mente</h3>
+              <p class="beneficio__texto">Percibir la respiración y los músculos ayuda a reconocer antes las señales de sobrecarga.</p>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ LANZAMIENTO ============ -->
+    <section class="lanzamiento" id="lanzamiento">
+      <div class="contenedor">
+        <div class="lanzamiento__panel revelar">
+          <div class="lanzamiento__grid">
+            <div class="lanzamiento__columna">
+              <p class="lanzamiento__insignia">Campaña de apertura · Solo 10 cupos</p>
+              <h2 class="lanzamiento__titulo">El ritual de lanzamiento</h2>
+              <p class="texto-lead">Dos sesiones para comenzar a volver a tu cuerpo. Una experiencia pensada para que reconozcas lo que cambia cuando haces del masaje un momento de cuidado continuo, no solo una pausa aislada.</p>
+              <ul class="lanzamiento__lista">
+                <li>2 sesiones de masaje de 60 minutos</li>
+                <li>Válido para todos los masajes del catálogo</li>
+                <li>Vigencia de 45 días desde la compra</li>
+                <li>Exclusivo para pacientes nuevos y existentes</li>
+              </ul>
+
+              <details class="lanzamiento__condiciones">
+                <summary>Ver todas las condiciones</summary>
+                <ul>
+                  <li>Máximo una compra por persona. No transferible.</li>
+                  <li>Las dos sesiones deben reservarse y utilizarse dentro de los 45 días.</li>
+                  <li>No acumulable con packs, suscripciones ni otros descuentos.</li>
+                  <li>La versión de 90 minutos no está incluida: se agrega pagando $18.000 por sesión.</li>
+                  <li>Los adicionales de tiempo y el drenaje linfático adicional se cobran por separado.</li>
+                </ul>
+              </details>
+            </div>
+
+            <div class="lanzamiento__precio-panel">
+              <p class="precio precio--grande">$89.990</p>
+              <p class="lanzamiento__ahorro">18% de descuento · Ahorras $20.000</p>
+              <button class="boton boton--primario boton--bloque" type="button" data-reservar data-servicio="Ritual de lanzamiento" data-tipo="lanzamiento" data-precio="89990" data-duracion="60">Quiero mi ritual de apertura</button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -184,19 +264,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -229,19 +297,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -274,19 +330,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -319,19 +363,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -364,19 +396,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -409,19 +429,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -454,19 +462,7 @@
                       <button class="boton boton--primario boton--pequeno" type="button" data-reservar data-duracion="90">Seleccionar</button>
                     </div>
                   </div>
-                  <div>
-                    <p class="catalogo__etiqueta-complementos">Agrega un complemento a tu sesión (opcional)</p>
-                    <div class="chip-lista">
-                      <span class="chip">Reflexología · 10 min · $10.000</span>
-                      <span class="chip">Reflexología · 15 min · $15.000</span>
-                      <span class="chip">Cérvico Craneal · 10 min · $10.000</span>
-                      <span class="chip">Cérvico Craneal · 15 min · $15.000</span>
-                      <span class="chip">Drenaje Linfático · 30 min · $18.000</span>
-                      <span class="chip">Head Massage · 10 min · $10.000</span>
-                      <span class="chip">Head Massage · 15 min · $15.000</span>
-                    </div>
-                    <p class="catalogo__nota">Puedes elegir los que quieras al reservar. Se agregan al valor de tu sesión.</p>
-                  </div>
+                  <p class="catalogo__nota">Puedes sumar complementos al reservar, desde $10.000.</p>
                 </div>
               </div>
             </div>
@@ -474,72 +470,64 @@
 
         </div>
 
-        <!-- Adicionales: la explicación de cada uno, para decidir con calma -->
-        <div class="revelar">
-          <h3 class="titulo-seccion">Adicionales para tu sesión</h3>
-          <p class="texto-lead">Agrega uno y enfoca tu masaje en lo que tu cuerpo quiere hoy. Estos adicionales se contratan junto con tu sesión.</p>
+        <!-- Cierre del catálogo: herramientas con las que se remata la
+             sesión. No se venden por separado, así que no llevan precio
+             ni botón: son parte de cómo termina el masaje. -->
+        <div class="remate revelar">
+          <h3 class="remate__titulo">Así cierro cada sesión</h3>
+          <p class="remate__intro">Según cómo llegues ese día, sumo una o varias de estas herramientas. Van incluidas: no son un extra que se cobra aparte.</p>
 
-          <div class="catalogo__adicionales">
-            <article class="adicional">
-              <h4 class="adicional__titulo">Reflexología</h4>
-              <p class="adicional__texto">Este antiguo tratamiento natural estimula al organismo para que se equilibre por medio de presiones en áreas específicas de los pies.</p>
-              <p class="adicional__precios"><span>10 min · $10.000</span><span>15 min · $15.000</span></p>
-            </article>
-            <article class="adicional">
-              <h4 class="adicional__titulo">Cérvico Craneal</h4>
-              <p class="adicional__texto">Trabajo focalizado en cuello, nuca, mandíbula y cuero cabelludo. Una buena alternativa cuando el estrés se concentra en la cabeza, los hombros o la zona cervical.</p>
-              <p class="adicional__precios"><span>10 min · $10.000</span><span>15 min · $15.000</span></p>
-            </article>
-            <article class="adicional">
-              <h4 class="adicional__titulo">Drenaje Linfático</h4>
-              <p class="adicional__texto">Movimientos suaves para acompañar la sensación de liviandad y desinflamación corporal.</p>
-              <p class="adicional__precios"><span>30 min · $18.000</span></p>
-            </article>
-            <article class="adicional">
-              <h4 class="adicional__titulo">Head Massage</h4>
-              <p class="adicional__texto">Masaje de cuero cabelludo, rostro y cabeza con técnicas suaves y lentas. Pensado para desconectar de pantallas, tensión mental y cansancio acumulado.</p>
-              <p class="adicional__precios"><span>10 min · $10.000</span><span>15 min · $15.000</span></p>
-            </article>
-          </div>
+          <ul class="remate__hilera">
+            <li class="remate__item">
+              <svg class="remate__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+                <circle cx="24" cy="24" r="5"/>
+                <path d="M24 9v5M24 34v5M9 24h5M34 24h5M13.4 13.4l3.6 3.6M31 31l3.6 3.6M34.6 13.4L31 17M17 31l-3.6 3.6"/>
+              </svg>
+              <h4 class="remate__nombre">Fotobiomodulación</h4>
+              <p class="remate__texto">Luz roja e infrarroja para recuperación muscular y mejor sueño.</p>
+            </li>
+
+            <li class="remate__item">
+              <svg class="remate__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+                <path d="M6 24h4M38 24h4"/>
+                <path d="M13 22v4M18 18v12M24 12v24M30 18v12M35 22v4"/>
+              </svg>
+              <h4 class="remate__nombre">Percusión</h4>
+              <p class="remate__texto">Vibración de alta frecuencia para soltar músculos tensos.</p>
+            </li>
+
+            <li class="remate__item">
+              <svg class="remate__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+                <circle cx="24" cy="24" r="3"/>
+                <path d="M31 17a10 10 0 0 1 0 14M17 31a10 10 0 0 1 0-14"/>
+                <path d="M36 12a17 17 0 0 1 0 24M12 36a17 17 0 0 1 0-24"/>
+              </svg>
+              <h4 class="remate__nombre">Musicoterapia</h4>
+              <p class="remate__texto">Cuencos, sonidos binaurales y música de baja frecuencia.</p>
+            </li>
+
+            <li class="remate__item">
+              <svg class="remate__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+                <path d="M24 8v32"/>
+                <path d="M16 14c5 4 5 8 0 12s-5 8 0 12"/>
+                <path d="M32 14c-5 4-5 8 0 12s5 8 0 12"/>
+              </svg>
+              <h4 class="remate__nombre">Frío y calor</h4>
+              <p class="remate__texto">Contraste térmico para bajar inflamación y relajar el tejido.</p>
+            </li>
+
+            <li class="remate__item">
+              <svg class="remate__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true">
+                <path d="M24 40c0-8 3-13 8-16 0 8-3 13-8 16Z"/>
+                <path d="M24 40c0-8-3-13-8-16 0 8 3 13 8 16Z"/>
+                <path d="M24 40V22c0-5 2-9 6-13"/>
+              </svg>
+              <h4 class="remate__nombre">Aromaterapia</h4>
+              <p class="remate__texto">Aceites esenciales elegidos según lo que necesites ese día.</p>
+            </li>
+          </ul>
         </div>
-      </div>
-    </section>
 
-    <!-- ============ LANZAMIENTO ============ -->
-    <section class="lanzamiento" id="lanzamiento">
-      <div class="contenedor">
-        <div class="lanzamiento__panel revelar">
-          <div class="lanzamiento__grid">
-            <div class="lanzamiento__columna">
-              <p class="lanzamiento__insignia">Campaña de apertura · Solo 10 cupos</p>
-              <h2 class="lanzamiento__titulo">El ritual de lanzamiento</h2>
-              <p class="texto-lead">Dos sesiones para comenzar a volver a tu cuerpo. Una experiencia pensada para que reconozcas lo que cambia cuando haces del masaje un momento de cuidado continuo, no solo una pausa aislada.</p>
-              <ul class="lanzamiento__lista">
-                <li>2 sesiones de masaje de 60 minutos</li>
-                <li>Válido para todos los masajes del catálogo</li>
-                <li>Vigencia de 45 días desde la compra</li>
-                <li>Exclusivo para pacientes nuevos y existentes</li>
-              </ul>
-
-              <details class="lanzamiento__condiciones">
-                <summary>Ver todas las condiciones</summary>
-                <ul>
-                  <li>Máximo una compra por persona. No transferible.</li>
-                  <li>Las dos sesiones deben reservarse y utilizarse dentro de los 45 días.</li>
-                  <li>No acumulable con packs, suscripciones ni otros descuentos.</li>
-                  <li>La versión de 90 minutos no está incluida: se agrega pagando $18.000 por sesión.</li>
-                  <li>Los adicionales de tiempo y el drenaje linfático adicional se cobran por separado.</li>
-                </ul>
-              </details>
-            </div>
-
-            <div class="lanzamiento__precio-panel">
-              <p class="precio precio--grande">$89.990</p>
-              <p class="lanzamiento__ahorro">18% de descuento · Ahorras $20.010</p>
-              <button class="boton boton--primario boton--bloque" type="button" data-reservar data-servicio="Ritual de lanzamiento" data-tipo="lanzamiento" data-precio="89990" data-duracion="60">Quiero mi ritual de apertura</button>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -580,13 +568,7 @@
           </article>
         </div>
 
-        <div class="nota-legal revelar">
-          <p>Sin letra chica: vigencia de 90 días desde la fecha de compra.</p>
-          <p>Las sesiones se reservan según disponibilidad de agenda.</p>
-          <p>La versión de 90 minutos y los adicionales se cobran por separado al reservar cada sesión.</p>
-          <p>Si quieres regalar sesiones, puedes hacerlo: al comprar, nos avisas y generamos un código de regalo. Quien recibe el regalo elige la fecha y la hora cuando agenda, no quien compra.</p>
-          <p>No acumulables con otras promociones ni descuentos.</p>
-        </div>
+        <p class="nota-legal revelar">Vigencia de 90 días · No acumulable con otras promociones · <a href="#faq">Ver todas las condiciones</a></p>
       </div>
     </section>
 
@@ -648,99 +630,11 @@
           </article>
         </div>
 
-        <div class="nota-legal revelar">
-          <p>Las sesiones son válidas dentro del mes calendario y no se acumulan para el mes siguiente.</p>
-          <p>Las suscripciones son personales e intransferibles.</p>
-          <p>Los planes Esencial, Bienestar y Vital se cancelan cuando quieras, según las condiciones informadas al contratar.</p>
-          <p>El Plan Manada tiene permanencia mínima de tres meses.</p>
-          <p>La versión de 90 minutos y los adicionales se cobran por separado al reservar cada sesión.</p>
-        </div>
+        <p class="nota-legal revelar">Cancelas cuando quieras, salvo Manada que tiene permanencia de 3 meses · Las sesiones no se acumulan de un mes a otro · <a href="#faq">Ver todas las condiciones</a></p>
       </div>
     </section>
 
-    <!-- ============ CUERPO, MENTE Y TACTO (incluye bienestar integral) ============ -->
-    <section class="bienestar" id="bienestar">
-      <img class="marca-agua marca-agua--izquierda logo--claro" src="assets/logo/manos-vivas-logo-monotinta-blanco.svg" alt="" aria-hidden="true">
-      <img class="marca-agua marca-agua--izquierda logo--oscuro" src="assets/logo/manos-vivas-logo-monotinta-negro.svg" alt="" aria-hidden="true">
-      <div class="contenedor">
-        <header class="seccion__cabecera revelar">
-          <h2 class="titulo-seccion">Cuerpo, mente y tacto</h2>
-          <p class="texto-lead">Tu mente no está separada de tu cuerpo. La salud mental también se vive en el cuerpo.</p>
-        </header>
 
-        <div class="bienestar__intro revelar">
-          <p class="catalogo__descripcion">Cuando acumulamos estrés, ansiedad o cansancio emocional, el sistema nervioso permanece en alerta. La tensión se instala en los músculos, la respiración y el sueño.</p>
-          <p class="catalogo__descripcion">El masaje terapéutico puede ayudar a regular el sistema nervioso autónomo, disminuir la respuesta fisiológica al estrés y favorecer señales corporales asociadas a calma, descanso y bienestar. No es solo una sensación agradable: es una experiencia de cuidado que acompaña la conexión entre cuerpo y mente. El masaje es una herramienta complementaria de bienestar.</p>
-        </div>
-
-        <h3 class="titulo-seccion revelar">Bienestar integral</h3>
-        <div class="bienestar__beneficios revelar">
-          <article class="beneficio">
-            <p class="beneficio__numero">01</p>
-            <h4 class="beneficio__titulo">Regulación del estrés</h4>
-            <p class="beneficio__texto">Puede favorecer la activación del sistema parasimpático, asociado al descanso, la recuperación y la sensación de seguridad corporal.</p>
-          </article>
-          <article class="beneficio">
-            <p class="beneficio__numero">02</p>
-            <h4 class="beneficio__titulo">Menos tensión acumulada</h4>
-            <p class="beneficio__texto">El trabajo manual puede ayudar a disminuir rigidez y sobrecarga relacionadas con posturas, entrenamiento, pantallas o estrés sostenido.</p>
-          </article>
-          <article class="beneficio">
-            <p class="beneficio__numero">03</p>
-            <h4 class="beneficio__titulo">Mejor descanso</h4>
-            <p class="beneficio__texto">Una sesión puede ayudar a desacelerar el cuerpo y preparar mejores condiciones para dormir y recuperarse.</p>
-          </article>
-          <article class="beneficio">
-            <p class="beneficio__numero">04</p>
-            <h4 class="beneficio__titulo">Conexión cuerpo-mente</h4>
-            <p class="beneficio__texto">Percibir la respiración, los músculos y las necesidades del cuerpo ayuda a reconocer antes las señales de sobrecarga.</p>
-          </article>
-        </div>
-
-        <h3 class="titulo-seccion revelar">Complementos del ritual</h3>
-        <p class="texto-lead revelar">Si quieres, puedes personalizar tu sesión con tecnologías y técnicas que potencian la relajación, la recuperación y el bienestar.</p>
-        <div class="bienestar__complementos revelar">
-          <article class="complemento-ritual">
-            <h4 class="complemento-ritual__titulo">Fotobiomodulación</h4>
-            <p class="complemento-ritual__texto">Luz roja e infrarroja para recuperación muscular, mejora del sueño y reducción de inflamación.</p>
-          </article>
-          <article class="complemento-ritual">
-            <h4 class="complemento-ritual__titulo">Terapia vibracional</h4>
-            <p class="complemento-ritual__texto">Vibración o percusión de alta frecuencia para relajar músculos tensos y mejorar la circulación.</p>
-          </article>
-          <article class="complemento-ritual">
-            <h4 class="complemento-ritual__titulo">Musicoterapia</h4>
-            <p class="complemento-ritual__texto">Sonidos binaurales, cuencos tibetanos, sound bath y música de meditación de alta frecuencia.</p>
-          </article>
-          <article class="complemento-ritual">
-            <h4 class="complemento-ritual__titulo">Crioterapia y termoterapia</h4>
-            <p class="complemento-ritual__texto">Frío y calor aplicados en el masaje para reducir inflamación y relajar el tejido muscular.</p>
-          </article>
-          <article class="complemento-ritual">
-            <h4 class="complemento-ritual__titulo">Aromaterapia</h4>
-            <p class="complemento-ritual__texto">Aceites esenciales para potenciar la relajación y mejorar el estado de ánimo.</p>
-          </article>
-        </div>
-
-        <div class="bienestar__no-negociable revelar">
-          <article>
-            <p class="no-negociable__numero">01</p>
-            <h3 class="no-negociable__titulo">El dolor: no tiene por qué doler</h3>
-            <p class="no-negociable__texto">Basta de romantizar el dolor. Si aprietas los dientes, algo se hizo mal.</p>
-          </article>
-          <article>
-            <p class="no-negociable__numero">02</p>
-            <h3 class="no-negociable__titulo">Sabes quién entra a tu casa</h3>
-            <p class="no-negociable__texto">Siempre las mismas manos. Sin ruleta de terapeutas ni desconocidos que no saben escuchar lo que necesitas en cada sesión.</p>
-          </article>
-          <article>
-            <p class="no-negociable__numero">03</p>
-            <h3 class="no-negociable__titulo">El tiempo: sesenta minutos son sesenta</h3>
-            <p class="no-negociable__texto">El reloj parte cuando parte el masaje. Armar la camilla y desarmarla corre por mi cuenta, no por la tuya.</p>
-          </article>
-        </div>
-      </div>
-    </section>
 
     <!-- ============ HISTORIA (incluye misión y visión) ============ -->
     <section class="historia" id="historia">
@@ -758,6 +652,8 @@
             <p>De adultos nos olvidamos de eso. Nos olvidamos del cuerpo, que es el templo donde vivimos. Y si la máquina no anda bien, el motor termina fallando.</p>
             <p>Soy masoterapeuta desde 2018 y he trabajado en el área de bienestar de hotelería de lujo, donde el estándar no se negocia. Ahí aprendí cómo se hace bien. Pero también he sido cliente y he pagado masajes de los que me fui pensando “esto no era”.</p>
             <p>Manos Vivas nace de una idea simple: el cuerpo necesita espacios reales para detenerse, ser escuchado y recuperar equilibrio. En medio de rutinas intensas, pantallas, exigencias y cansancio acumulado, creamos un servicio de masaje cercano y profesional que pone a la persona al centro.</p>
+            <p>Cuando acumulamos estrés o cansancio emocional, el sistema nervioso queda en alerta: la tensión se instala en los músculos, la respiración y el sueño. El masaje puede ayudar a regular esa respuesta y devolver señales de calma y descanso. No es solo una sensación agradable — y tampoco reemplaza un tratamiento médico: es una herramienta complementaria de bienestar.</p>
+
             <p>Cada sesión está pensada con privacidad, continuidad y atención personalizada. Escuchamos cómo llegas, respetamos tus límites y construimos una experiencia eficiente, transparente y honesta desde la reserva hasta después del masaje: cuando la sesión termina, tú te quedas en tu espacio, en tu ritmo, sin apuro, integrando lo que viviste.</p>
             <p>Mi misión es cuidar a la manada: acompañar a las personas a reconectar con su cuerpo, alivianar la tensión y recordar que el cariño también es parte del cuidado de la salud. Mi visión es que cada sesión sea un espacio seguro, honesto y humano, donde el tacto profesional se convierta en una herramienta de bienestar emocional y físico.</p>
             <p>Quiero que cada cuerpo que toque mis manos sienta que fue escuchado, respetado y cuidado con amor y energía.</p>
@@ -772,6 +668,27 @@
             </div>
           </div>
         </div>
+
+        <div class="historia__no-negociable revelar">
+          <h2 class="titulo-seccion">Lo que no se negocia</h2>
+          <div class="no-negociable__grid">
+            <article>
+              <p class="no-negociable__numero">01</p>
+              <h3 class="no-negociable__titulo">El dolor: no tiene por qué doler</h3>
+              <p class="no-negociable__texto">Basta de romantizar el dolor. Si aprietas los dientes, algo se hizo mal.</p>
+            </article>
+            <article>
+              <p class="no-negociable__numero">02</p>
+              <h3 class="no-negociable__titulo">Sabes quién entra a tu casa</h3>
+              <p class="no-negociable__texto">Siempre las mismas manos. Sin ruleta de terapeutas ni desconocidos que no saben escuchar lo que necesitas en cada sesión.</p>
+            </article>
+            <article>
+              <p class="no-negociable__numero">03</p>
+              <h3 class="no-negociable__titulo">El tiempo: sesenta minutos son sesenta</h3>
+              <p class="no-negociable__texto">El reloj parte cuando parte el masaje. Armar la camilla y desarmarla corre por mi cuenta, no por la tuya.</p>
+            </article>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -781,6 +698,15 @@
         <header class="seccion__cabecera seccion__cabecera--centrada revelar">
           <h2 class="titulo-seccion">Los que conocen mi trabajo dicen</h2>
         </header>
+
+        <div class="testimonios__grid">
+          <!-- Video vertical de una sesión real, con audio del cliente -->
+          <figure class="testimonios__video revelar">
+            <video data-video-experiencia controls muted playsinline preload="metadata"
+                   poster="assets/images/cliente-perro-jardin.jpg">
+              <source src="assets/videos/experiencia-providencia.mp4" type="video/mp4">
+            </video>
+          </figure>
 
         <div class="testimonios__carrusel revelar" data-carrusel>
           <div class="testimonios__pista" data-carrusel-pista aria-live="polite"></div>
@@ -795,6 +721,9 @@
             </button>
           </div>
         </div>
+        </div>
+
+        <p class="testimonios__fuente">Reseñas publicadas en Google por clientes reales.</p>
       </div>
     </section>
 
@@ -904,6 +833,74 @@
             </div>
           </article>
 
+          <article class="fila-acordeon">
+            <h3>
+              <button class="fila-acordeon__cabecera" type="button" aria-expanded="false" aria-controls="faq-10">
+                <span class="faq__pregunta">¿Cuáles son las condiciones de los rituales (packs)?</span>
+                <svg class="fila-acordeon__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+              </button>
+            </h3>
+            <div class="fila-acordeon__panel" id="faq-10">
+              <div class="fila-acordeon__cuerpo">
+                <div class="faq__respuesta">
+                  <p>Vigencia de 90 días desde la fecha de compra.</p>
+                  <p>Las sesiones se reservan según disponibilidad de agenda.</p>
+                  <p>La versión de 90 minutos y los complementos se cobran por separado al reservar cada sesión.</p>
+                  <p>Si quieres regalar sesiones, puedes hacerlo: al comprar nos avisas y generamos un código de regalo. Quien lo recibe elige la fecha y la hora cuando agenda, no quien compra.</p>
+                  <p>No acumulables con otras promociones ni descuentos.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="fila-acordeon">
+            <h3>
+              <button class="fila-acordeon__cabecera" type="button" aria-expanded="false" aria-controls="faq-11">
+                <span class="faq__pregunta">¿Cuáles son las condiciones de las suscripciones?</span>
+                <svg class="fila-acordeon__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+              </button>
+            </h3>
+            <div class="fila-acordeon__panel" id="faq-11">
+              <div class="fila-acordeon__cuerpo">
+                <div class="faq__respuesta">
+                  <p>Las sesiones son válidas dentro del mes calendario y no se acumulan para el mes siguiente.</p>
+                  <p>Las suscripciones son personales e intransferibles.</p>
+                  <p>Los planes Esencial, Bienestar y Vital se cancelan cuando quieras, según las condiciones informadas al contratar.</p>
+                  <p>El Plan Manada tiene permanencia mínima de tres meses.</p>
+                  <p>La versión de 90 minutos y los complementos se cobran por separado al reservar cada sesión.</p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="fila-acordeon">
+            <h3>
+              <button class="fila-acordeon__cabecera" type="button" aria-expanded="false" aria-controls="faq-9">
+                <span class="faq__pregunta">¿Qué son los complementos y cuánto cuestan?</span>
+                <svg class="fila-acordeon__chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+              </button>
+            </h3>
+            <div class="fila-acordeon__panel" id="faq-9">
+              <div class="fila-acordeon__cuerpo">
+                <div class="faq__respuesta">
+                  <p>Son tratamientos que se suman a tu masaje para enfocarlo en lo que tu cuerpo necesita ese día. Los eliges al reservar y se agregan al valor de la sesión.</p>
+                  <dl class="faq__lista-detalle">
+                    <dt>Reflexología <span class="faq__precio">10 min · $10.000 &nbsp;·&nbsp; 15 min · $15.000</span></dt>
+                    <dd>Este antiguo tratamiento natural estimula al organismo para que se equilibre por medio de presiones en áreas específicas de los pies.</dd>
+
+                    <dt>Cérvico Craneal <span class="faq__precio">10 min · $10.000 &nbsp;·&nbsp; 15 min · $15.000</span></dt>
+                    <dd>Trabajo focalizado en cuello, nuca, mandíbula y cuero cabelludo. Una buena alternativa cuando el estrés se concentra en la cabeza, los hombros o la zona cervical.</dd>
+
+                    <dt>Drenaje Linfático <span class="faq__precio">30 min · $18.000</span></dt>
+                    <dd>Movimientos suaves para acompañar la sensación de liviandad y desinflamación corporal.</dd>
+
+                    <dt>Head Massage <span class="faq__precio">10 min · $10.000 &nbsp;·&nbsp; 15 min · $15.000</span></dt>
+                    <dd>Masaje de cuero cabelludo, rostro y cabeza con técnicas suaves y lentas. Pensado para desconectar de pantallas, tensión mental y cansancio acumulado.</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </article>
           <article class="fila-acordeon">
             <h3>
               <button class="fila-acordeon__cabecera" type="button" aria-expanded="false" aria-controls="faq-8">

@@ -81,6 +81,25 @@
     respirar-punto 4.5s var(--ease-soft) 3.2s infinite;
 }
 
+/* Marca del hero: las letras aparecen una a una y terminan en su posición
+   normal. El espaciado extra es del efecto, no del texto. */
+@keyframes entrada-letra {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    letter-spacing: 0.6em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: inherit;
+  }
+}
+
+.js-activo .hero__marca .letra {
+  animation: entrada-letra 0.5s var(--ease-soft) backwards;
+}
+
 /* El texto del hero entra después de que el logo terminó de dibujarse:
    una sola secuencia continua, no dos animaciones compitiendo. */
 @keyframes entrada-hero {
@@ -94,12 +113,8 @@
   }
 }
 
-.js-activo .hero__contenido > *:not(.hero__logo) {
+.js-activo .hero__contenido > *:not(.hero__logo):not(.hero__marca) {
   animation: entrada-hero 1s var(--ease-soft) backwards;
-}
-
-.js-activo .hero__marca {
-  animation-delay: 2.1s;
 }
 
 .js-activo .hero__titulo {
