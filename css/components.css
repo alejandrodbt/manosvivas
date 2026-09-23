@@ -1264,6 +1264,23 @@ textarea.campo__control {
   color: var(--text-muted);
 }
 
+/* La hora que se está pagando, en grande: nadie debería pagar sin verla. */
+.pago-cuando {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: var(--radius-m);
+  background: var(--surface);
+  border-left: 3px solid var(--accent-relleno);
+  font-size: 0.95rem;
+}
+
+.pago-cuando strong {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 1.15rem;
+  color: var(--text);
+}
+
 .brick-pago {
   margin-top: 1.25rem;
   min-height: 3rem;

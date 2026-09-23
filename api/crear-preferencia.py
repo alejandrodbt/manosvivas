@@ -3,11 +3,34 @@ import os
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler
 from zoneinfo import ZoneInfo
 
+try:
+    from google.auth.transport.requests import Request as GoogleAuthRequest
+    from google.oauth2 import service_account
+
+    ERROR_DEPENDENCIA = None
+except ImportError as error:
+    ERROR_DEPENDENCIA = str(error)
+
 ZONA_HORARIA = ZoneInfo("America/Santiago")
+
+GOOGLE_SERVICE_ACCOUNT_JSON = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
+GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "manosvivas-calendar-a2e0e23082e2.json",
+)
+GOOGLE_CALENDAR_ID = os.environ.get("GOOGLE_CALENDAR_ID", "manosvivascl@gmail.com")
+# Mismo horario de atención que ofrece /api/disponibilidad.
+HORA_INICIO = int(os.environ.get("DISPONIBILIDAD_HORA_INICIO", "9"))
+HORA_FIN = int(os.environ.get("DISPONIBILIDAD_HORA_FIN", "20"))
+
+# Una reserva sin pagar se reutiliza si el mismo cliente vuelve con el mismo
+# servicio y horario dentro de este plazo, en vez de crear otra fila.
+VENTANA_REUTILIZACION = timedelta(hours=2)
+ESTADOS_REUTILIZABLES = ("pendiente_pago", "pago_rechazado")
 
 MERCADOPAGO_ACCESS_TOKEN = os.environ.get("MERCADOPAGO_ACCESS_TOKEN")
 # La Public Key es pública, pero viaja desde acá para que el modo (prueba o
@@ -25,10 +48,13 @@ DURACIONES_VALIDAS = (60, 90)
 
 
 class ErrorSolicitud(Exception):
-    def __init__(self, status, mensaje):
+    def __init__(self, status, mensaje, codigo=None):
         super().__init__(mensaje)
         self.status = status
         self.mensaje = mensaje
+        # El frontend usa el código para decidir qué hacer; el mensaje es
+        # solo para mostrar.
+        self.codigo = codigo
 
 
 def _validar_configuracion():
@@ -133,7 +159,7 @@ def crear_reserva_pendiente(datos, producto, complementos, monto_total):
         "complementos": ", ".join(f"{c['nombre']} · {c['duracion_min']} min" for c in complementos),
         "monto_total": monto_total,
         "nombre_cliente": datos["cliente"]["nombre"],
-        "email_cliente": datos["cliente"]["email"],
+        "email_cliente": datos["cliente"]["email"].strip(),
         "telefono_cliente": datos["cliente"].get("telefono"),
         "direccion": datos.get("direccion"),
         "estacionamiento": datos.get("estacionamiento"),
@@ -212,6 +238,107 @@ def crear_preferencia_mercadopago(reserva, producto, complementos, datos):
         raise RuntimeError(f"Error de Mercado Pago ({error.code}): {detalle}")
 
 
+# ---------- Disponibilidad (se vuelve a validar antes de cobrar) ----------
+
+def minutos_de_complementos(complementos):
+    return sum(int(c.get("duracion_min") or 0) for c in complementos)
+
+
+def _token_calendar():
+    if ERROR_DEPENDENCIA:
+        raise RuntimeError(f"Falta la dependencia google-auth en el despliegue ({ERROR_DEPENDENCIA}).")
+    scopes = ["https://www.googleapis.com/auth/calendar.readonly"]
+    if GOOGLE_SERVICE_ACCOUNT_JSON:
+        cred = service_account.Credentials.from_service_account_info(json.loads(GOOGLE_SERVICE_ACCOUNT_JSON), scopes=scopes)
+    elif os.path.exists(GOOGLE_SERVICE_ACCOUNT_FILE):
+        cred = service_account.Credentials.from_service_account_file(GOOGLE_SERVICE_ACCOUNT_FILE, scopes=scopes)
+    else:
+        raise RuntimeError("Falta la credencial de Google Calendar: define GOOGLE_SERVICE_ACCOUNT_JSON.")
+    cred.refresh(GoogleAuthRequest())
+    return cred.token
+
+
+def validar_horario(fecha_hora, minutos):
+    """El horario que el cliente eligió puede haberse ocupado mientras
+    llenaba el formulario, o venir precargado de una visita anterior. Se
+    revisa contra el calendario real justo antes de generar el cobro."""
+    inicio = datetime.fromisoformat(fecha_hora)
+    if inicio.tzinfo is None:
+        inicio = inicio.replace(tzinfo=ZONA_HORARIA)
+    inicio = inicio.astimezone(ZONA_HORARIA)
+    fin = inicio + timedelta(minutes=minutos)
+
+    no_disponible = ErrorSolicitud(
+        409, "Ese horario ya no está disponible. Elige otra hora.", codigo="horario_no_disponible"
+    )
+    if inicio <= datetime.now(ZONA_HORARIA):
+        raise no_disponible
+    apertura = inicio.replace(hour=HORA_INICIO, minute=0, second=0, microsecond=0)
+    cierre = inicio.replace(hour=HORA_FIN, minute=0, second=0, microsecond=0)
+    if inicio < apertura or fin > cierre:
+        raise no_disponible
+
+    request = urllib.request.Request(
+        "https://www.googleapis.com/calendar/v3/freeBusy",
+        data=json.dumps({
+            "timeMin": inicio.astimezone(timezone.utc).isoformat(),
+            "timeMax": fin.astimezone(timezone.utc).isoformat(),
+            "items": [{"id": GOOGLE_CALENDAR_ID}],
+        }).encode("utf-8"),
+        method="POST",
+        headers={"Authorization": f"Bearer {_token_calendar()}", "Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request) as response:
+            calendario = json.loads(response.read())["calendars"].get(GOOGLE_CALENDAR_ID, {})
+    except urllib.error.HTTPError as error:
+        raise RuntimeError(f"Error al consultar la agenda ({error.code}): {error.read().decode('utf-8', 'ignore')}")
+
+    if calendario.get("errors"):
+        raise RuntimeError(f"Google Calendar devolvió errores: {calendario['errors']}")
+    if calendario.get("busy"):
+        raise no_disponible
+
+
+# ---------- Reutilización de reservas sin pagar ----------
+
+def buscar_reserva_reutilizable(producto, fecha_hora_con_offset, email):
+    """Quien vuelve atrás desde el pago y avanza de nuevo con el mismo
+    servicio y horario no debe generar otra fila en la base."""
+    desde = (datetime.now(timezone.utc) - VENTANA_REUTILIZACION).isoformat()
+    filtros = "&".join([
+        f"servicio=eq.{urllib.parse.quote(producto.get('nombre') or '', safe='')}",
+        f"fecha_hora_solicitada=eq.{urllib.parse.quote(fecha_hora_con_offset, safe='')}",
+        f"email_cliente=eq.{urllib.parse.quote(email, safe='')}",
+        f"estado=in.({','.join(ESTADOS_REUTILIZABLES)})",
+        f"created_at=gte.{urllib.parse.quote(desde, safe='')}",
+    ])
+    filas = _supabase_request("GET", f"reservas?{filtros}&select=*&order=id.desc&limit=1")
+    return filas[0] if filas else None
+
+
+def actualizar_reserva_reutilizada(reserva, datos, complementos, monto_total):
+    """Los datos que el cliente pudo corregir al volver atrás se actualizan
+    sobre la misma fila."""
+    cambios = {
+        "duracion": datos.get("duracion"),
+        "complementos": ", ".join(f"{c['nombre']} · {c['duracion_min']} min" for c in complementos),
+        "monto_total": monto_total,
+        "nombre_cliente": datos["cliente"]["nombre"],
+        "telefono_cliente": datos["cliente"].get("telefono"),
+        "direccion": datos.get("direccion"),
+        "estacionamiento": datos.get("estacionamiento"),
+        "estado": "pendiente_pago",
+    }
+    filas = _supabase_request(
+        "PATCH",
+        f"reservas?id=eq.{urllib.parse.quote(str(reserva['id']), safe='')}",
+        cuerpo=cambios,
+        headers_extra={"Prefer": "return=representation"},
+    )
+    return filas[0] if filas else {**reserva, **cambios}
+
+
 def procesar_solicitud(datos):
     if not isinstance(datos, dict):
         raise ErrorSolicitud(400, "Cuerpo de la solicitud inválido.")
@@ -236,12 +363,24 @@ def procesar_solicitud(datos):
         float(c.get("precio", 0)) for c in complementos
     )
 
-    reserva = crear_reserva_pendiente(datos, producto, complementos, monto_total)
+    validar_horario(fecha_hora, (datos.get("duracion") or 60) + minutos_de_complementos(complementos))
+
+    reserva = buscar_reserva_reutilizable(
+        producto, fecha_hora_con_zona(fecha_hora), cliente["email"].strip()
+    )
+    reutilizada = reserva is not None
+    if reutilizada:
+        reserva = actualizar_reserva_reutilizada(reserva, datos, complementos, monto_total)
+    else:
+        reserva = crear_reserva_pendiente(datos, producto, complementos, monto_total)
 
     try:
         preferencia = crear_preferencia_mercadopago(reserva, producto, complementos, datos)
     except RuntimeError:
-        eliminar_reserva(reserva["id"])
+        # Solo se borra si la creó esta misma llamada: una reutilizada sigue
+        # siendo del cliente.
+        if not reutilizada:
+            eliminar_reserva(reserva["id"])
         raise
 
     return {
@@ -250,6 +389,7 @@ def procesar_solicitud(datos):
         "init_point": preferencia.get("init_point"),
         "monto_total": monto_total,
         "public_key": MERCADOPAGO_PUBLIC_KEY,
+        "reutilizada": reutilizada,
         "modo_prueba": bool(MERCADOPAGO_ACCESS_TOKEN and MERCADOPAGO_ACCESS_TOKEN.startswith("TEST-")),
     }
 
@@ -270,7 +410,7 @@ class handler(BaseHTTPRequestHandler):
             resultado = procesar_solicitud(datos)
             self._responder(201, resultado)
         except ErrorSolicitud as error:
-            self._responder(error.status, {"error": error.mensaje})
+            self._responder(error.status, {"error": error.mensaje, "codigo": error.codigo})
         except RuntimeError as error:
             self._responder(502, {"error": str(error)})
         except Exception as error:

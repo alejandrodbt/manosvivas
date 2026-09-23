@@ -100,9 +100,16 @@
   const estadoHorarios = overlay.querySelector('[data-estado-horarios]');
   const contenedorBrick = overlay.querySelector('[data-brick-pago]');
   const estadoPago = overlay.querySelector('[data-estado-pago]');
+  const pagoCuando = overlay.querySelector('[data-pago-cuando]');
 
   let ultimoFoco = null;
-  let brickCreado = false;
+  let mercadoPago = null;
+  let controladorBrick = null;
+  // Cada consulta de horarios lleva un número: si el cliente cambia de día
+  // o reabre el flujo antes de que responda, la respuesta vieja se descarta.
+  let consultaHorarios = 0;
+  // Igual para el pago: solo la última preparación puede montar el brick.
+  let intentoPago = 0;
 
   /* ======================= Catálogo leído del DOM ======================= */
 
@@ -130,11 +137,35 @@
         estado.servicio = (fila && fila.dataset.servicio) || datos.servicio || '';
         estado.duracion = Number(datos.duracion) || 60;
         estado.precioBase = precioDeServicio(estado.servicio, estado.duracion);
+        estado.complementos = [];
       }
 
+      reiniciarAgenda();
       abrirReserva();
     });
   });
+
+  /* Cada apertura parte sin fecha ni hora. Si quedaran de una visita
+     anterior, el cliente podría pagar un horario que nunca eligió para
+     este servicio (así pasó con la reserva #23). */
+  function reiniciarAgenda() {
+    consultaHorarios++;
+    intentoPago++;
+    estado.fecha = '';
+    estado.hora = '';
+    estado.reservaId = null;
+    if (campoFecha) {
+      campoFecha.value = '';
+      campoFecha.min = hoyEnChile();
+    }
+    listaHorarios.innerHTML = '';
+    estadoHorarios.textContent = '';
+    estadoHorarios.classList.remove('esta-cargando');
+    desmontarBrick();
+    estadoPago.textContent = '';
+    estadoPago.classList.remove('esta-cargando');
+    if (pagoCuando) pagoCuando.textContent = '';
+  }
 
   function abrirReserva() {
     ultimoFoco = document.activeElement;
@@ -320,9 +351,7 @@
     if (estado.fecha && estado.hora) {
       filas.push(
         '<div class="resumen-reserva__fila"><span>Cuándo</span><span>' +
-          MV.escaparHTML(estado.fecha) +
-          ' · ' +
-          MV.escaparHTML(estado.hora) +
+          MV.escaparHTML(fechaEnPalabras(estado.fecha, estado.hora)) +
           '</span></div>'
       );
     }
@@ -339,22 +368,46 @@
     if (resumenFinal) resumenFinal.innerHTML = filasResumen();
   }
 
+  /* "viernes 25 de septiembre, 18:00". Se arma a mano y en UTC porque
+     new Date('2026-09-25') se interpreta como medianoche UTC y en Chile
+     mostraría el día anterior. */
+  const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+  const MESES = [
+    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+  ];
+
+  function fechaEnPalabras(fecha, hora) {
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    const diaSemana = new Date(Date.UTC(anio, mes - 1, dia)).getUTCDay();
+    return DIAS[diaSemana] + ' ' + dia + ' de ' + MESES[mes - 1] + ', ' + hora;
+  }
+
+  // Fecha de hoy en Chile (toISOString daría la de UTC, que después de las
+  // 21:00 ya es mañana).
+  function hoyEnChile() {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(new Date());
+  }
+
   /* ======================= Paso 3: disponibilidad ======================= */
 
   if (campoFecha) {
-    const hoy = new Date();
-    campoFecha.min = hoy.toISOString().slice(0, 10);
+    campoFecha.min = hoyEnChile();
 
     campoFecha.addEventListener('change', () => {
       estado.fecha = campoFecha.value;
       estado.hora = '';
+      actualizarResumen();
       cargarHorarios();
     });
   }
 
-  async function cargarHorarios() {
+  // `aviso` se muestra sobre la lista nueva, por ejemplo cuando el backend
+  // rechazó la hora elegida porque alguien la tomó antes.
+  async function cargarHorarios(aviso) {
     if (!estado.fecha) return;
 
+    const consulta = ++consultaHorarios;
     listaHorarios.innerHTML = '';
     estadoHorarios.textContent = 'Buscando horarios libres…';
     estadoHorarios.classList.add('esta-cargando');
@@ -365,16 +418,18 @@
       if (!respuesta.ok) throw new Error('Sin respuesta de la agenda.');
 
       const datos = await respuesta.json();
+      if (consulta !== consultaHorarios) return;
       const horarios = datos.horarios_disponibles || [];
 
       estadoHorarios.classList.remove('esta-cargando');
 
       if (!horarios.length) {
-        estadoHorarios.textContent = 'No quedan horarios libres ese día. Prueba con otra fecha.';
+        estadoHorarios.textContent =
+          (aviso ? aviso + ' ' : '') + 'No quedan horarios libres ese día. Prueba con otra fecha.';
         return;
       }
 
-      estadoHorarios.textContent = '';
+      estadoHorarios.textContent = aviso || '';
       horarios.forEach((hora) => {
         const boton = document.createElement('button');
         boton.type = 'button';
@@ -391,6 +446,7 @@
         listaHorarios.appendChild(boton);
       });
     } catch (error) {
+      if (consulta !== consultaHorarios) return;
       estadoHorarios.classList.remove('esta-cargando');
       estadoHorarios.textContent = 'No pudimos leer la agenda ahora. Inténtalo de nuevo en un momento.';
     }
@@ -503,7 +559,10 @@
   /* ======================= Paso 5: pago ======================= */
 
   async function prepararPago() {
+    const intento = ++intentoPago;
     irAPaso(5);
+    desmontarBrick();
+    if (pagoCuando) pagoCuando.textContent = fechaEnPalabras(estado.fecha, estado.hora);
     estadoPago.textContent = 'Preparando el pago…';
     estadoPago.classList.add('esta-cargando');
 
@@ -528,6 +587,12 @@
       });
 
       const datos = await respuesta.json();
+      if (intento !== intentoPago) return;
+
+      if (respuesta.status === 409 && datos.codigo === 'horario_no_disponible') {
+        volverAElegirHora(datos.error);
+        return;
+      }
       if (!respuesta.ok) throw new Error(datos.error || 'No pudimos iniciar el pago.');
 
       estado.reservaId = datos.reserva_id;
@@ -542,23 +607,52 @@
 
       await montarBrick(datos.preference_id, datos.monto_total, datos.public_key);
     } catch (error) {
+      if (intento !== intentoPago) return;
       estadoPago.classList.remove('esta-cargando');
       estadoPago.textContent = error.message + ' Escríbeme por WhatsApp y lo resolvemos.';
     }
   }
 
-  async function montarBrick(preferenceId, monto, publicKey) {
-    if (brickCreado) return;
+  /* El backend revisó el calendario y la hora ya no está libre: no se
+     generó cobro. El cliente vuelve al paso 3 con horarios frescos. */
+  function volverAElegirHora(mensaje) {
+    estadoPago.classList.remove('esta-cargando');
+    estadoPago.textContent = '';
+    if (pagoCuando) pagoCuando.textContent = '';
+    estado.hora = '';
+    actualizarResumen();
+    irAPaso(3);
+    MV.toast(mensaje);
+    cargarHorarios(mensaje);
+  }
 
+  /* Cada paso por el pago monta un brick nuevo con la preferencia recién
+     creada. Reusar uno anterior dejaría el botón de Mercado Pago apuntando
+     a una preferencia vieja, con otra hora o monto. */
+  function desmontarBrick() {
+    if (controladorBrick) {
+      try {
+        controladorBrick.unmount();
+      } catch (error) {
+        console.error('[Manos Vivas] No se pudo desmontar el brick:', error);
+      }
+      controladorBrick = null;
+    }
+    contenedorBrick.innerHTML = '';
+  }
+
+  async function montarBrick(preferenceId, monto, publicKey) {
     if (typeof window.MercadoPago === 'undefined') {
       estadoPago.textContent = 'No pudimos cargar el medio de pago. Revisa tu conexión y vuelve a intentar.';
       return;
     }
 
-    const mercadoPago = new window.MercadoPago(publicKey || CONFIG.publicKeyMercadoPago, { locale: 'es-CL' });
+    if (!mercadoPago) {
+      mercadoPago = new window.MercadoPago(publicKey || CONFIG.publicKeyMercadoPago, { locale: 'es-CL' });
+    }
     const bricks = mercadoPago.bricks();
 
-    await bricks.create('payment', contenedorBrick.id || crearIdBrick(), {
+    controladorBrick = await bricks.create('payment', contenedorBrick.id || crearIdBrick(), {
       initialization: {
         amount: monto,
         preferenceId: preferenceId,
@@ -574,9 +668,8 @@
         },
       },
       callbacks: {
-        onReady: () => {
-          brickCreado = true;
-        },
+        // Vacío pero obligatorio: sin onReady el SDK no monta el brick.
+        onReady: () => {},
         // El SDK espera una promesa para saber cuándo terminó el cobro:
         // sin devolverla, el brick apaga su spinner de inmediato y el
         // cliente puede pensar que el pago falló y volver a enviarlo.
@@ -628,8 +721,7 @@
      Prometer "agendada" acá deja al cliente creyendo que tiene una hora
      que puede no existir. */
   function mostrarConfirmacion(pagoAprobado) {
-    contenedorBrick.innerHTML = '';
-    brickCreado = false;
+    desmontarBrick();
 
     estadoPago.innerHTML = pagoAprobado
       ? '<p class="paso-reserva__titulo">Pago recibido.</p>' +
