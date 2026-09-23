@@ -288,12 +288,16 @@ class handler(BaseHTTPRequestHandler):
 
             resultado = procesar_notificacion(tipo, payment_id)
             self._responder(200, resultado)
+
         except Exception as error:
-            # Siempre 200 salvo firma inválida: si devolvemos error Mercado Pago
-            # reintenta la notificación indefinidamente. Se registra el detalle
-            # para revisión manual en los logs de Vercel.
-            print(f"webhook-pago error: {error}")
-            self._responder(200, {"ok": False, "error": str(error)})
+            # Un fallo interno responde 500 a propósito. Antes respondía 200
+            # para evitar reintentos, pero eso hacía que Mercado Pago marcara
+            # la notificación como entregada y no volviera a intentar: el
+            # error quedaba invisible en los dos lados. Con 500, el panel lo
+            # muestra en rojo y reintenta, que es lo que debe pasar cuando
+            # una reserva pagada no alcanzó a confirmarse.
+            print(f"webhook-pago ERROR: {error}")
+            self._responder(500, {"ok": False, "error": str(error)})
 
     def do_GET(self):
         # Mercado Pago puede probar la URL del webhook con un GET al guardarla.
