@@ -92,28 +92,42 @@ def actualizar_reserva(reserva_id, cambios):
 
 def validar_firma_webhook(headers, query):
     """Ver 'Cómo asegurar el origen de una notificación' en los docs de
-    Mercado Pago. Si no hay secreto configurado, se omite la validación
-    (útil mientras se prueba con el Access Token TEST) pero queda marcado
-    en la respuesta para no fallar en silencio.
+    Mercado Pago. Devuelve (valida, motivo): el motivo distingue "no vino
+    firma" de "la firma no coincide", que se diagnostican distinto y no
+    revelan el secreto.
     """
     if not MERCADOPAGO_WEBHOOK_SECRET:
-        return True
+        return True, "sin secreto configurado: validación omitida"
 
     firma = headers.get("x-signature", "")
     request_id = headers.get("x-request-id", "")
     data_id = query.get("data.id", [""])[0]
 
+    if not firma:
+        return False, (
+            "la notificación no trae el header x-signature. Suele pasar cuando la URL "
+            "no está registrada en el panel de Mercado Pago: sin registrar, las "
+            "notificaciones llegan sin firmar."
+        )
+
     partes = dict(par.split("=", 1) for par in firma.split(",") if "=" in par)
     ts = partes.get("ts", "")
     v1_recibido = partes.get("v1", "")
     if not ts or not v1_recibido:
-        return False
+        return False, "el header x-signature no trae ts y v1."
 
     manifest = f"id:{data_id.lower()};request-id:{request_id};ts:{ts};"
     firma_calculada = hmac.new(
         MERCADOPAGO_WEBHOOK_SECRET.encode("utf-8"), manifest.encode("utf-8"), hashlib.sha256
     ).hexdigest()
-    return hmac.compare_digest(firma_calculada, v1_recibido)
+
+    if not hmac.compare_digest(firma_calculada, v1_recibido):
+        return False, (
+            "la firma no coincide. Revisa que MERCADOPAGO_WEBHOOK_SECRET sea el de la "
+            "misma aplicación y el mismo modo (prueba o producción) que envía la notificación."
+        )
+
+    return True, "firma válida"
 
 
 def obtener_pago(payment_id):
@@ -256,8 +270,10 @@ class handler(BaseHTTPRequestHandler):
 
             query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
 
-            if not validar_firma_webhook(self.headers, query):
-                self._responder(401, {"error": "Firma de webhook inválida."})
+            valida, motivo = validar_firma_webhook(self.headers, query)
+            if not valida:
+                print(f"webhook-pago: notificación rechazada — {motivo}")
+                self._responder(401, {"error": "Firma de webhook inválida.", "motivo": motivo})
                 return
 
             largo_contenido = int(self.headers.get("Content-Length", 0))
