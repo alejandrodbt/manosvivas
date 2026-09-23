@@ -1,5 +1,6 @@
 import hashlib
 import hmac
+import html
 import json
 import os
 import re
@@ -37,8 +38,17 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 ZONA_HORARIA = ZoneInfo("America/Santiago")
 DURACION_POR_DEFECTO_MINUTOS = 60
 
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY")
+# Remitente verificado en Brevo. Con una dirección @gmail.com, Gmail puede
+# mandar el correo a spam; lo ideal es una dirección del dominio propio.
+CORREO_REMITENTE = os.environ.get("CORREO_REMITENTE", "manosvivascl@gmail.com")
+SITE_URL = os.environ.get("SITE_URL", "https://manosvivas.cl")
+WHATSAPP_URL = "https://wa.me/56995742775"
+
+# Desde estos estados una reserva puede pasar a confirmarse.
+ESTADOS_RECLAMABLES = ("pendiente_pago", "pago_pendiente", "pago_rechazado")
+
 ESTADOS_MERCADOPAGO = {
-    "approved": "confirmada",
     "rejected": "pago_rechazado",
     "cancelled": "pago_rechazado",
     "refunded": "pago_reembolsado",
@@ -232,7 +242,234 @@ def crear_evento_calendar(reserva):
         raise RuntimeError(f"Error al crear evento en Calendar ({error.code}): {detalle}")
 
 
+# ---------- Correo de confirmación ----------
+
+DIAS = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+         "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+
+
+def formato_clp(valor):
+    return "$" + f"{int(round(float(valor))):,}".replace(",", ".")
+
+
+def datos_correo(reserva):
+    """Todo lo que viene de la reserva lo escribió el cliente: se escapa
+    antes de meterlo en el HTML."""
+    inicio = parsear_fecha_hora(reserva["fecha_hora_solicitada"])
+    minutos = (reserva.get("duracion") or DURACION_POR_DEFECTO_MINUTOS) + minutos_de_complementos(
+        reserva.get("complementos")
+    )
+    nombre = (reserva.get("nombre_cliente") or "").strip()
+    servicio = reserva.get("servicio") or "Sesión Manos Vivas"
+    return {
+        "nombre": nombre.split(" ")[0] if nombre else "",
+        "servicio": servicio,
+        "fecha": f"{DIAS[inicio.weekday()]} {inicio.day} de {MESES[inicio.month - 1]}",
+        "hora": inicio.strftime("%H:%M"),
+        "duracion": f"{minutos} min",
+        "complementos": reserva.get("complementos") or "",
+        "direccion": reserva.get("direccion") or "",
+        "estacionamiento": reserva.get("estacionamiento") or "",
+        "monto": formato_clp(reserva.get("monto_total") or 0),
+        # Rituales y lanzamiento incluyen varias sesiones: esta es la primera.
+        "varias_sesiones": "ritual" in servicio.lower(),
+    }
+
+
+def html_confirmacion(reserva):
+    d = {k: html.escape(v) if isinstance(v, str) else v for k, v in datos_correo(reserva).items()}
+
+    def fila(etiqueta, valor):
+        if not valor:
+            return ""
+        return (
+            '<tr><td style="padding:10px 0;border-bottom:1px solid #e6dbc8;'
+            "font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:13px;"
+            f'color:#6b5a4c;width:38%;vertical-align:top;">{etiqueta}</td>'
+            '<td style="padding:10px 0;border-bottom:1px solid #e6dbc8;'
+            "font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;"
+            f'color:#2A1D14;vertical-align:top;">{valor}</td></tr>'
+        )
+
+    detalle = "".join([
+        fila("Servicio", d["servicio"]),
+        fila("Día", d["fecha"].capitalize()),
+        fila("Hora", f'{d["hora"]} <span style="color:#6b5a4c;font-size:13px;">(hora de Chile)</span>'),
+        fila("Duración", d["duracion"]),
+        fila("Complementos", d["complementos"]),
+        fila("Dirección", d["direccion"]),
+        fila("Estacionamiento", d["estacionamiento"]),
+    ])
+
+    nota_sesiones = (
+        '<p style="margin:0 0 16px;font-family:\'Plus Jakarta Sans\',Helvetica,Arial,sans-serif;'
+        'font-size:15px;line-height:1.6;color:#2A1D14;">Esta es la primera sesión de tu ritual. '
+        "Las siguientes las coordinamos juntos.</p>"
+        if d["varias_sesiones"] else ""
+    )
+    saludo = f"Hola {d['nombre']}," if d["nombre"] else "Hola,"
+
+    return f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Tu sesión está confirmada</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0;padding:0;background:#f5f0e8;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">Tu sesión del {d['fecha']} a las {d['hora']} está confirmada.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f5f0e8;">
+<tr><td align="center" style="padding:32px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+
+    <tr><td style="padding:0 0 24px;">
+      <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+        <td style="vertical-align:middle;padding-right:10px;">
+          <img src="{SITE_URL}/assets/logo/manos-vivas-favicon-180.png" width="36" height="36" alt="" style="display:block;border:0;">
+        </td>
+        <td style="vertical-align:middle;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:#2A1D14;">Manos Vivas</td>
+      </tr></table>
+    </td></tr>
+
+    <tr><td style="background:#fffdf9;border:1px solid #e6dbc8;border-radius:20px;padding:36px 32px;">
+      <h1 style="margin:0 0 20px;font-family:'Cormorant Garamond',Georgia,serif;font-size:32px;line-height:1.15;font-weight:600;color:#2A1D14;">Tu sesión está confirmada</h1>
+
+      <p style="margin:0 0 16px;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#2A1D14;">{saludo}</p>
+      <p style="margin:0 0 24px;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#2A1D14;">Recibí tu pago y tu hora quedó reservada. Llego con camilla, toallas y todo lo necesario.</p>
+
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #e6dbc8;margin:0 0 20px;">
+        {detalle}
+        <tr>
+          <td style="padding:14px 0 0;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:13px;color:#6b5a4c;">Pagado</td>
+          <td style="padding:14px 0 0;font-family:'Courier New',monospace;font-size:18px;font-weight:600;color:#964C18;">{d['monto']}</td>
+        </tr>
+      </table>
+
+      {nota_sesiones}
+      <p style="margin:0 0 24px;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#2A1D14;">Si necesitas cambiar la hora, escríbeme por WhatsApp con anticipación.</p>
+
+      <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+        <td style="background:#B25F2D;border-radius:999px;">
+          <a href="{WHATSAPP_URL}" style="display:inline-block;padding:13px 26px;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">Escribir por WhatsApp</a>
+        </td>
+      </tr></table>
+
+      <p style="margin:32px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-style:italic;font-weight:600;color:#2A1D14;">Alejandro Bermudez</p>
+      <p style="margin:2px 0 0;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:13px;color:#6b5a4c;">Manos Vivas · masajes a domicilio</p>
+    </td></tr>
+
+    <tr><td align="center" style="padding:24px 0 0;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:12px;color:#6b5a4c;">
+      <a href="{SITE_URL}" style="color:#6b5a4c;">manosvivas.cl</a> · Santiago de Chile
+    </td></tr>
+
+  </table>
+</td></tr>
+</table>
+</body>
+</html>"""
+
+
+def texto_confirmacion(reserva):
+    """Versión en texto plano: la leen clientes sin HTML y los filtros de spam."""
+    d = datos_correo(reserva)
+    lineas = [
+        f"Hola {d['nombre']}," if d["nombre"] else "Hola,",
+        "",
+        "Tu sesión está confirmada. Recibí tu pago y tu hora quedó reservada.",
+        "",
+        f"Servicio: {d['servicio']}",
+        f"Día: {d['fecha']}",
+        f"Hora: {d['hora']} (hora de Chile)",
+        f"Duración: {d['duracion']}",
+    ]
+    if d["complementos"]:
+        lineas.append(f"Complementos: {d['complementos']}")
+    if d["direccion"]:
+        lineas.append(f"Dirección: {d['direccion']}")
+    if d["estacionamiento"]:
+        lineas.append(f"Estacionamiento: {d['estacionamiento']}")
+    lineas += [f"Pagado: {d['monto']}", ""]
+    if d["varias_sesiones"]:
+        lineas += ["Esta es la primera sesión de tu ritual. Las siguientes las coordinamos juntos.", ""]
+    lineas += [
+        "Llego con camilla, toallas y todo lo necesario.",
+        f"Si necesitas cambiar la hora, escríbeme por WhatsApp: {WHATSAPP_URL}",
+        "",
+        "Alejandro Bermudez",
+        "Manos Vivas · masajes a domicilio",
+    ]
+    return "\n".join(lineas)
+
+
+def enviar_confirmacion(reserva, destinatario=None):
+    if not BREVO_API_KEY:
+        raise RuntimeError("Falta BREVO_API_KEY: no se puede enviar el correo de confirmación.")
+
+    d = datos_correo(reserva)
+    payload = {
+        "sender": {"name": "Manos Vivas", "email": CORREO_REMITENTE},
+        "replyTo": {"email": CORREO_REMITENTE, "name": "Alejandro · Manos Vivas"},
+        "to": [{"email": destinatario or reserva["email_cliente"], "name": reserva.get("nombre_cliente") or ""}],
+        "subject": f"Tu sesión está confirmada · {d['fecha']}, {d['hora']}",
+        "htmlContent": html_confirmacion(reserva),
+        "textContent": texto_confirmacion(reserva),
+    }
+    request = urllib.request.Request(
+        "https://api.brevo.com/v3/smtp/email",
+        data=json.dumps(payload).encode("utf-8"),
+        method="POST",
+        headers={"api-key": BREVO_API_KEY, "Content-Type": "application/json", "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(request) as response:
+            return json.loads(response.read() or b"{}")
+    except urllib.error.HTTPError as error:
+        detalle = error.read().decode("utf-8", "ignore")
+        raise RuntimeError(f"Error de Brevo al enviar la confirmación ({error.code}): {detalle}")
+
+
 # ---------- Lógica principal ----------
+
+class ReservaEnProceso(Exception):
+    """Otra notificación del mismo pago está confirmando la reserva ahora."""
+
+
+def reclamar_reserva(reserva_id, payment_id):
+    """Pasa la reserva a 'confirmando' solo si todavía no la tomó nadie.
+
+    Es un UPDATE condicional atómico en Postgres: si llegan dos
+    notificaciones del mismo pago al mismo tiempo, solo una recibe la fila
+    de vuelta. La otra no crea evento ni manda correo."""
+    filtro = ",".join(ESTADOS_RECLAMABLES)
+    filas = _supabase_request(
+        "PATCH",
+        f"reservas?id=eq.{urllib.parse.quote(str(reserva_id), safe='')}&estado=in.({filtro})",
+        cuerpo={"estado": "confirmando", "mp_payment_id": str(payment_id)},
+        headers_extra={"Prefer": "return=representation"},
+    )
+    return filas[0] if filas else None
+
+
+def confirmar_reserva(reserva):
+    """Crea el evento (una sola vez), manda el correo y recién ahí marca la
+    reserva como confirmada. Si algo falla, la libera para que el reintento
+    de Mercado Pago lo vuelva a intentar sin duplicar el evento."""
+    reserva_id = reserva["id"]
+    try:
+        if not reserva.get("calendar_event_id"):
+            evento = crear_evento_calendar(reserva)
+            actualizar_reserva(reserva_id, {"calendar_event_id": evento.get("id")})
+            reserva["calendar_event_id"] = evento.get("id")
+
+        enviar_confirmacion(reserva)
+        actualizar_reserva(reserva_id, {"estado": "confirmada"})
+    except Exception:
+        actualizar_reserva(reserva_id, {"estado": "pago_pendiente"})
+        raise
+
 
 def procesar_notificacion(tipo, payment_id):
     if tipo != "payment" or not payment_id:
@@ -245,25 +482,30 @@ def procesar_notificacion(tipo, payment_id):
     if not reserva_id:
         return {"ignorado": True, "motivo": "Pago sin external_reference."}
 
-    reserva = obtener_reserva(reserva_id)
-    if not reserva:
-        return {"ignorado": True, "motivo": f"No existe la reserva {reserva_id}."}
+    if estado_mp != "approved":
+        # Un pago rechazado o pendiente nunca pisa una reserva ya confirmada
+        # (puede ser un intento anterior de la misma reserva).
+        _supabase_request(
+            "PATCH",
+            f"reservas?id=eq.{urllib.parse.quote(str(reserva_id), safe='')}&estado=not.in.(confirmada,confirmando)",
+            cuerpo={"estado": ESTADOS_MERCADOPAGO.get(estado_mp, "pago_pendiente"), "mp_payment_id": str(payment_id)},
+            headers_extra={"Prefer": "return=minimal"},
+        )
+        return {"ok": True, "reserva_id": reserva_id, "estado_pago": estado_mp}
 
-    if reserva.get("estado") == "confirmada":
-        return {"ok": True, "motivo": "La reserva ya estaba confirmada (notificación repetida)."}
+    reserva = reclamar_reserva(reserva_id, payment_id)
+    if reserva is None:
+        actual = obtener_reserva(reserva_id)
+        if not actual:
+            return {"ignorado": True, "motivo": f"No existe la reserva {reserva_id}."}
+        if actual.get("estado") == "confirmada":
+            return {"ok": True, "motivo": "La reserva ya estaba confirmada (notificación repetida)."}
+        if actual.get("estado") == "confirmando":
+            raise ReservaEnProceso(f"La reserva {reserva_id} se está confirmando en otra notificación.")
+        return {"ignorado": True, "motivo": f"La reserva está en estado {actual.get('estado')}."}
 
-    nuevo_estado = ESTADOS_MERCADOPAGO.get(estado_mp, "pago_pendiente")
-    cambios = {
-        "estado": nuevo_estado,
-        "mp_payment_id": str(payment_id),
-    }
-
-    if nuevo_estado == "confirmada":
-        evento = crear_evento_calendar(reserva)
-        cambios["calendar_event_id"] = evento.get("id")
-
-    actualizar_reserva(reserva_id, cambios)
-    return {"ok": True, "reserva_id": reserva_id, "estado": nuevo_estado}
+    confirmar_reserva(reserva)
+    return {"ok": True, "reserva_id": reserva_id, "estado": "confirmada"}
 
 
 class handler(BaseHTTPRequestHandler):
@@ -294,6 +536,11 @@ class handler(BaseHTTPRequestHandler):
 
             resultado = procesar_notificacion(tipo, payment_id)
             self._responder(200, resultado)
+
+        except ReservaEnProceso as error:
+            # Duplicado simultáneo: se responde con error para que Mercado
+            # Pago reintente más tarde y encuentre la reserva ya confirmada.
+            self._responder(409, {"ok": False, "error": str(error)})
 
         except Exception as error:
             # Un fallo interno responde 500 a propósito. Antes respondía 200

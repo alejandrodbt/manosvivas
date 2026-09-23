@@ -633,10 +633,9 @@
 
     estadoPago.innerHTML = pagoAprobado
       ? '<p class="paso-reserva__titulo">Pago recibido.</p>' +
-        '<p>Estamos confirmando tu hora. En unos minutos te llega el correo con la ' +
-        'invitación al calendario a ' +
+        '<p>Estamos confirmando tu hora. En unos minutos te llega un correo de confirmación a ' +
         MV.escaparHTML(estado.cliente.email) +
-        '.</p><p>Si no te llega, escríbeme por WhatsApp y lo reviso.</p>'
+        ' con el día, la hora y la dirección.</p><p>Si no te llega, revisa spam o escríbeme por WhatsApp y lo reviso.</p>'
       : '<p class="paso-reserva__titulo">Tu pago está en revisión.</p>' +
         '<p>Apenas Mercado Pago lo resuelva te aviso por correo a ' +
         MV.escaparHTML(estado.cliente.email) +
