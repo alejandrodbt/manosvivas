@@ -623,20 +623,26 @@
     }
   }
 
-  function mostrarConfirmacion(confirmado) {
+  /* Un pago aprobado NO es una hora agendada: la reserva la confirma
+     webhook-pago.py después, y es quien crea el evento en el calendario.
+     Prometer "agendada" acá deja al cliente creyendo que tiene una hora
+     que puede no existir. */
+  function mostrarConfirmacion(pagoAprobado) {
     contenedorBrick.innerHTML = '';
     brickCreado = false;
 
-    estadoPago.innerHTML =
-      '<p class="paso-reserva__titulo">' +
-      (confirmado ? 'Listo, tu sesión quedó agendada.' : 'Tu pago está en revisión.') +
-      '</p><p>' +
-      (confirmado
-        ? 'Te llega la confirmación y la invitación al calendario a ' + MV.escaparHTML(estado.cliente.email) + '.'
-        : 'Apenas Mercado Pago lo confirme te aviso por correo y queda tomado tu horario.') +
-      '</p>';
+    estadoPago.innerHTML = pagoAprobado
+      ? '<p class="paso-reserva__titulo">Pago recibido.</p>' +
+        '<p>Estamos confirmando tu hora. En unos minutos te llega el correo con la ' +
+        'invitación al calendario a ' +
+        MV.escaparHTML(estado.cliente.email) +
+        '.</p><p>Si no te llega, escríbeme por WhatsApp y lo reviso.</p>'
+      : '<p class="paso-reserva__titulo">Tu pago está en revisión.</p>' +
+        '<p>Apenas Mercado Pago lo resuelva te aviso por correo a ' +
+        MV.escaparHTML(estado.cliente.email) +
+        '.</p>';
 
-    MV.toast(confirmado ? 'Reserva confirmada. Nos vemos pronto.' : 'Pago en revisión, te aviso por correo.');
+    MV.toast(pagoAprobado ? 'Pago recibido. Te confirmamos la hora por correo.' : 'Pago en revisión.');
   }
 
   /* ======================= Links de suscripción ======================= */
