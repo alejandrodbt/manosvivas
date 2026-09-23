@@ -199,18 +199,24 @@ def crear_evento_calendar(reserva):
     if reserva.get("estacionamiento"):
         descripcion_lineas.append(f"Estacionamiento: {reserva['estacionamiento']}")
 
+    descripcion_lineas.append(f"Correo: {reserva['email_cliente']}")
+
+    # Sin invitados a propósito: una cuenta de servicio no puede invitar
+    # asistentes sin delegación a nivel de dominio (403
+    # forbiddenForServiceAccounts), y este calendario es una cuenta Gmail
+    # personal, donde esa delegación no existe. El correo del cliente va en
+    # la descripción, y la confirmación se le envía aparte.
     evento = {
         "summary": f"{reserva.get('servicio', 'Sesión')} — {reserva.get('nombre_cliente', '')}",
         "description": "\n".join(descripcion_lineas),
         "start": {"dateTime": inicio.isoformat(), "timeZone": "America/Santiago"},
         "end": {"dateTime": fin.isoformat(), "timeZone": "America/Santiago"},
-        "attendees": [{"email": reserva["email_cliente"], "displayName": reserva.get("nombre_cliente")}],
     }
     if reserva.get("direccion"):
         evento["location"] = str(reserva["direccion"])
 
     request = urllib.request.Request(
-        f"https://www.googleapis.com/calendar/v3/calendars/{urllib.parse.quote(GOOGLE_CALENDAR_ID, safe='')}/events?sendUpdates=all",
+        f"https://www.googleapis.com/calendar/v3/calendars/{urllib.parse.quote(GOOGLE_CALENDAR_ID, safe='')}/events",
         data=json.dumps(evento).encode("utf-8"),
         method="POST",
         headers={
