@@ -419,6 +419,9 @@ main > section {
 .testimonios__pista {
   position: relative;
   min-height: 14rem;
+  /* El gesto horizontal lo maneja el carrusel; el vertical sigue siendo
+     scroll de la página. */
+  touch-action: pan-y;
 }
 
 .testimonios__controles {

@@ -414,7 +414,7 @@
     {
       cita: 'Me había hecho un masaje con Alejandro y fue la raja, así que no lo pensé dos veces en suscribirme. super recomendado. muy buenas manos',
       autor: 'Rodrigo Roselló',
-      servicio: 'Ritual profundo',
+      servicio: 'Suscripción',
       estrellas: 5,
     },
     {
@@ -520,6 +520,33 @@
           carrusel.addEventListener('focusin', detenerRotacion);
         }
 
+        /* Deslizar con el dedo: un gesto horizontal de más de 40 px pasa
+           de reseña. Si el gesto es más vertical que horizontal se ignora,
+           para no interferir con el scroll de la página. */
+        let toqueX = null;
+        let toqueY = null;
+        pista.addEventListener(
+          'touchstart',
+          (evento) => {
+            toqueX = evento.touches[0].clientX;
+            toqueY = evento.touches[0].clientY;
+          },
+          { passive: true }
+        );
+        pista.addEventListener(
+          'touchend',
+          (evento) => {
+            if (toqueX === null) return;
+            const dx = evento.changedTouches[0].clientX - toqueX;
+            const dy = evento.changedTouches[0].clientY - toqueY;
+            toqueX = null;
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+            mostrarTestimonio(indiceActivo + (dx < 0 ? 1 : -1));
+            detenerRotacion();
+          },
+          { passive: true }
+        );
+
         iniciarRotacion();
       }
     }
@@ -580,8 +607,9 @@
   /* ---------------- Carruseles de packs y planes (móvil) ---------------- */
 
   /* En móvil los packs y los planes se deslizan en horizontal y cada
-     carrusel abre en su tarjeta destacada (data-carrusel-inicio). */
-  const carruseles = Array.from(document.querySelectorAll('[data-carrusel]'));
+     carrusel abre en su tarjeta destacada (data-carrusel-inicio). Usa
+     data-carrusel-movil y no data-carrusel, que es el de las reseñas. */
+  const carruseles = Array.from(document.querySelectorAll('[data-carrusel-movil]'));
   function centrarCarruseles() {
     if (!consultaMovil.matches) return;
     carruseles.forEach((carrusel) => {

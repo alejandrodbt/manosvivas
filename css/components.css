@@ -1861,6 +1861,16 @@ textarea.campo__control {
   background: var(--bg-deep);
 }
 
+/* En móvil los dos videos verticales se muestran en 4:5: ocupan menos alto
+   de pantalla y se recortan por arriba y por abajo, sin bandas. */
+@media (max-width: 900px) {
+  .experiencia__video video,
+  .testimonios__video video {
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+}
+
 .testimonio__estrellas {
   font-size: 1rem;
   letter-spacing: 0.15em;

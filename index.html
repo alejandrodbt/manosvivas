@@ -534,7 +534,7 @@
 
         <!-- En móvil es un carrusel horizontal que abre en el Ritual 8
              (data-carrusel-inicio, ver interactions.js). -->
-        <div class="rituales__fila revelar" data-carrusel>
+        <div class="rituales__fila revelar" data-carrusel-movil>
           <article class="ritual-tarjeta">
             <h3 class="ritual-tarjeta__nombre">Ritual 4 · Esencial</h3>
             <p class="ritual-tarjeta__detalle">4 sesiones · 60 min</p>
@@ -569,7 +569,7 @@
 
         <!-- En móvil es un carrusel horizontal que abre en el Plan Vital
              (data-carrusel-inicio, ver interactions.js). -->
-        <div class="suscripciones__fila revelar" data-carrusel>
+        <div class="suscripciones__fila revelar" data-carrusel-movil>
           <article class="plan-tarjeta">
             <h3 class="plan-tarjeta__nombre">Plan Bienestar</h3>
             <p class="precio precio--grande">$99.000<span class="plan-tarjeta__mes">/mes</span></p>
@@ -607,7 +607,10 @@
       <div class="contenedor">
         <div class="historia__grid">
           <div class="historia__retrato revelar">
-            <img class="historia__foto" src="assets/images/sobre-mi.jpg" alt="Alejandro Bermúdez dando un masaje en un jardín" width="1200" height="1500" loading="lazy">
+            <picture>
+              <source srcset="assets/images/sobre-mi.webp" type="image/webp">
+              <img class="historia__foto" src="assets/images/sobre-mi.jpg" alt="Alejandro Bermúdez dando un masaje en un jardín" width="1200" height="1500" loading="lazy">
+            </picture>
             <!-- Negativo con fondo propio: funciona como sello sobre la foto -->
             <img class="historia__insignia" src="assets/logo/manos-vivas-logo-negativo-fondo.svg" alt="" aria-hidden="true">
           </div>

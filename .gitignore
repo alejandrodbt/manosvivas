@@ -28,6 +28,10 @@ docs/prompt-maestro.md
 # assets/logo/. Guarda una copia aparte, no vive versionada acá.
 manosvivaslogo/
 
+# ---- Fotos originales sin optimizar ----
+# Se quedan en local; el sitio usa la versión optimizada (sobre-mi.webp/.jpg).
+assets/images/sobre mi yo cliente.JPG
+
 # ---- Sistema ----
 .DS_Store
 __pycache__/
