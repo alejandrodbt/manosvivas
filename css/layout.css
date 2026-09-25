@@ -634,3 +634,42 @@ main > section {
     justify-items: center;
   }
 }
+
+/* ---------- Móvil: espacios entre secciones y divisores ----------
+   Mitad del aire vertical entre secciones (el hero conserva el suyo por
+   la barra de navegación) y fuera las líneas que quedaban dobles: el
+   borde de la última fila de una lista seguido del borde del bloque
+   siguiente. */
+@media (max-width: 900px) {
+  main > section:not(.hero) {
+    padding-block: 2rem;
+  }
+  .footer {
+    padding-top: 1.5rem;
+  }
+  .separador-logo {
+    margin-block: 1rem;
+  }
+  .ventajas__beneficios,
+  .remate,
+  .suscripciones__fila + .nota-legal {
+    border-top: 0;
+  }
+  .ventajas__beneficios {
+    padding-top: 0;
+  }
+  .remate {
+    padding-top: 0;
+  }
+  .suscripciones__fila + .nota-legal {
+    padding-top: 0;
+  }
+
+  /* Títulos de sección a la izquierda aunque el bloque vaya centrado */
+  .experiencia__texto {
+    justify-self: stretch;
+  }
+  .experiencia__texto .titulo-seccion {
+    text-align: left;
+  }
+}

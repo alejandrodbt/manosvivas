@@ -91,10 +91,30 @@
   /* ---------------- CTA flotante ---------------- */
 
   const ctaFlotante = document.querySelector('[data-cta-flotante]');
+  const consultaMovil = window.matchMedia('(max-width: 900px)');
+
+  /* En móvil el botón estorba donde ya hay botones de reserva o compra
+     (masajes, lanzamiento, packs, suscripciones) y sobre el footer:
+     se esconde mientras alguna de esas zonas esté en pantalla. */
+  const zonasSinCta = new Set();
+  if (ctaFlotante && 'IntersectionObserver' in window) {
+    const observadorZonas = new IntersectionObserver((entradas) => {
+      entradas.forEach((entrada) => {
+        if (entrada.isIntersecting) zonasSinCta.add(entrada.target);
+        else zonasSinCta.delete(entrada.target);
+      });
+      actualizarCtaFlotante();
+    });
+    document
+      .querySelectorAll('#catalogo, #lanzamiento, #rituales, #suscripciones, .footer')
+      .forEach((zona) => observadorZonas.observe(zona));
+    consultaMovil.addEventListener('change', actualizarCtaFlotante);
+  }
 
   function actualizarCtaFlotante() {
     if (!ctaFlotante) return;
-    ctaFlotante.classList.toggle('esta-visible', window.scrollY > window.innerHeight * 0.6);
+    const ocultoPorZona = consultaMovil.matches && zonasSinCta.size > 0;
+    ctaFlotante.classList.toggle('esta-visible', window.scrollY > window.innerHeight * 0.6 && !ocultoPorZona);
   }
 
   /* ---------------- Scroll (un solo listener) ---------------- */
