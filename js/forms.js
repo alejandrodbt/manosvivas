@@ -84,7 +84,7 @@
         }
 
         formulario.reset();
-        MV.toast('¡Únete a la manada, revisa tu inbox!');
+        MV.toast('¡Ya eres parte de la manada! Revisa tu correo.');
       } catch (error) {
         MV.toast('No pude sumarte ahora. Inténtalo de nuevo en un momento.');
       } finally {

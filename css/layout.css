@@ -650,18 +650,8 @@ main > section {
   .separador-logo {
     margin-block: 1rem;
   }
-  .ventajas__beneficios,
-  .remate,
   .suscripciones__fila + .nota-legal {
     border-top: 0;
-  }
-  .ventajas__beneficios {
-    padding-top: 0;
-  }
-  .remate {
-    padding-top: 0;
-  }
-  .suscripciones__fila + .nota-legal {
     padding-top: 0;
   }
 
@@ -676,4 +666,14 @@ main > section {
   .experiencia__texto .texto-lead {
     margin-inline: 0;
   }
+}
+
+/* "Lo que no se negocia" y "Así cierro cada sesión" ahora son secciones
+   propias: el margen y la línea que los separaban del bloque anterior
+   dentro de su sección ya los da el relleno de la sección. */
+.no-negociable .historia__no-negociable,
+.cierre .remate {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }

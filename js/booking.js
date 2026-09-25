@@ -609,7 +609,7 @@
     } catch (error) {
       if (intento !== intentoPago) return;
       estadoPago.classList.remove('esta-cargando');
-      estadoPago.textContent = error.message + ' Escríbeme por WhatsApp y lo resolvemos.';
+      estadoPago.textContent = error.message + ' Escríbeme por WhatsApp y lo resuelvo.';
     }
   }
 
@@ -725,7 +725,7 @@
 
     estadoPago.innerHTML = pagoAprobado
       ? '<p class="paso-reserva__titulo">Pago recibido.</p>' +
-        '<p>Estamos confirmando tu hora. En unos minutos te llega un correo de confirmación a ' +
+        '<p>Estoy confirmando tu hora. En unos minutos te llega un correo de confirmación a ' +
         MV.escaparHTML(estado.cliente.email) +
         ' con el día, la hora y la dirección.</p><p>Si no te llega, revisa spam o escríbeme por WhatsApp y lo reviso.</p>'
       : '<p class="paso-reserva__titulo">Tu pago está en revisión.</p>' +
@@ -749,7 +749,7 @@
 
     enlace.addEventListener('click', (evento) => {
       evento.preventDefault();
-      MV.toast('Este plan se activa por WhatsApp por ahora. Escríbeme y lo dejamos andando.');
+      MV.toast('Este plan se activa por WhatsApp por ahora. Escríbeme y lo dejo andando.');
     });
   });
 })();
