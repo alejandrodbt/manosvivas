@@ -532,32 +532,25 @@
           <p class="texto-lead">Reserva a tu ritmo, elige el ritual que más te conviene.</p>
         </header>
 
-        <div class="rituales__fila revelar">
+        <!-- En móvil es un carrusel horizontal que abre en el Ritual 8
+             (data-carrusel-inicio, ver interactions.js). -->
+        <div class="rituales__fila revelar" data-carrusel-rituales>
           <article class="ritual-tarjeta">
             <h3 class="ritual-tarjeta__nombre">Ritual 4 · Esencial</h3>
             <p class="ritual-tarjeta__detalle">4 sesiones · 60 min</p>
             <p class="precio precio--grande">$195.000</p>
-            <p class="ritual-tarjeta__ahorro">Ahorras 11%</p>
-            <p class="ritual-tarjeta__texto">Tu primer ciclo de cuidado. Ideal si quieres empezar a hacer del masaje un momento regular, no solo una pausa aislada.</p>
+            <p class="ritual-tarjeta__ahorro">Ahorras $25.000</p>
+            <p class="ritual-tarjeta__texto">Tu primer ciclo para hacer del masaje un hábito.</p>
             <button class="boton boton--secundario boton--bloque" type="button" data-reservar data-servicio="Ritual 4 · Esencial" data-tipo="pack" data-precio="195000" data-duracion="60">Elegir Ritual 4</button>
           </article>
 
-          <article class="ritual-tarjeta">
-            <h3 class="ritual-tarjeta__nombre">Ritual 6 · Profundo</h3>
-            <p class="ritual-tarjeta__detalle">6 sesiones · 60 min</p>
-            <p class="precio precio--grande">$295.000</p>
-            <p class="ritual-tarjeta__ahorro">Ahorras 10%</p>
-            <p class="ritual-tarjeta__texto">Un ciclo de transformación. Para quienes ya sienten que el masaje es parte de su cuidado y quieren ver cambios más claros en su cuerpo y su estrés.</p>
-            <button class="boton boton--secundario boton--bloque" type="button" data-reservar data-servicio="Ritual 6 · Profundo" data-tipo="pack" data-precio="295000" data-duracion="60">Elegir Ritual 6</button>
-          </article>
-
-          <article class="ritual-tarjeta ritual-tarjeta--destacado">
-            <h3 class="ritual-tarjeta__nombre">Ritual 8 · Manada</h3>
+          <article class="ritual-tarjeta ritual-tarjeta--destacado" data-carrusel-inicio>
+            <h3 class="ritual-tarjeta__nombre">Ritual 8 · Completo</h3>
             <p class="ritual-tarjeta__detalle">8 sesiones · 60 min</p>
-            <p class="precio precio--grande">$395.000</p>
-            <p class="ritual-tarjeta__ahorro">Ahorras 10%</p>
-            <p class="ritual-tarjeta__texto">El ritual de la manada. Para quienes ya saben que esto es cuidado continuo y quieren su ciclo completo, con el mayor ahorro.</p>
-            <button class="boton boton--primario boton--bloque" type="button" data-reservar data-servicio="Ritual 8 · Manada" data-tipo="pack" data-precio="395000" data-duracion="60">Elegir Ritual 8</button>
+            <p class="precio precio--grande">$370.000</p>
+            <p class="ritual-tarjeta__ahorro">Ahorras $70.000</p>
+            <p class="ritual-tarjeta__texto">El ciclo completo, con el mayor ahorro.</p>
+            <button class="boton boton--primario boton--bloque" type="button" data-reservar data-servicio="Ritual 8 · Completo" data-tipo="pack" data-precio="370000" data-duracion="60">Elegir Ritual 8</button>
           </article>
         </div>
 
@@ -772,7 +765,7 @@
             </h3>
             <div class="fila-acordeon__panel" id="faq-5">
               <div class="fila-acordeon__cuerpo">
-                <p class="faq__respuesta">Sí. Tengo Ritual 4 · Esencial, Ritual 6 · Profundo y Ritual 8 · Manada. Cada uno con un valor por sesión más conveniente y vigencia de 90 días.</p>
+                <p class="faq__respuesta">Sí. Tengo Ritual 4 · Esencial y Ritual 8 · Completo. Cada uno con un valor por sesión más conveniente y vigencia de 90 días.</p>
               </div>
             </div>
           </article>
@@ -989,7 +982,7 @@
         <!-- Paso 1: servicio, duración y complementos -->
         <section class="paso-reserva" data-paso="1">
           <h3 class="paso-reserva__titulo">Tu sesión</h3>
-          <p class="paso-reserva__ayuda">Elige el masaje, la duración y los complementos que quieras sumar.</p>
+          <p class="paso-reserva__ayuda" data-ayuda-paso1>Elige el masaje, la duración y los complementos que quieras sumar.</p>
 
           <div data-lista-servicios></div>
 

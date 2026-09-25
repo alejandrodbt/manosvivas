@@ -34,8 +34,7 @@
       'El masaje personalizado': 8,
       'Ritual de lanzamiento': 1,
       'Ritual 4 · Esencial': 9,
-      'Ritual 6 · Profundo': 10,
-      'Ritual 8 · Manada': 11,
+      'Ritual 8 · Completo': 11,
     },
 
     // tabla complementos → una fila por cada duración
@@ -98,6 +97,8 @@
     // true cuando se abre desde "Seleccionar" de un masaje: el masaje y la
     // duración llegan elegidos y se muestran en una sola línea.
     servicioColapsado: false,
+    // Packs y lanzamiento: masaje de la primera sesión (nombre completo).
+    masajePrimeraSesion: '',
     direccion: '',
     estacionamiento: '',
     fecha: '',
@@ -116,6 +117,9 @@
   const botonAtras = overlay.querySelector('[data-reserva-atras]');
   const botonSiguiente = overlay.querySelector('[data-reserva-siguiente]');
   const listaServicios = overlay.querySelector('[data-lista-servicios]');
+  const ayudaPaso1 = overlay.querySelector('[data-ayuda-paso1]');
+  const AYUDA_SUELTO = ayudaPaso1 ? ayudaPaso1.textContent : '';
+  const AYUDA_PAQUETE = 'Agenda tu primera sesión; las siguientes las coordinamos por WhatsApp.';
   const bloqueDuracion = overlay.querySelector('[data-bloque-duracion]');
   const listaDuraciones = overlay.querySelector('[data-lista-duraciones]');
   const listaComplementos = overlay.querySelector('[data-lista-complementos]');
@@ -160,6 +164,7 @@
         estado.precioBase = Number(datos.precio);
         estado.duracion = Number(datos.duracion) || 60;
         estado.complementos = [];
+        estado.masajePrimeraSesion = '';
       } else {
         estado.tipo = 'suelto';
         estado.servicio = (fila && fila.dataset.servicio) || datos.servicio || '';
@@ -258,13 +263,30 @@
     const esPaquete = estado.tipo !== 'suelto';
     const colapsado = !esPaquete && estado.servicioColapsado && Boolean(estado.servicio);
 
-    // Selector de servicio (solo para masajes sueltos)
+    if (ayudaPaso1) ayudaPaso1.textContent = esPaquete ? AYUDA_PAQUETE : AYUDA_SUELTO;
+
+    // Selector de servicio. En packs elige el masaje de la primera sesión:
+    // el precio es el del pack y no cambia.
     listaServicios.innerHTML = '';
     if (esPaquete) {
-      listaServicios.innerHTML =
-        '<p class="paso-reserva__ayuda">Estás reservando <strong>' +
-        MV.escaparHTML(estado.servicio) +
-        '</strong>. Agenda acá tu primera sesión; las siguientes las coordinamos después.</p>';
+      const titulo = document.createElement('p');
+      titulo.className = 'reserva__desde';
+      titulo.innerHTML = 'Estás reservando <strong>' + MV.escaparHTML(estado.servicio) + '</strong>';
+      listaServicios.appendChild(titulo);
+
+      servicios.forEach((servicio) => {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.className = 'opcion-servicio';
+        boton.setAttribute('aria-pressed', String(servicio.nombre === estado.masajePrimeraSesion));
+        boton.innerHTML = '<span>' + MV.escaparHTML(nombreCorto(servicio.nombre)) + '</span>';
+        boton.addEventListener('click', () => {
+          estado.masajePrimeraSesion = servicio.nombre;
+          renderizarPaso1();
+          listaServicios.querySelector('[aria-pressed="true"]').focus();
+        });
+        listaServicios.appendChild(boton);
+      });
     } else if (colapsado) {
       const linea = document.createElement('div');
       linea.className = 'servicio-elegido';
@@ -410,6 +432,12 @@
     if (estado.tipo === 'suelto') {
       filas.push(
         '<div class="resumen-reserva__fila"><span>Duración</span><span>' + estado.duracion + ' min</span></div>'
+      );
+    } else if (estado.masajePrimeraSesion) {
+      filas.push(
+        '<div class="resumen-reserva__fila"><span>Primera sesión</span><span>' +
+          MV.escaparHTML(nombreCorto(estado.masajePrimeraSesion)) +
+          '</span></div>'
       );
     }
 
@@ -617,7 +645,7 @@
     MV.limpiarErrores(overlay);
 
     if (estado.paso === 1) {
-      if (!estado.servicio) {
+      if (!estado.servicio || (estado.tipo !== 'suelto' && !estado.masajePrimeraSesion)) {
         MV.toast('Elige un masaje para seguir.');
         return false;
       }
@@ -723,6 +751,8 @@
           direccion: estado.direccion,
           estacionamiento: estado.estacionamiento,
           cliente: estado.cliente,
+          // Solo en packs y lanzamiento: se guarda junto al nombre del servicio.
+          masaje_primera_sesion: estado.tipo === 'suelto' ? undefined : nombreCorto(estado.masajePrimeraSesion),
         }),
       });
 

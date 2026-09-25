@@ -577,6 +577,23 @@
 
   MV.escaparHTML = escaparHTML;
 
+  /* ---------------- Carrusel de rituales (móvil) ---------------- */
+
+  /* En móvil los packs se deslizan en horizontal y el carrusel abre en la
+     tarjeta destacada (Ritual 8), centrada; el Ritual 4 queda a la izquierda. */
+  const carruselRituales = document.querySelector('[data-carrusel-rituales]');
+  const inicioRituales = carruselRituales && carruselRituales.querySelector('[data-carrusel-inicio]');
+  function centrarRitualInicial() {
+    if (!inicioRituales || !consultaMovil.matches) return;
+    const caja = carruselRituales.getBoundingClientRect();
+    const tarjeta = inicioRituales.getBoundingClientRect();
+    carruselRituales.scrollLeft += tarjeta.left - caja.left - (caja.width - tarjeta.width) / 2;
+  }
+  if (inicioRituales) {
+    centrarRitualInicial();
+    consultaMovil.addEventListener('change', centrarRitualInicial);
+  }
+
   actualizarProgreso();
   actualizarNav();
   actualizarCtaFlotante();

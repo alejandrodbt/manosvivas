@@ -165,9 +165,20 @@ def fecha_hora_con_zona(valor):
     return momento.isoformat()
 
 
+def nombre_servicio(producto, datos):
+    """En packs y lanzamiento el cliente elige el masaje de la primera
+    sesión: se guarda junto al nombre, así aparece en la tabla, en el
+    evento de Calendar y en los correos sin agregar columnas."""
+    nombre = producto.get("nombre") or ""
+    masaje = str(datos.get("masaje_primera_sesion") or "").strip()[:60]
+    if masaje and producto.get("tipo") in ("pack", "lanzamiento"):
+        return f"{nombre} · Primera sesión: {masaje}"
+    return nombre
+
+
 def crear_reserva_pendiente(datos, producto, complementos, monto_total):
     fila = {
-        "servicio": producto.get("nombre"),
+        "servicio": nombre_servicio(producto, datos),
         "duracion": datos.get("duracion"),
         # La columna es text: se guarda legible, para que la reserva se
         # entienda leyendo la tabla sin cruzarla con otra.
@@ -337,12 +348,12 @@ def choca_con_margen(inicio, fin, bloques_ocupados):
 
 # ---------- Reutilización de reservas sin pagar ----------
 
-def buscar_reserva_reutilizable(producto, fecha_hora_con_offset, email):
+def buscar_reserva_reutilizable(servicio, fecha_hora_con_offset, email):
     """Quien vuelve atrás desde el pago y avanza de nuevo con el mismo
     servicio y horario no debe generar otra fila en la base."""
     desde = (datetime.now(timezone.utc) - VENTANA_REUTILIZACION).isoformat()
     filtros = "&".join([
-        f"servicio=eq.{urllib.parse.quote(producto.get('nombre') or '', safe='')}",
+        f"servicio=eq.{urllib.parse.quote(servicio, safe='')}",
         f"fecha_hora_solicitada=eq.{urllib.parse.quote(fecha_hora_con_offset, safe='')}",
         f"email_cliente=eq.{urllib.parse.quote(email, safe='')}",
         f"estado=in.({','.join(ESTADOS_REUTILIZABLES)})",
@@ -401,7 +412,7 @@ def procesar_solicitud(datos):
     validar_horario(fecha_hora, (datos.get("duracion") or 60) + minutos_de_complementos(complementos))
 
     reserva = buscar_reserva_reutilizable(
-        producto, fecha_hora_con_zona(fecha_hora), cliente["email"].strip()
+        nombre_servicio(producto, datos), fecha_hora_con_zona(fecha_hora), cliente["email"].strip()
     )
     reutilizada = reserva is not None
     if reutilizada:
