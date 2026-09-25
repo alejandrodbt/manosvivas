@@ -961,7 +961,7 @@
 
   <!-- ============ FLUJO DE RESERVA ============ -->
   <div class="reserva" data-reserva-overlay hidden>
-    <div class="reserva__panel" role="dialog" aria-modal="true" aria-labelledby="reserva-titulo">
+    <div class="reserva__panel" role="dialog" aria-modal="true" aria-labelledby="reserva-titulo" tabindex="-1">
       <button class="reserva__cerrar" type="button" data-reserva-cerrar aria-label="Cerrar reserva">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13"/></svg>
       </button>
@@ -989,13 +989,13 @@
 
           <div data-lista-servicios></div>
 
-          <div data-bloque-duracion>
+          <div class="reserva__bloque" data-bloque-duracion>
             <p class="catalogo__etiqueta-complementos">Duración</p>
-            <div class="catalogo__duraciones" data-lista-duraciones></div>
+            <div class="reserva__duraciones" data-lista-duraciones></div>
           </div>
 
-          <div>
-            <p class="catalogo__etiqueta-complementos">Complementos (opcionales, puedes elegir varios)</p>
+          <div class="reserva__bloque">
+            <p class="catalogo__etiqueta-complementos">Súmale algo (opcional)</p>
             <div class="reserva__complementos" data-lista-complementos></div>
           </div>
 
@@ -1014,8 +1014,11 @@
           </div>
 
           <div class="reserva__campo campo">
-            <label class="campo__etiqueta" for="reserva-estacionamiento">Estacionamiento</label>
-            <input class="campo__control" type="text" id="reserva-estacionamiento" name="estacionamiento" placeholder="¿Hay dónde estacionar? ¿Visitas, calle, subterráneo?">
+            <p class="campo__etiqueta" id="reserva-estacionamiento-etiqueta">Estacionamiento</p>
+            <div class="toggle-sino" role="radiogroup" aria-labelledby="reserva-estacionamiento-etiqueta" data-toggle-estacionamiento>
+              <button type="button" role="radio" aria-checked="false" data-estacionamiento="sí">Sí</button>
+              <button type="button" role="radio" aria-checked="false" data-estacionamiento="no">No</button>
+            </div>
           </div>
         </section>
 
@@ -1025,11 +1028,11 @@
           <p class="paso-reserva__ayuda">Los horarios que ves son los que están libres en mi agenda.</p>
 
           <div class="reserva__campo campo">
-            <label class="campo__etiqueta" for="reserva-fecha">Día</label>
-            <input class="campo__control" type="date" id="reserva-fecha" name="fecha" required>
+            <p class="campo__etiqueta" id="reserva-fecha-etiqueta">Día</p>
+            <div class="tira-dias" role="group" aria-labelledby="reserva-fecha-etiqueta" data-lista-dias></div>
           </div>
 
-          <div class="reserva__horarios" data-lista-horarios></div>
+          <div data-lista-horarios></div>
           <p class="paso-reserva__ayuda" data-estado-horarios></p>
         </section>
 
@@ -1065,6 +1068,7 @@
           <h3 class="paso-reserva__titulo">Pago</h3>
           <p class="paso-reserva__ayuda">Tu horario queda tomado apenas se confirma el pago.</p>
           <p class="pago-cuando">Tu sesión es el <strong data-pago-cuando></strong></p>
+          <p class="pago-total">Total <strong data-pago-total></strong></p>
           <div class="brick-pago" data-brick-pago></div>
           <div class="reserva__estado" data-estado-pago></div>
         </section>

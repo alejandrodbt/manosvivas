@@ -63,6 +63,29 @@
 
   const TOTAL_PASOS = 5;
 
+  /* Nombres cortos solo para el modal: el catálogo, Supabase y el resumen
+     siguen usando el nombre completo. */
+  const NOMBRES_CORTOS = {
+    'El Relajante de verdad': 'Relajante',
+    'Exquisito masaje de tejido profundo': 'Tejido profundo',
+    'Sí, este Descontracturante no te hará llorar': 'Descontracturante',
+    'El gran masaje Deportivo': 'Deportivo',
+    'El masaje Mixto la lleva': 'Mixto',
+    'Para la futura mamá y la reina de todos': 'Prenatal',
+    'El masaje personalizado': 'Personalizado',
+  };
+
+  /* Complementos agrupados por tipo, en el orden en que se muestran. Cada
+     grupo junta las filas de CONFIG.complementos con el mismo nombre. */
+  const GRUPOS_COMPLEMENTOS = [
+    { nombre: 'Reflexología', etiqueta: 'Reflexología' },
+    { nombre: 'Cérvico Craneal', etiqueta: 'Cérvico craneal' },
+    { nombre: 'Head Massage', etiqueta: 'Head massage' },
+    { nombre: 'Drenaje Linfático', etiqueta: 'Drenaje linfático' },
+  ];
+
+  const DIAS_EN_TIRA = 14;
+
   /* ======================= Estado ======================= */
 
   const estado = {
@@ -72,6 +95,9 @@
     duracion: 60,
     precioBase: 0,
     complementos: [],
+    // true cuando se abre desde "Seleccionar" de un masaje: el masaje y la
+    // duración llegan elegidos y se muestran en una sola línea.
+    servicioColapsado: false,
     direccion: '',
     estacionamiento: '',
     fecha: '',
@@ -95,7 +121,9 @@
   const listaComplementos = overlay.querySelector('[data-lista-complementos]');
   const resumen = overlay.querySelector('[data-resumen]');
   const resumenFinal = overlay.querySelector('[data-resumen-final]');
-  const campoFecha = overlay.querySelector('#reserva-fecha');
+  const listaDias = overlay.querySelector('[data-lista-dias]');
+  const toggleEstacionamiento = overlay.querySelector('[data-toggle-estacionamiento]');
+  const pagoTotal = overlay.querySelector('[data-pago-total]');
   const listaHorarios = overlay.querySelector('[data-lista-horarios]');
   const estadoHorarios = overlay.querySelector('[data-estado-horarios]');
   const contenedorBrick = overlay.querySelector('[data-brick-pago]');
@@ -139,6 +167,8 @@
         estado.precioBase = precioDeServicio(estado.servicio, estado.duracion);
         estado.complementos = [];
       }
+      // Solo el botón "Seleccionar" de un masaje trae masaje y duración.
+      estado.servicioColapsado = estado.tipo === 'suelto' && Boolean(fila && datos.duracion);
 
       reiniciarAgenda();
       abrirReserva();
@@ -154,10 +184,7 @@
     estado.fecha = '';
     estado.hora = '';
     estado.reservaId = null;
-    if (campoFecha) {
-      campoFecha.value = '';
-      campoFecha.min = hoyEnChile();
-    }
+    renderizarDias();
     listaHorarios.innerHTML = '';
     estadoHorarios.textContent = '';
     estadoHorarios.classList.remove('esta-cargando');
@@ -165,6 +192,7 @@
     estadoPago.textContent = '';
     estadoPago.classList.remove('esta-cargando');
     if (pagoCuando) pagoCuando.textContent = '';
+    if (pagoTotal) pagoTotal.textContent = '';
   }
 
   function abrirReserva() {
@@ -176,7 +204,9 @@
     renderizarPaso1();
     irAPaso(1);
 
-    if (botonCerrar) botonCerrar.focus();
+    // El foco parte en el panel y no en la X: si no, la X se ve con el
+    // anillo de foco solo en el paso 1.
+    panel.focus();
   }
 
   function cerrarReserva() {
@@ -226,6 +256,7 @@
 
   function renderizarPaso1() {
     const esPaquete = estado.tipo !== 'suelto';
+    const colapsado = !esPaquete && estado.servicioColapsado && Boolean(estado.servicio);
 
     // Selector de servicio (solo para masajes sueltos)
     listaServicios.innerHTML = '';
@@ -234,29 +265,51 @@
         '<p class="paso-reserva__ayuda">Estás reservando <strong>' +
         MV.escaparHTML(estado.servicio) +
         '</strong>. Agenda acá tu primera sesión; las siguientes las coordinamos después.</p>';
+    } else if (colapsado) {
+      const linea = document.createElement('div');
+      linea.className = 'servicio-elegido';
+      linea.innerHTML =
+        '<span>' +
+        MV.escaparHTML(nombreCorto(estado.servicio)) +
+        ' · ' +
+        estado.duracion +
+        ' min</span>';
+      const cambiar = document.createElement('button');
+      cambiar.type = 'button';
+      cambiar.className = 'servicio-elegido__cambiar';
+      cambiar.textContent = 'Cambiar';
+      cambiar.addEventListener('click', () => {
+        estado.servicioColapsado = false;
+        renderizarPaso1();
+        const elegido = listaServicios.querySelector('[aria-pressed="true"]');
+        if (elegido) elegido.focus();
+      });
+      linea.appendChild(cambiar);
+      listaServicios.appendChild(linea);
     } else {
+      const desde = document.createElement('p');
+      desde.className = 'reserva__desde';
+      desde.innerHTML = 'Todos desde <strong>' + MV.formatoCLP(precioMinimo()) + '</strong>';
+      listaServicios.appendChild(desde);
+
       servicios.forEach((servicio) => {
         const boton = document.createElement('button');
         boton.type = 'button';
         boton.className = 'opcion-servicio';
         boton.setAttribute('aria-pressed', String(servicio.nombre === estado.servicio));
-        boton.innerHTML =
-          '<span>' +
-          MV.escaparHTML(servicio.nombre) +
-          '</span><span class="opcion-complemento__precio">' +
-          MV.formatoCLP(servicio.precio60) +
-          '</span>';
+        boton.innerHTML = '<span>' + MV.escaparHTML(nombreCorto(servicio.nombre)) + '</span>';
         boton.addEventListener('click', () => {
           estado.servicio = servicio.nombre;
           estado.precioBase = precioDeServicio(estado.servicio, estado.duracion);
           renderizarPaso1();
+          listaServicios.querySelector('[aria-pressed="true"]').focus();
         });
         listaServicios.appendChild(boton);
       });
     }
 
-    // Duración
-    bloqueDuracion.hidden = esPaquete;
+    // Duración (en la línea colapsada ya va incluida)
+    bloqueDuracion.hidden = esPaquete || colapsado;
     listaDuraciones.innerHTML = '';
     if (!esPaquete) {
       [60, 90].forEach((minutos) => {
@@ -276,41 +329,65 @@
       });
     }
 
-    // Complementos (se pueden marcar y desmarcar varios)
+    // Complementos: un tipo por fila y una sola duración por tipo. Tocar
+    // la opción marcada la desmarca.
     listaComplementos.parentElement.hidden = esPaquete;
     listaComplementos.innerHTML = '';
     if (!esPaquete) {
-      CONFIG.complementos.forEach((complemento, indice) => {
-        const marcado = estado.complementos.some((c) => c.indice === indice);
-        const etiqueta = document.createElement('label');
-        etiqueta.className = 'opcion-complemento' + (marcado ? ' esta-marcado' : '');
-        etiqueta.innerHTML =
-          '<span class="opcion-complemento__etiqueta">' +
-          '<input type="checkbox"' +
-          (marcado ? ' checked' : '') +
-          '>' +
-          MV.escaparHTML(complemento.nombre) +
-          ' · ' +
-          complemento.duracion_min +
-          ' min</span>' +
-          '<span class="opcion-complemento__precio">' +
-          MV.formatoCLP(complemento.precio) +
-          '</span>';
+      GRUPOS_COMPLEMENTOS.forEach((grupo) => {
+        const fila = document.createElement('div');
+        fila.className = 'grupo-complemento';
+        fila.setAttribute('role', 'group');
+        fila.setAttribute('aria-label', grupo.etiqueta);
+        fila.innerHTML = '<span class="grupo-complemento__nombre">' + MV.escaparHTML(grupo.etiqueta) + '</span>';
 
-        etiqueta.querySelector('input').addEventListener('change', (evento) => {
-          if (evento.target.checked) {
-            estado.complementos.push({ indice: indice, ...complemento });
-          } else {
-            estado.complementos = estado.complementos.filter((c) => c.indice !== indice);
-          }
-          renderizarPaso1();
+        const chips = document.createElement('div');
+        chips.className = 'grupo-complemento__chips';
+
+        CONFIG.complementos.forEach((complemento, indice) => {
+          if (complemento.nombre !== grupo.nombre) return;
+          const marcado = estado.complementos.some((c) => c.indice === indice);
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'chip-complemento';
+          chip.setAttribute('aria-pressed', String(marcado));
+          chip.textContent = complemento.duracion_min + ' min · ' + MV.formatoCLP(complemento.precio);
+          chip.addEventListener('click', () => {
+            // Fuera cualquier otra duración del mismo tipo.
+            estado.complementos = estado.complementos.filter((c) => c.nombre !== complemento.nombre);
+            if (!marcado) estado.complementos.push({ indice: indice, ...complemento });
+            renderizarPaso1();
+            const mismo = listaComplementos.querySelectorAll('.chip-complemento')[posicionChip(indice)];
+            if (mismo) mismo.focus();
+          });
+          chips.appendChild(chip);
         });
 
-        listaComplementos.appendChild(etiqueta);
+        fila.appendChild(chips);
+        listaComplementos.appendChild(fila);
       });
     }
 
     actualizarResumen();
+  }
+
+  function nombreCorto(nombre) {
+    return NOMBRES_CORTOS[nombre] || nombre;
+  }
+
+  function precioMinimo() {
+    return Math.min(...servicios.map((s) => s.precio60));
+  }
+
+  // Posición de un complemento entre los chips, en el orden de los grupos.
+  function posicionChip(indice) {
+    const orden = [];
+    GRUPOS_COMPLEMENTOS.forEach((grupo) => {
+      CONFIG.complementos.forEach((c, i) => {
+        if (c.nombre === grupo.nombre) orden.push(i);
+      });
+    });
+    return orden.indexOf(indice);
   }
 
   function montoTotal() {
@@ -389,17 +466,61 @@
     return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Santiago' }).format(new Date());
   }
 
+  /* ======================= Paso 2: estacionamiento ======================= */
+
+  if (toggleEstacionamiento) {
+    toggleEstacionamiento.querySelectorAll('[data-estacionamiento]').forEach((opcion) => {
+      opcion.addEventListener('click', () => {
+        estado.estacionamiento = opcion.dataset.estacionamiento;
+        toggleEstacionamiento.querySelectorAll('[data-estacionamiento]').forEach((otra) => {
+          otra.setAttribute('aria-checked', String(otra === opcion));
+        });
+      });
+    });
+  }
+
   /* ======================= Paso 3: disponibilidad ======================= */
 
-  if (campoFecha) {
-    campoFecha.min = hoyEnChile();
+  /* Tira de los próximos 14 días. Parte hoy en Chile, igual que el mínimo
+     que tenía el input de fecha: no se puede elegir un día pasado. */
+  const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
 
-    campoFecha.addEventListener('change', () => {
-      estado.fecha = campoFecha.value;
-      estado.hora = '';
-      actualizarResumen();
-      cargarHorarios();
-    });
+  function sumarDias(fecha, dias) {
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    return new Date(Date.UTC(anio, mes - 1, dia + dias)).toISOString().slice(0, 10);
+  }
+
+  function renderizarDias() {
+    if (!listaDias) return;
+    listaDias.innerHTML = '';
+    const hoy = hoyEnChile();
+
+    for (let i = 0; i < DIAS_EN_TIRA; i++) {
+      const fecha = sumarDias(hoy, i);
+      const [anio, mes, dia] = fecha.split('-').map(Number);
+      const diaSemana = new Date(Date.UTC(anio, mes - 1, dia)).getUTCDay();
+
+      const boton = document.createElement('button');
+      boton.type = 'button';
+      boton.className = 'dia-tira';
+      boton.dataset.dia = fecha;
+      boton.setAttribute('aria-pressed', String(fecha === estado.fecha));
+      boton.setAttribute('aria-label', DIAS[diaSemana] + ' ' + dia + ' de ' + MESES[mes - 1]);
+      boton.innerHTML =
+        '<span class="dia-tira__semana">' + DIAS_CORTOS[diaSemana] + '</span>' +
+        '<span class="dia-tira__numero">' + dia + '</span>';
+      boton.addEventListener('click', () => {
+        if (fecha < hoyEnChile()) return;
+        estado.fecha = fecha;
+        estado.hora = '';
+        listaDias.querySelectorAll('.dia-tira').forEach((otro) => {
+          otro.setAttribute('aria-pressed', String(otro === boton));
+        });
+        actualizarResumen();
+        cargarHorarios();
+      });
+      listaDias.appendChild(boton);
+    }
   }
 
   // `aviso` se muestra sobre la lista nueva, por ejemplo cuando el backend
@@ -430,20 +551,38 @@
       }
 
       estadoHorarios.textContent = aviso || '';
-      horarios.forEach((hora) => {
-        const boton = document.createElement('button');
-        boton.type = 'button';
-        boton.className = 'horario-slot';
-        boton.textContent = hora;
-        boton.setAttribute('aria-pressed', 'false');
-        boton.addEventListener('click', () => {
-          estado.hora = hora;
-          listaHorarios.querySelectorAll('.horario-slot').forEach((slot) => {
-            slot.setAttribute('aria-pressed', String(slot === boton));
+      // Mañana: antes de las 12:00. Tarde: desde las 12:00.
+      [
+        { titulo: 'Mañana', horas: horarios.filter((hora) => hora < '12:00') },
+        { titulo: 'Tarde', horas: horarios.filter((hora) => hora >= '12:00') },
+      ].forEach((grupo) => {
+        if (!grupo.horas.length) return;
+        const titulo = document.createElement('p');
+        titulo.className = 'catalogo__etiqueta-complementos reserva__franja';
+        titulo.textContent = grupo.titulo;
+        const grilla = document.createElement('div');
+        grilla.className = 'reserva__horarios';
+        grilla.setAttribute('role', 'group');
+        grilla.setAttribute('aria-label', grupo.titulo);
+
+        grupo.horas.forEach((hora) => {
+          const boton = document.createElement('button');
+          boton.type = 'button';
+          boton.className = 'horario-slot';
+          boton.textContent = hora;
+          boton.setAttribute('aria-pressed', 'false');
+          boton.addEventListener('click', () => {
+            estado.hora = hora;
+            listaHorarios.querySelectorAll('.horario-slot').forEach((slot) => {
+              slot.setAttribute('aria-pressed', String(slot === boton));
+            });
+            actualizarResumen();
           });
-          actualizarResumen();
+          grilla.appendChild(boton);
         });
-        listaHorarios.appendChild(boton);
+
+        listaHorarios.appendChild(titulo);
+        listaHorarios.appendChild(grilla);
       });
     } catch (error) {
       if (consulta !== consultaHorarios) return;
@@ -493,7 +632,7 @@
         return false;
       }
       estado.direccion = direccion.value.trim();
-      estado.estacionamiento = overlay.querySelector('#reserva-estacionamiento').value.trim();
+      // El toggle ya dejó "sí", "no" o vacío en estado.estacionamiento.
       return true;
     }
 
@@ -563,6 +702,7 @@
     irAPaso(5);
     desmontarBrick();
     if (pagoCuando) pagoCuando.textContent = fechaEnPalabras(estado.fecha, estado.hora);
+    if (pagoTotal) pagoTotal.textContent = MV.formatoCLP(montoTotal());
     estadoPago.textContent = 'Preparando el pago…';
     estadoPago.classList.add('esta-cargando');
 
@@ -596,6 +736,8 @@
       if (!respuesta.ok) throw new Error(datos.error || 'No pude iniciar el pago.');
 
       estado.reservaId = datos.reserva_id;
+      // El monto que se cobra es el que calculó el backend.
+      if (pagoTotal && datos.monto_total) pagoTotal.textContent = MV.formatoCLP(datos.monto_total);
       estadoPago.classList.remove('esta-cargando');
       estadoPago.textContent = '';
 
@@ -658,6 +800,13 @@
         preferenceId: preferenceId,
       },
       customization: {
+        // Solo colores: el botón Pagar y los acentos del brick en el color
+        // de la marca en vez del azul de Mercado Pago.
+        visual: {
+          style: {
+            customVariables: coloresBrick(),
+          },
+        },
         paymentMethods: {
           creditCard: 'all',
           debitCard: 'all',
@@ -683,6 +832,17 @@
         },
       },
     });
+  }
+
+  function coloresBrick() {
+    const estilos = getComputedStyle(document.documentElement);
+    const color = (nombre, respaldo) => estilos.getPropertyValue(nombre).trim() || respaldo;
+    return {
+      baseColor: color('--accent-relleno', '#B25F2D'),
+      baseColorFirstVariant: color('--accent', '#B8622E'),
+      baseColorSecondVariant: color('--accent-strong', '#D9864B'),
+      buttonTextColor: color('--on-accent', '#ffffff'),
+    };
   }
 
   function crearIdBrick() {

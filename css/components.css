@@ -1867,3 +1867,267 @@ textarea.campo__control {
     color: var(--text-muted);
   }
 }
+
+/* ==========================================================================
+   FLUJO DE RESERVA · controles del modal
+   ========================================================================== */
+
+/* Más aire entre el subtítulo de cada paso y el primer campo */
+.paso-reserva__titulo + .paso-reserva__ayuda {
+  margin-bottom: 1.5rem;
+}
+
+/* La X se ve igual en todos los pasos: el foco inicial va al panel, que
+   no necesita anillo porque no es un control. */
+.reserva__panel:focus {
+  outline: none;
+}
+
+.reserva__cerrar {
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.reserva__bloque {
+  margin-top: 1.5rem;
+}
+
+.reserva__bloque .catalogo__etiqueta-complementos {
+  margin-bottom: 0.6rem;
+}
+
+/* ---- Paso 1: masaje elegido en una línea ---- */
+.servicio-elegido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-s);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  font-weight: 600;
+}
+
+.servicio-elegido__cambiar {
+  color: var(--accent-strong);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.servicio-elegido__cambiar:hover {
+  color: var(--accent);
+}
+
+.reserva__desde {
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.reserva__desde strong {
+  color: var(--accent-strong);
+  font-weight: 400;
+}
+
+/* ---- Paso 1: duración lado a lado ---- */
+.reserva__duraciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.reserva__duraciones .horario-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+/* ---- Paso 1: complementos por tipo ---- */
+.reserva__complementos {
+  margin-top: 0;
+  gap: 0;
+}
+
+.grupo-complemento {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.grupo-complemento:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.grupo-complemento__nombre {
+  font-size: 0.92rem;
+}
+
+.grupo-complemento__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip-complemento {
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.chip-complemento:hover {
+  border-color: var(--accent);
+}
+
+.chip-complemento:active {
+  transform: scale(0.97);
+}
+
+.chip-complemento[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-relleno);
+  color: var(--on-accent);
+}
+
+.chip-complemento:focus-visible,
+.dia-tira:focus-visible,
+.toggle-sino button:focus-visible,
+.servicio-elegido__cambiar:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+/* ---- Paso 2: estacionamiento sí / no ---- */
+.toggle-sino {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  width: min(100%, 12rem);
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.toggle-sino button {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.toggle-sino button[aria-checked='true'] {
+  background: var(--accent-relleno);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+/* ---- Paso 3: tira de días ---- */
+.tira-dias {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 0.4rem;
+  margin-inline: -0.25rem;
+  padding-inline: 0.25rem;
+  scrollbar-width: thin;
+}
+
+.dia-tira {
+  flex: none;
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  min-width: 3.4rem;
+  padding: 0.55rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-s);
+  scroll-snap-align: start;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.dia-tira:hover {
+  border-color: var(--accent);
+}
+
+.dia-tira__semana {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.dia-tira__numero {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+.dia-tira[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-relleno);
+  color: var(--on-accent);
+}
+
+.dia-tira[aria-pressed='true'] .dia-tira__semana {
+  color: var(--on-accent);
+}
+
+.reserva__franja {
+  margin-top: 1.25rem;
+}
+
+/* ---- Paso 4: autocompletar del navegador con los colores de la marca ---- */
+.campo__control:-webkit-autofill,
+.campo__control:-webkit-autofill:hover,
+.campo__control:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0 1000px var(--bg) inset;
+  box-shadow: 0 0 0 1000px var(--bg) inset;
+  caret-color: var(--text);
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* ---- Paso 5: total sobre el pago ---- */
+.pago-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.pago-total strong {
+  font-size: 1.2rem;
+  color: var(--text);
+}
+
+.servicio-elegido > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 500px) {
+  .servicio-elegido {
+    font-size: 0.95rem;
+  }
+  /* En pantallas chicas el nombre va arriba y los chips debajo, igual en
+     todos los tipos aunque alguno tenga una sola opción. */
+  .grupo-complemento {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

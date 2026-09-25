@@ -529,14 +529,8 @@ main > section {
 .reserva__horarios {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.6rem;
-  margin-top: 1rem;
-}
-
-@media (max-width: 500px) {
-  .reserva__horarios {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  gap: 0.5rem;
+  margin-top: 0.6rem;
 }
 
 /* ---------- Experiencia (video vertical) ---------- */
