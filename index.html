@@ -94,7 +94,7 @@
                punto (la vida). Recién ahí entra el texto. Va en línea para
                poder animar cada trazo; el arte es el mismo de
                assets/logo/manos-vivas-logo.svg -->
-          <svg class="hero__logo" viewBox="20 32.5 60 60" role="img" aria-label="Manos Vivas">
+          <svg class="hero__logo solo-escritorio" viewBox="20 32.5 60 60" role="img" aria-label="Manos Vivas">
             <path class="logo-trazo logo-arco" pathLength="100" d="M26 58a24 24 0 0 0 48 0"/>
             <path class="logo-trazo logo-onda" pathLength="100" d="M32 58C37 44 46 44 50 52S63 60 68 46"/>
             <circle class="logo-punto" cx="68" cy="46" r="4.6"/>
@@ -103,18 +103,21 @@
           <!-- Texto normal a propósito: el despliegue letra por letra lo
                arma interactions.js solo como efecto de entrada. Si el JS no
                corre, se lee "Manos Vivas" sin espacios raros. -->
-          <p class="hero__marca" data-marca-animada>Manos Vivas</p>
+          <p class="hero__marca solo-escritorio" data-marca-animada>Manos Vivas</p>
           <h1 class="hero__titulo">Tu bienestar no es negociable.</h1>
-          <p class="hero__subtitulo">Masajes a la medida de tu tiempo y espacio. La pausa real que necesitas para regular el estrés y liberar tensión del día a día.</p>
+          <p class="hero__subtitulo solo-escritorio">Masajes a la medida de tu tiempo y espacio. La pausa real que necesitas para regular el estrés y liberar tensión del día a día.</p>
+          <p class="hero__subtitulo solo-movil">Masaje profundo a domicilio. Tu tiempo, tu espacio, cero tensión.</p>
 
-          <div class="hero__meta">
+          <div class="hero__meta solo-escritorio">
             <p class="hero__badge-precio">Sesiones desde <strong>$55.000</strong></p>
             <p class="hero__urgencia">Oferta de lanzamiento hasta el sábado, 13:00</p>
           </div>
+          <p class="hero__meta hero__badge-precio solo-movil">Desde <strong>$55.000</strong> · Precio de lanzamiento hasta el sábado</p>
 
           <div class="hero__acciones">
-            <a class="boton boton--primario" href="#catalogo">Ver el catálogo</a>
-            <a class="boton boton--secundario" href="#lanzamiento">Ver oferta de lanzamiento</a>
+            <a class="boton boton--primario solo-escritorio" href="#catalogo">Ver el catálogo</a>
+            <a class="boton boton--secundario solo-escritorio" href="#lanzamiento">Ver oferta de lanzamiento</a>
+            <a class="boton boton--primario solo-movil" href="#catalogo">Ver los masajes</a>
           </div>
         </div>
       </div>
@@ -155,7 +158,7 @@
             <article>
               <p class="no-negociable__numero">02</p>
               <h3 class="no-negociable__titulo">Sabes quién entra a tu casa</h3>
-              <p class="no-negociable__texto">Siempre las mismas manos. Sin ruleta de terapeutas ni desconocidos que no saben escuchar lo que necesitas en cada sesión.</p>
+              <p class="no-negociable__texto">Siempre las mismas manos. Sin ruleta de terapeutas.</p>
             </article>
             <article>
               <p class="no-negociable__numero">03</p>
@@ -175,7 +178,7 @@
              ni botón: son parte de cómo termina el masaje. -->
         <div class="remate revelar">
           <h2 class="remate__titulo">Así cierro cada sesión</h2>
-          <p class="remate__intro">Según cómo llegues ese día, sumo una o varias de estas herramientas. Van incluidas: no son un extra que se cobra aparte.</p>
+          <p class="remate__intro">Según cómo llegues, sumo una o más de estas técnicas. Incluidas, sin costo extra.</p>
 
           <ul class="remate__hilera">
             <li class="remate__item">
@@ -184,7 +187,7 @@
                 <path d="M24 9v5M24 34v5M9 24h5M34 24h5M13.4 13.4l3.6 3.6M31 31l3.6 3.6M34.6 13.4L31 17M17 31l-3.6 3.6"/>
               </svg>
               <h3 class="remate__nombre">Fotobiomodulación</h3>
-              <p class="remate__texto">Luz roja e infrarroja para recuperación muscular y mejor sueño.</p>
+              <p class="remate__texto">Luz roja e infrarroja para apoyar la recuperación muscular.</p>
             </li>
 
             <li class="remate__item">
@@ -202,8 +205,8 @@
                 <path d="M31 17a10 10 0 0 1 0 14M17 31a10 10 0 0 1 0-14"/>
                 <path d="M36 12a17 17 0 0 1 0 24M12 36a17 17 0 0 1 0-24"/>
               </svg>
-              <h3 class="remate__nombre">Musicoterapia</h3>
-              <p class="remate__texto">Cuencos, sonidos binaurales y música de baja frecuencia.</p>
+              <h3 class="remate__nombre">Sonido</h3>
+              <p class="remate__texto">Cuencos y frecuencias bajas para desconectar.</p>
             </li>
 
             <li class="remate__item">
@@ -213,7 +216,7 @@
                 <path d="M32 14c-5 4-5 8 0 12s5 8 0 12"/>
               </svg>
               <h3 class="remate__nombre">Frío y calor</h3>
-              <p class="remate__texto">Contraste térmico para bajar inflamación y relajar el tejido.</p>
+              <p class="remate__texto">Contraste térmico para relajar y descomprimir el tejido.</p>
             </li>
 
             <li class="remate__item">

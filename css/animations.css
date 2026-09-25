@@ -147,6 +147,23 @@
   animation-delay: 0.5s;
 }
 
+/* En móvil no hay logo ni marca animada en el hero: el texto no espera a
+   que termine un dibujo que no se muestra. */
+@media (max-width: 900px) {
+  .js-activo .hero__titulo {
+    animation-delay: 0.2s;
+  }
+  .js-activo .hero__subtitulo {
+    animation-delay: 0.35s;
+  }
+  .js-activo .hero__meta {
+    animation-delay: 0.5s;
+  }
+  .js-activo .hero__acciones {
+    animation-delay: 0.65s;
+  }
+}
+
 /* ---------- Confirmación de los controles de accesibilidad ---------- */
 @keyframes destello-control {
   0% {

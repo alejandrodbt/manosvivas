@@ -1729,7 +1729,7 @@ textarea.campo__control {
 
 /* ---------- Remate del catálogo ---------- */
 .remate__titulo {
-  font-size: clamp(1.3rem, 1vw + 0.9rem, 1.7rem);
+  font-size: clamp(2rem, 2.6vw + 1.2rem, 3rem);
   font-weight: 600;
 }
 

@@ -677,3 +677,21 @@ main > section {
   padding-top: 0;
   border-top: 0;
 }
+
+/* ---------- Hero: versión móvil ----------
+   Algunos elementos del hero tienen una versión para cada tamaño. */
+.hero .solo-movil {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .hero .solo-escritorio {
+    display: none;
+  }
+  .hero .solo-movil {
+    display: block;
+  }
+  .hero .boton.solo-movil {
+    display: inline-flex;
+  }
+}
