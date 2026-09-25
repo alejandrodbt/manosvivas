@@ -801,6 +801,16 @@
   object-fit: cover;
 }
 
+/* La foto llena el marco 4:5 completo: fuera de la grilla, para que no
+   quede espacio vacío arriba ni abajo, y anclada arriba para no cortar
+   la cabeza. */
+.historia__retrato .historia__foto {
+  position: absolute;
+  inset: 0;
+  display: block;
+  object-position: center top;
+}
+
 .historia__retrato-marca {
   font-family: var(--font-display);
   font-style: italic;
