@@ -398,6 +398,8 @@
 .catalogo__resumen {
   display: block;
   margin-top: 0.3rem;
+  font-family: var(--font-body);
+  font-weight: 400;
   color: var(--text-muted);
   font-size: 0.92rem;
   max-width: 34rem;
