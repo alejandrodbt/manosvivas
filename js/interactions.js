@@ -577,21 +577,24 @@
 
   MV.escaparHTML = escaparHTML;
 
-  /* ---------------- Carrusel de rituales (móvil) ---------------- */
+  /* ---------------- Carruseles de packs y planes (móvil) ---------------- */
 
-  /* En móvil los packs se deslizan en horizontal y el carrusel abre en la
-     tarjeta destacada (Ritual 8), centrada; el Ritual 4 queda a la izquierda. */
-  const carruselRituales = document.querySelector('[data-carrusel-rituales]');
-  const inicioRituales = carruselRituales && carruselRituales.querySelector('[data-carrusel-inicio]');
-  function centrarRitualInicial() {
-    if (!inicioRituales || !consultaMovil.matches) return;
-    const caja = carruselRituales.getBoundingClientRect();
-    const tarjeta = inicioRituales.getBoundingClientRect();
-    carruselRituales.scrollLeft += tarjeta.left - caja.left - (caja.width - tarjeta.width) / 2;
+  /* En móvil los packs y los planes se deslizan en horizontal y cada
+     carrusel abre en su tarjeta destacada (data-carrusel-inicio). */
+  const carruseles = Array.from(document.querySelectorAll('[data-carrusel]'));
+  function centrarCarruseles() {
+    if (!consultaMovil.matches) return;
+    carruseles.forEach((carrusel) => {
+      const inicio = carrusel.querySelector('[data-carrusel-inicio]');
+      if (!inicio) return;
+      const caja = carrusel.getBoundingClientRect();
+      const tarjeta = inicio.getBoundingClientRect();
+      carrusel.scrollLeft += tarjeta.left - caja.left - (caja.width - tarjeta.width) / 2;
+    });
   }
-  if (inicioRituales) {
-    centrarRitualInicial();
-    consultaMovil.addEventListener('change', centrarRitualInicial);
+  if (carruseles.length) {
+    centrarCarruseles();
+    consultaMovil.addEventListener('change', centrarCarruseles);
   }
 
   actualizarProgreso();

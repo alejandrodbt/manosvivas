@@ -686,47 +686,62 @@
 }
 
 /* ---------- Suscripciones ---------- */
-.plan-fila {
-  display: grid;
-  grid-template-columns: 1.5fr 0.9fr 1.3fr auto;
-  align-items: center;
-  gap: 1.25rem;
-  padding-block: 1.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.plan-fila--destacada {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%);
-}
-
-.plan-fila__nombre {
-  font-size: 1.15rem;
-}
-
-.plan-fila__por-sesion {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: var(--text-faint);
-  margin-top: 0.2rem;
-}
-
-.plan-fila__condicion {
-  font-size: 0.85rem;
+.suscripciones__condicion {
+  margin-top: 0.85rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
 }
 
-@media (max-width: 900px) {
-  .plan-fila {
-    grid-template-columns: 1fr auto;
-    row-gap: 0.7rem;
-  }
-  .plan-fila__accion {
-    grid-column: span 2;
-  }
-  .plan-fila__accion .boton {
-    width: 100%;
-    justify-content: center;
-  }
+/* Mismo lenguaje que las tarjetas de rituales: nombre, precio grande y
+   luego el detalle, siempre apilados (también en móvil). */
+.plan-tarjeta {
+  padding: clamp(1.5rem, 2.6vw, 2rem);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.plan-tarjeta--destacada {
+  border-top-color: var(--accent);
+  background: var(--surface);
+}
+
+.plan-tarjeta__nombre {
+  font-size: 1.3rem;
+}
+
+.plan-tarjeta__mes {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  margin-left: 0.15rem;
+}
+
+.plan-tarjeta__detalle {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.plan-tarjeta__por-sesion {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--teal) 55%, var(--text));
+}
+
+.plan-tarjeta--destacada .plan-tarjeta__por-sesion {
+  color: var(--accent-strong);
+}
+
+.plan-tarjeta__minimo {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+/* El botón queda siempre al pie, aunque una tarjeta tenga una línea más. */
+.plan-tarjeta .boton {
+  margin-top: auto;
 }
 
 /* ---------- Beneficios (banda en #ventajas) ---------- */
@@ -979,6 +994,13 @@ textarea.campo__control {
 }
 
 /* ---------- Footer ---------- */
+.footer__lema {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  margin-top: 0.2rem;
+}
+
 .footer__logo {
   font-family: var(--font-display);
   font-size: 1.3rem;

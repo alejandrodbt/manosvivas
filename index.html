@@ -534,7 +534,7 @@
 
         <!-- En móvil es un carrusel horizontal que abre en el Ritual 8
              (data-carrusel-inicio, ver interactions.js). -->
-        <div class="rituales__fila revelar" data-carrusel-rituales>
+        <div class="rituales__fila revelar" data-carrusel>
           <article class="ritual-tarjeta">
             <h3 class="ritual-tarjeta__nombre">Ritual 4 · Esencial</h3>
             <p class="ritual-tarjeta__detalle">4 sesiones · 60 min</p>
@@ -563,60 +563,40 @@
       <div class="contenedor">
         <header class="seccion__cabecera revelar">
           <h2 class="titulo-seccion">Suscripciones Manos Vivas</h2>
-          <p class="texto-lead">Para quienes quieren tener ese cariño seguro dentro de sus actividades diarias. Diseñé estas suscripciones con cariño, para que tu cuerpo tenga su pausa regular y tu mente lo sienta.</p>
+          <p class="texto-lead">Tu pausa fija cada mes, sin tener que acordarte de agendar.</p>
+          <p class="suscripciones__condicion">Cancela cuando quieras, sin permanencia mínima. Solo el Plan Pleno tiene un mínimo de 3 meses.</p>
         </header>
 
-        <div class="suscripciones__fila revelar">
-          <article class="plan-fila">
-            <div>
-              <h3 class="plan-fila__nombre">Plan Esencial · Tu pausa mensual</h3>
-              <p class="plan-fila__por-sesion">$55.000 por sesión</p>
-            </div>
-            <p class="precio precio--grande">$55.000<span class="plan-fila__por-sesion">/mes</span></p>
-            <p class="plan-fila__condicion">Puedes cancelar cuando quieras. Sin permanencia mínima.</p>
-            <div class="plan-fila__accion">
-              <a class="boton boton--secundario" href="#" data-link-suscripcion="plan-esencial" target="_blank" rel="noopener">Suscribirme</a>
-            </div>
+        <!-- En móvil es un carrusel horizontal que abre en el Plan Vital
+             (data-carrusel-inicio, ver interactions.js). -->
+        <div class="suscripciones__fila revelar" data-carrusel>
+          <article class="plan-tarjeta">
+            <h3 class="plan-tarjeta__nombre">Plan Bienestar</h3>
+            <p class="precio precio--grande">$99.000<span class="plan-tarjeta__mes">/mes</span></p>
+            <p class="plan-tarjeta__detalle">2 sesiones al mes · una cada 15 días</p>
+            <p class="plan-tarjeta__por-sesion">$49.500 por sesión</p>
+            <a class="boton boton--secundario boton--bloque" href="#" data-link-suscripcion="plan-bienestar" target="_blank" rel="noopener">Suscribirme</a>
           </article>
 
-          <article class="plan-fila">
-            <div>
-              <h3 class="plan-fila__nombre">Plan Bienestar · Tu ritmo de cuidado</h3>
-              <p class="plan-fila__por-sesion">$52.500 por sesión</p>
-            </div>
-            <p class="precio precio--grande">$105.000<span class="plan-fila__por-sesion">/mes</span></p>
-            <p class="plan-fila__condicion">Puedes cancelar cuando quieras. Sin permanencia mínima.</p>
-            <div class="plan-fila__accion">
-              <a class="boton boton--secundario" href="#" data-link-suscripcion="plan-bienestar" target="_blank" rel="noopener">Suscribirme</a>
-            </div>
+          <article class="plan-tarjeta plan-tarjeta--destacada" data-carrusel-inicio>
+            <h3 class="plan-tarjeta__nombre">Plan Vital</h3>
+            <p class="precio precio--grande">$180.000<span class="plan-tarjeta__mes">/mes</span></p>
+            <p class="plan-tarjeta__detalle">4 sesiones al mes · una por semana</p>
+            <p class="plan-tarjeta__por-sesion">$45.000 por sesión</p>
+            <a class="boton boton--primario boton--bloque" href="#" data-link-suscripcion="plan-vital" target="_blank" rel="noopener">Suscribirme</a>
           </article>
 
-          <article class="plan-fila">
-            <div>
-              <h3 class="plan-fila__nombre">Plan Vital · Tu ciclo completo</h3>
-              <p class="plan-fila__por-sesion">$51.250 por sesión</p>
-            </div>
-            <p class="precio precio--grande">$205.000<span class="plan-fila__por-sesion">/mes</span></p>
-            <p class="plan-fila__condicion">Puedes cancelar cuando quieras. Sin permanencia mínima.</p>
-            <div class="plan-fila__accion">
-              <a class="boton boton--secundario" href="#" data-link-suscripcion="plan-vital" target="_blank" rel="noopener">Suscribirme</a>
-            </div>
-          </article>
-
-          <article class="plan-fila plan-fila--destacada">
-            <div>
-              <h3 class="plan-fila__nombre">Plan Manada · Para los que ya saben que esto es continuo</h3>
-              <p class="plan-fila__por-sesion">$43.750 por sesión</p>
-            </div>
-            <p class="precio precio--grande">$350.000<span class="plan-fila__por-sesion">/mes</span></p>
-            <p class="plan-fila__condicion">Permanencia mínima de 3 meses.</p>
-            <div class="plan-fila__accion">
-              <a class="boton boton--primario" href="#" data-link-suscripcion="plan-manada" target="_blank" rel="noopener">Suscribirme</a>
-            </div>
+          <article class="plan-tarjeta">
+            <h3 class="plan-tarjeta__nombre">Plan Pleno</h3>
+            <p class="precio precio--grande">$350.000<span class="plan-tarjeta__mes">/mes</span></p>
+            <p class="plan-tarjeta__detalle">8 sesiones al mes · dos por semana</p>
+            <p class="plan-tarjeta__por-sesion">$43.750 por sesión</p>
+            <p class="plan-tarjeta__minimo">Mínimo 3 meses</p>
+            <a class="boton boton--secundario boton--bloque" href="#" data-link-suscripcion="plan-pleno" target="_blank" rel="noopener">Suscribirme</a>
           </article>
         </div>
 
-        <p class="nota-legal revelar">Cancelas cuando quieras, salvo Manada que tiene permanencia de 3 meses · Las sesiones no se acumulan de un mes a otro · <a href="#faq">Ver todas las condiciones</a></p>
+        <p class="nota-legal revelar">Las sesiones no se acumulan de un mes a otro · <a href="#faq">Ver todas las condiciones</a></p>
       </div>
     </section>
 
@@ -830,8 +810,8 @@
                 <div class="faq__respuesta">
                   <p>Las sesiones son válidas dentro del mes calendario y no se acumulan para el mes siguiente.</p>
                   <p>Las suscripciones son personales e intransferibles.</p>
-                  <p>Los planes Esencial, Bienestar y Vital se cancelan cuando quieras, según las condiciones informadas al contratar.</p>
-                  <p>El Plan Manada tiene permanencia mínima de tres meses.</p>
+                  <p>Los planes Bienestar y Vital se cancelan cuando quieras, sin permanencia mínima.</p>
+                  <p>El Plan Pleno tiene un mínimo de 3 meses.</p>
                   <p>La versión de 90 minutos y los complementos se cobran por separado al reservar cada sesión.</p>
                 </div>
               </div>
@@ -924,7 +904,7 @@
           <!-- Lockup vertical: la firma de marca al cierre del sitio -->
           <img class="footer__lockup logo--claro" src="assets/logo/manos-vivas-lockup-vertical-negativo.svg" alt="Manos Vivas · masajes a domicilio">
           <img class="footer__lockup logo--oscuro" src="assets/logo/manos-vivas-lockup-vertical.svg" alt="Manos Vivas · masajes a domicilio">
-          <p class="plan-fila__por-sesion">Llega hasta tu puerta, en Santiago</p>
+          <p class="footer__lema">Llega hasta tu puerta, en Santiago</p>
         </div>
 
         <nav class="footer__links" aria-label="Navegación del pie">

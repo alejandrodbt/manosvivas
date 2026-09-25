@@ -53,10 +53,10 @@
        autoriza en Mercado Pago. Mientras un link esté vacío, el botón avisa
        por WhatsApp en vez de llevar a un enlace muerto. */
     linksSuscripcion: {
-      'plan-esencial': 'https://mpago.la/1d3pwBF',
       'plan-bienestar': 'https://mpago.la/1R1DQW2',
       'plan-vital': 'https://mpago.la/1jJBAEA',
-      'plan-manada': 'https://mpago.la/271YFQ5',
+      // Plan Pleno (antes Manada): mismo plan y mismo precio en Mercado Pago.
+      'plan-pleno': 'https://mpago.la/271YFQ5',
     },
   };
 

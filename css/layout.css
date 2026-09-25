@@ -329,10 +329,19 @@ main > section {
   max-width: 56rem;
 }
 
-/* En móvil, carrusel horizontal deslizable. La tarjeta no ocupa todo el
-   ancho para que asome la otra y se note que se puede deslizar. */
+.suscripciones__fila {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+/* En móvil, packs y planes son carruseles horizontales deslizables. La
+   tarjeta no ocupa todo el ancho para que asome la vecina y se note que se
+   puede deslizar. */
 @media (max-width: 900px) {
-  .rituales__fila {
+  .rituales__fila,
+  .suscripciones__fila {
     grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: min(82%, 22rem);
@@ -347,19 +356,15 @@ main > section {
     scrollbar-width: none;
   }
 
-  .rituales__fila::-webkit-scrollbar {
+  .rituales__fila::-webkit-scrollbar,
+  .suscripciones__fila::-webkit-scrollbar {
     display: none;
   }
 
-  .rituales__fila > .ritual-tarjeta {
+  .rituales__fila > .ritual-tarjeta,
+  .suscripciones__fila > .plan-tarjeta {
     scroll-snap-align: center;
   }
-}
-
-.suscripciones__fila {
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid var(--border);
 }
 
 /* ---------- Historia: cierre con los no negociables ---------- */
@@ -665,10 +670,6 @@ main > section {
   }
   .separador-logo {
     margin-block: 1rem;
-  }
-  .suscripciones__fila + .nota-legal {
-    border-top: 0;
-    padding-top: 0;
   }
 
   /* Títulos de sección a la izquierda aunque el bloque vaya centrado */
