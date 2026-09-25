@@ -270,18 +270,6 @@
   font-size: 1.15em;
 }
 
-.hero__urgencia {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  color: var(--hero-texto-suave);
-  padding: 0.4rem 0.85rem;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-}
-
 /* ---------- Bento (ventajas) ---------- */
 .tarjeta-cristal {
   position: relative;
@@ -515,27 +503,53 @@
 }
 
 /* ---------- Lanzamiento ---------- */
+/* Oferta especial, no un pack más: borde y halo ámbar para que se lea
+   distinta de la grilla de precios. Todo vive en un solo contenedor; los
+   min-width: 0 evitan que un texto sin cortes (el botón es nowrap) empuje
+   la card fuera de la pantalla en móvil. */
 .lanzamiento__panel {
-  background: linear-gradient(160deg, var(--surface) 0%, var(--bg) 65%);
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  background:
+    radial-gradient(120% 90% at 100% 0%, var(--amber-glow) 0%, transparent 55%),
+    linear-gradient(160deg, var(--surface-raised) 0%, var(--bg-deep) 75%);
   border-radius: var(--radius-l);
-  border: 1px solid var(--border);
-  padding: clamp(2.25rem, 5vw, 4rem);
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 24px 60px -24px var(--amber-glow);
+  padding: clamp(1.5rem, 5vw, 4rem);
+  overflow: hidden;
+}
+
+.lanzamiento__columna,
+.lanzamiento__compra {
+  min-width: 0;
 }
 
 .lanzamiento__insignia {
   display: inline-block;
+  max-width: 100%;
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: color-mix(in srgb, var(--teal) 45%, var(--text));
-  background: color-mix(in srgb, var(--teal) 22%, transparent);
-  border: 1px solid color-mix(in srgb, var(--teal) 50%, transparent);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--on-accent);
+  background: var(--accent-relleno);
   padding: 0.4rem 0.85rem;
   border-radius: 999px;
+  overflow-wrap: anywhere;
 }
 
 .lanzamiento__titulo {
   margin-top: 1.25rem;
   font-size: clamp(1.9rem, 2.2vw + 1.2rem, 2.7rem);
+}
+
+.lanzamiento__columna .texto-lead {
+  margin-top: 0.85rem;
 }
 
 .lanzamiento__lista {
@@ -561,22 +575,42 @@
   background: var(--accent);
 }
 
-.lanzamiento__precio-panel {
-  padding: clamp(1.5rem, 3vw, 2.25rem);
-  border-radius: var(--radius-m);
-  background: var(--bg-deep);
-  border: 1px solid var(--border);
+.lanzamiento__precios {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.9rem;
+}
+
+.lanzamiento__precio-antes {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  color: var(--text-faint);
+  text-decoration-thickness: 1px;
 }
 
 .lanzamiento__ahorro {
   margin-top: 0.4rem;
   font-family: var(--font-mono);
   font-size: 0.88rem;
-  color: color-mix(in srgb, var(--teal) 55%, var(--text));
+  color: var(--accent-strong);
+}
+
+.lanzamiento__vigencia {
+  margin-top: 0.85rem;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+.lanzamiento__compra .boton {
+  margin-top: 1.4rem;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
 }
 
 .lanzamiento__condiciones {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
 }
 
 .lanzamiento__condiciones summary {

@@ -109,14 +109,13 @@
           <p class="hero__subtitulo solo-movil">Masaje profundo a domicilio. Tu tiempo, tu espacio, cero tensión.</p>
 
           <div class="hero__meta solo-escritorio">
-            <p class="hero__badge-precio">Sesiones desde <strong>$55.000</strong></p>
-            <p class="hero__urgencia">Oferta de lanzamiento hasta el sábado, 13:00</p>
+            <p class="hero__badge-precio">Desde <strong>$55.000</strong><span data-oferta-lanzamiento> · Oferta de lanzamiento hasta el 11 de octubre</span></p>
           </div>
-          <p class="hero__meta hero__badge-precio solo-movil">Desde <strong>$55.000</strong> · Precio de lanzamiento hasta el sábado</p>
+          <p class="hero__meta hero__badge-precio solo-movil">Desde <strong>$55.000</strong><span data-oferta-lanzamiento> · Oferta de lanzamiento hasta el 11 de octubre</span></p>
 
           <div class="hero__acciones">
             <a class="boton boton--primario solo-escritorio" href="#catalogo">Ver el catálogo</a>
-            <a class="boton boton--secundario solo-escritorio" href="#lanzamiento">Ver oferta de lanzamiento</a>
+            <a class="boton boton--secundario solo-escritorio" href="#lanzamiento" data-oferta-lanzamiento>Ver oferta de lanzamiento</a>
             <a class="boton boton--primario solo-movil" href="#catalogo">Ver los masajes</a>
           </div>
         </div>
@@ -483,20 +482,31 @@
     </section>
 
     <!-- ============ LANZAMIENTO ============ -->
-    <section class="lanzamiento" id="lanzamiento">
+    <!-- data-oferta-lanzamiento: interactions.js oculta todo lo marcado así
+         cuando vence la oferta (ver FIN_OFERTA_LANZAMIENTO). -->
+    <section class="lanzamiento" id="lanzamiento" data-oferta-lanzamiento>
       <div class="contenedor">
         <div class="lanzamiento__panel revelar">
           <div class="lanzamiento__grid">
             <div class="lanzamiento__columna">
-              <p class="lanzamiento__insignia">Campaña de apertura · Solo 10 cupos</p>
+              <p class="lanzamiento__insignia">Oferta de lanzamiento · Solo 10 cupos</p>
               <h2 class="lanzamiento__titulo">El ritual de lanzamiento</h2>
-              <p class="texto-lead">Dos sesiones para comenzar a volver a tu cuerpo. Una experiencia pensada para que reconozcas lo que cambia cuando haces del masaje un momento de cuidado continuo, no solo una pausa aislada.</p>
+              <p class="texto-lead">Dos sesiones para sentir la diferencia de cuidarte seguido, no solo cuando ya no das más.</p>
               <ul class="lanzamiento__lista">
-                <li>2 sesiones de masaje de 60 minutos</li>
-                <li>Válido para todos los masajes del catálogo</li>
-                <li>Vigencia de 45 días desde la compra</li>
-                <li>Exclusivo para clientes nuevos y existentes</li>
+                <li>2 masajes de 60 min</li>
+                <li>Cualquier masaje del catálogo</li>
+                <li>Válido por 45 días</li>
               </ul>
+            </div>
+
+            <div class="lanzamiento__compra">
+              <p class="lanzamiento__precios">
+                <s class="lanzamiento__precio-antes">$110.000</s>
+                <span class="precio precio--grande">$89.990</span>
+              </p>
+              <p class="lanzamiento__ahorro">Ahorras $20.010</p>
+              <p class="lanzamiento__vigencia">Disponible hasta el domingo 11 de octubre o hasta agotar los 10 cupos.</p>
+              <button class="boton boton--primario boton--bloque" type="button" data-reservar data-servicio="Ritual de lanzamiento" data-tipo="lanzamiento" data-precio="89990" data-duracion="60">Quiero mi ritual</button>
 
               <details class="lanzamiento__condiciones">
                 <summary>Ver todas las condiciones</summary>
@@ -508,12 +518,6 @@
                   <li>Los adicionales de tiempo y el drenaje linfático adicional se cobran por separado.</li>
                 </ul>
               </details>
-            </div>
-
-            <div class="lanzamiento__precio-panel">
-              <p class="precio precio--grande">$89.990</p>
-              <p class="lanzamiento__ahorro">18% de descuento · Ahorras $20.000</p>
-              <button class="boton boton--primario boton--bloque" type="button" data-reservar data-servicio="Ritual de lanzamiento" data-tipo="lanzamiento" data-precio="89990" data-duracion="60">Quiero mi ritual de apertura</button>
             </div>
           </div>
         </div>

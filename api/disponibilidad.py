@@ -30,6 +30,9 @@ HORA_INICIO = int(os.environ.get("DISPONIBILIDAD_HORA_INICIO", "9"))
 HORA_FIN = int(os.environ.get("DISPONIBILIDAD_HORA_FIN", "20"))
 PASO_SLOT_MINUTOS = 30
 DURACION_POR_DEFECTO_MINUTOS = 60
+# Tiempo libre obligatorio entre una sesión y cualquier otro evento de la
+# agenda (traslado, armado, descanso). Se exige antes y después.
+MARGEN_ENTRE_SESIONES = timedelta(minutes=45)
 
 
 def obtener_credenciales():
@@ -98,6 +101,16 @@ def generar_slots(fecha, duracion_minutos):
     return slots
 
 
+def choca_con_margen(inicio_slot, fin_slot, bloques_ocupados):
+    """Un horario sirve solo si empieza al menos 45 min después del fin de
+    cada evento ocupado y termina al menos 45 min antes de su inicio."""
+    return any(
+        inicio_slot < ocupado_fin + MARGEN_ENTRE_SESIONES
+        and fin_slot + MARGEN_ENTRE_SESIONES > ocupado_inicio
+        for ocupado_inicio, ocupado_fin in bloques_ocupados
+    )
+
+
 def calcular_horarios_disponibles(fecha, duracion_minutos):
     token = obtener_token_acceso()
 
@@ -122,11 +135,7 @@ def calcular_horarios_disponibles(fecha, duracion_minutos):
         if inicio_slot < ahora:
             continue
         fin_slot = inicio_slot + timedelta(minutes=duracion_minutos)
-        cruza_bloque_ocupado = any(
-            inicio_slot < ocupado_fin and fin_slot > ocupado_inicio
-            for ocupado_inicio, ocupado_fin in bloques_ocupados
-        )
-        if not cruza_bloque_ocupado:
+        if not choca_con_margen(inicio_slot, fin_slot, bloques_ocupados):
             disponibles.append(inicio_slot.strftime("%H:%M"))
 
     return disponibles

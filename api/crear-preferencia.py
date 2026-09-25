@@ -46,6 +46,15 @@ SITE_URL = os.environ.get("SITE_URL", "https://manosvivas.cl")
 
 DURACIONES_VALIDAS = (60, 90)
 
+# Igual que en /api/disponibilidad: 45 min libres antes y después de cada
+# evento ocupado de la agenda.
+MARGEN_ENTRE_SESIONES = timedelta(minutes=45)
+
+# La oferta de lanzamiento se puede comprar hasta el domingo 11 de octubre
+# de 2026 a las 23:59, hora de Chile. El sitio oculta la sección con la
+# misma fecha (js/interactions.js).
+FIN_OFERTA_LANZAMIENTO = datetime(2026, 10, 12, 0, 0, tzinfo=ZONA_HORARIA)
+
 
 class ErrorSolicitud(Exception):
     def __init__(self, status, mensaje, codigo=None):
@@ -103,7 +112,13 @@ def obtener_producto(producto_id):
         raise ErrorSolicitud(409, "Este producto ya no está disponible.")
     if producto.get("tipo") == "suscripcion":
         raise ErrorSolicitud(400, "Las suscripciones no se procesan por este endpoint.")
+    if es_oferta_lanzamiento(producto) and datetime.now(ZONA_HORARIA) >= FIN_OFERTA_LANZAMIENTO:
+        raise ErrorSolicitud(409, "La oferta de lanzamiento ya terminó.", codigo="oferta_vencida")
     return producto
+
+
+def es_oferta_lanzamiento(producto):
+    return producto.get("tipo") == "lanzamiento" or "lanzamiento" in (producto.get("nombre") or "").lower()
 
 
 def obtener_complementos(ids_complementos):
@@ -278,11 +293,13 @@ def validar_horario(fecha_hora, minutos):
     if inicio < apertura or fin > cierre:
         raise no_disponible
 
+    # Se consulta la agenda ampliada en el margen, para ver también los
+    # eventos que terminan o empiezan demasiado cerca de la sesión.
     request = urllib.request.Request(
         "https://www.googleapis.com/calendar/v3/freeBusy",
         data=json.dumps({
-            "timeMin": inicio.astimezone(timezone.utc).isoformat(),
-            "timeMax": fin.astimezone(timezone.utc).isoformat(),
+            "timeMin": (inicio - MARGEN_ENTRE_SESIONES).astimezone(timezone.utc).isoformat(),
+            "timeMax": (fin + MARGEN_ENTRE_SESIONES).astimezone(timezone.utc).isoformat(),
             "items": [{"id": GOOGLE_CALENDAR_ID}],
         }).encode("utf-8"),
         method="POST",
@@ -296,8 +313,26 @@ def validar_horario(fecha_hora, minutos):
 
     if calendario.get("errors"):
         raise RuntimeError(f"Google Calendar devolvió errores: {calendario['errors']}")
-    if calendario.get("busy"):
+    bloques_ocupados = [
+        (
+            datetime.fromisoformat(bloque["start"].replace("Z", "+00:00")),
+            datetime.fromisoformat(bloque["end"].replace("Z", "+00:00")),
+        )
+        for bloque in calendario.get("busy", [])
+    ]
+    if choca_con_margen(inicio, fin, bloques_ocupados):
         raise no_disponible
+
+
+def choca_con_margen(inicio, fin, bloques_ocupados):
+    """Misma regla que /api/disponibilidad: la sesión debe empezar al menos
+    45 min después del fin de cada evento y terminar al menos 45 min antes
+    de su inicio."""
+    return any(
+        inicio < ocupado_fin + MARGEN_ENTRE_SESIONES
+        and fin + MARGEN_ENTRE_SESIONES > ocupado_inicio
+        for ocupado_inicio, ocupado_fin in bloques_ocupados
+    )
 
 
 # ---------- Reutilización de reservas sin pagar ----------

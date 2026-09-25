@@ -22,6 +22,18 @@
     /* Almacenamiento bloqueado: se muestra la intro completa, sin drama. */
   }
 
+  /* La oferta de lanzamiento vence el domingo 11 de octubre de 2026 a las
+     23:59 hora de Chile (ese día rige el horario de verano, UTC-3). Pasada
+     esa hora se oculta todo lo marcado con data-oferta-lanzamiento: la
+     sección, el botón del hero y la mención en la línea de precio.
+     El backend (api/crear-preferencia.py) rechaza la compra con la misma fecha. */
+  const FIN_OFERTA_LANZAMIENTO = new Date('2026-10-12T00:00:00-03:00');
+  if (Date.now() >= FIN_OFERTA_LANZAMIENTO.getTime()) {
+    document.querySelectorAll('[data-oferta-lanzamiento]').forEach(function (elemento) {
+      elemento.hidden = true;
+    });
+  }
+
   const prefiereMenosMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------------- Utilidades compartidas ---------------- */
