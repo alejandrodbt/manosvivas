@@ -669,7 +669,11 @@ main > section {
   .experiencia__texto {
     justify-self: stretch;
   }
-  .experiencia__texto .titulo-seccion {
+  .experiencia__texto .titulo-seccion,
+  .experiencia__texto .texto-lead {
     text-align: left;
+  }
+  .experiencia__texto .texto-lead {
+    margin-inline: 0;
   }
 }

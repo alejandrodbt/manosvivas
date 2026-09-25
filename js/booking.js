@@ -448,7 +448,7 @@
     } catch (error) {
       if (consulta !== consultaHorarios) return;
       estadoHorarios.classList.remove('esta-cargando');
-      estadoHorarios.textContent = 'No pudimos leer la agenda ahora. Inténtalo de nuevo en un momento.';
+      estadoHorarios.textContent = 'No pude leer la agenda ahora. Inténtalo de nuevo en un momento.';
     }
   }
 
@@ -593,7 +593,7 @@
         volverAElegirHora(datos.error);
         return;
       }
-      if (!respuesta.ok) throw new Error(datos.error || 'No pudimos iniciar el pago.');
+      if (!respuesta.ok) throw new Error(datos.error || 'No pude iniciar el pago.');
 
       estado.reservaId = datos.reserva_id;
       estadoPago.classList.remove('esta-cargando');
@@ -643,7 +643,7 @@
 
   async function montarBrick(preferenceId, monto, publicKey) {
     if (typeof window.MercadoPago === 'undefined') {
-      estadoPago.textContent = 'No pudimos cargar el medio de pago. Revisa tu conexión y vuelve a intentar.';
+      estadoPago.textContent = 'No pude cargar el medio de pago. Revisa tu conexión y vuelve a intentar.';
       return;
     }
 
@@ -712,7 +712,7 @@
       mostrarConfirmacion(datos.estado === 'aprobado');
     } catch (error) {
       estadoPago.classList.remove('esta-cargando');
-      estadoPago.textContent = 'No pudimos confirmar el pago. Escríbeme por WhatsApp antes de volver a intentar.';
+      estadoPago.textContent = 'No pude confirmar el pago. Escríbeme por WhatsApp antes de volver a intentar.';
     }
   }
 
@@ -733,7 +733,7 @@
         MV.escaparHTML(estado.cliente.email) +
         '.</p>';
 
-    MV.toast(pagoAprobado ? 'Pago recibido. Te confirmamos la hora por correo.' : 'Pago en revisión.');
+    MV.toast(pagoAprobado ? 'Pago recibido. Te confirmo la hora por correo.' : 'Pago en revisión.');
   }
 
   /* ======================= Links de suscripción ======================= */

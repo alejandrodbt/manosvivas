@@ -80,13 +80,13 @@
 
         if (!respuesta.ok) {
           const datos = await respuesta.json().catch(() => ({}));
-          throw new Error(datos.error || 'No pudimos sumarte.');
+          throw new Error(datos.error || 'No pude sumarte.');
         }
 
         formulario.reset();
         MV.toast('¡Únete a la manada, revisa tu inbox!');
       } catch (error) {
-        MV.toast('No pudimos sumarte ahora. Inténtalo de nuevo en un momento.');
+        MV.toast('No pude sumarte ahora. Inténtalo de nuevo en un momento.');
       } finally {
         boton.disabled = false;
         boton.textContent = textoOriginal;
