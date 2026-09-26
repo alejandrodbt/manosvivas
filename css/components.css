@@ -2160,8 +2160,14 @@ textarea.campo__control {
   transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
 }
 
-.dia-tira:hover {
+.dia-tira:hover:not(:disabled) {
   border-color: var(--accent);
+}
+
+/* Día con la agenda completa: se ve, pero no se puede elegir. */
+.dia-tira:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .dia-tira__semana {

@@ -509,8 +509,10 @@
 
   /* ======================= Paso 3: disponibilidad ======================= */
 
-  /* Tira de los próximos 14 días. Parte hoy en Chile, igual que el mínimo
-     que tenía el input de fecha: no se puede elegir un día pasado. */
+  /* Tira de los próximos 14 días de atención (sin domingos, que no se
+     atiende). Parte hoy en Chile, igual que el mínimo que tenía el input
+     de fecha: no se puede elegir un día pasado. Los días que ya tienen el
+     máximo de sesiones se deshabilitan cuando responde la agenda. */
   const DIAS_CORTOS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
 
   function sumarDias(fecha, dias) {
@@ -518,15 +520,25 @@
     return new Date(Date.UTC(anio, mes - 1, dia + dias)).toISOString().slice(0, 10);
   }
 
+  function diaDeLaSemana(fecha) {
+    const [anio, mes, dia] = fecha.split('-').map(Number);
+    return new Date(Date.UTC(anio, mes - 1, dia)).getUTCDay();
+  }
+
   function renderizarDias() {
     if (!listaDias) return;
     listaDias.innerHTML = '';
     const hoy = hoyEnChile();
 
-    for (let i = 0; i < DIAS_EN_TIRA; i++) {
+    const fechas = [];
+    for (let i = 0; fechas.length < DIAS_EN_TIRA; i++) {
       const fecha = sumarDias(hoy, i);
-      const [anio, mes, dia] = fecha.split('-').map(Number);
-      const diaSemana = new Date(Date.UTC(anio, mes - 1, dia)).getUTCDay();
+      if (diaDeLaSemana(fecha) !== 0) fechas.push(fecha);
+    }
+
+    fechas.forEach((fecha) => {
+      const [, mes, dia] = fecha.split('-').map(Number);
+      const diaSemana = diaDeLaSemana(fecha);
 
       const boton = document.createElement('button');
       boton.type = 'button';
@@ -548,6 +560,38 @@
         cargarHorarios();
       });
       listaDias.appendChild(boton);
+    });
+
+    marcarDiasCompletos(hoy, fechas[fechas.length - 1]);
+  }
+
+  /* Si la consulta falla, la tira queda como está: el paso de horarios
+     igual avisa cuando un día no tiene horas. */
+  async function marcarDiasCompletos(desde, hasta) {
+    const [a1, m1, d1] = desde.split('-').map(Number);
+    const [a2, m2, d2] = hasta.split('-').map(Number);
+    const dias = Math.round((Date.UTC(a2, m2 - 1, d2) - Date.UTC(a1, m1 - 1, d1)) / 86400000) + 1;
+
+    try {
+      const respuesta = await fetch('/api/disponibilidad?desde=' + encodeURIComponent(desde) + '&dias=' + dias);
+      if (!respuesta.ok) return;
+      const datos = await respuesta.json();
+      (datos.dias_completos || []).forEach((fecha) => {
+        const boton = listaDias.querySelector('[data-dia="' + fecha + '"]');
+        if (!boton) return;
+        boton.disabled = true;
+        boton.setAttribute('aria-label', boton.getAttribute('aria-label') + ', sin horas disponibles');
+        if (estado.fecha === fecha) {
+          estado.fecha = '';
+          estado.hora = '';
+          boton.setAttribute('aria-pressed', 'false');
+          listaHorarios.innerHTML = '';
+          estadoHorarios.textContent = '';
+          actualizarResumen();
+        }
+      });
+    } catch (error) {
+      // Sin red: se sigue con la tira completa.
     }
   }
 
@@ -574,7 +618,10 @@
 
       if (!horarios.length) {
         estadoHorarios.textContent =
-          (aviso ? aviso + ' ' : '') + 'No quedan horarios libres ese día. Prueba con otra fecha.';
+          (aviso ? aviso + ' ' : '') +
+          (datos.dia_completo
+            ? 'Ese día ya tiene la agenda completa. Prueba con otra fecha.'
+            : 'No quedan horarios libres ese día. Prueba con otra fecha.');
         return;
       }
 
@@ -781,7 +828,7 @@
     } catch (error) {
       if (intento !== intentoPago) return;
       estadoPago.classList.remove('esta-cargando');
-      estadoPago.textContent = error.message + ' Escríbeme por WhatsApp y lo resuelvo.';
+      estadoPago.innerHTML = '<p>' + MV.escaparHTML(error.message) + ' Escríbeme y lo resuelvo.</p>' + BOTON_WHATSAPP;
     }
   }
 
@@ -895,14 +942,14 @@
       estadoPago.classList.remove('esta-cargando');
 
       if (!respuesta.ok || datos.estado === 'rechazado') {
-        estadoPago.textContent = 'El pago fue rechazado. Prueba con otra tarjeta o escríbeme por WhatsApp.';
+        estadoPago.innerHTML = '<p>El pago fue rechazado. Prueba con otra tarjeta o escríbeme.</p>' + BOTON_WHATSAPP;
         return;
       }
 
       mostrarConfirmacion(datos.estado === 'aprobado');
     } catch (error) {
       estadoPago.classList.remove('esta-cargando');
-      estadoPago.textContent = 'No pude confirmar el pago. Escríbeme por WhatsApp antes de volver a intentar.';
+      estadoPago.innerHTML = '<p>No pude confirmar el pago. Escríbeme antes de volver a intentar.</p>' + BOTON_WHATSAPP;
     }
   }
 
@@ -928,7 +975,8 @@
       : '<p class="paso-reserva__titulo">Tu pago está en revisión.</p>' +
         '<p>Apenas Mercado Pago lo resuelva te aviso por correo a ' +
         MV.escaparHTML(estado.cliente.email) +
-        '.</p>';
+        '. Si tienes dudas, escríbeme.</p>' +
+        BOTON_WHATSAPP;
 
     MV.toast(pagoAprobado ? 'Pago recibido. Te confirmo la hora por correo.' : 'Pago en revisión.');
   }

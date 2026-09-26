@@ -20,8 +20,7 @@ certificado-titularidad_web.pdf
 # ---- Documentos internos de trabajo ----
 # Mencionan la cuenta de servicio, el proyecto de Supabase y decisiones de
 # negocio. No contienen claves, pero no tienen por qué ser públicos.
-docs/manosvivas-carpeta-maestra.md
-docs/prompt-maestro.md
+docs/
 
 # ---- Arte final del logo (material fuente) ----
 # Se queda solo en local: las versiones que el sitio usa están en

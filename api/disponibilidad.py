@@ -26,8 +26,23 @@ GOOGLE_CALENDAR_ID = os.environ.get("GOOGLE_CALENDAR_ID", "manosvivascl@gmail.co
 SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
 ZONA_HORARIA = ZoneInfo("America/Santiago")
-HORA_INICIO = int(os.environ.get("DISPONIBILIDAD_HORA_INICIO", "9"))
-HORA_FIN = int(os.environ.get("DISPONIBILIDAD_HORA_FIN", "20"))
+# Horario de atención por día de la semana (lunes = 0), en hora de Chile:
+# la primera sesión parte a la hora de inicio y la última tiene que TERMINAR
+# a más tardar a la hora de fin, contando los complementos. El domingo no
+# está: ese día no se ofrece ninguna hora. Mismo horario que valida
+# crear-preferencia.py antes de cobrar.
+HORARIO_ATENCION = {
+    0: (9, 19),
+    1: (9, 19),
+    2: (9, 19),
+    3: (9, 19),
+    4: (9, 19),
+    5: (9, 14),
+}
+# Con esta cantidad de sesiones en el calendario, el día queda lleno.
+MAXIMO_SESIONES_POR_DIA = 4
+# Tope de días que se pueden consultar de una vez con ?desde=&dias=.
+MAXIMO_DIAS_CONSULTA = 31
 PASO_SLOT_MINUTOS = 30
 DURACION_POR_DEFECTO_MINUTOS = 60
 # Tiempo libre obligatorio entre una sesión y cualquier otro evento de la
@@ -89,10 +104,64 @@ def consultar_bloques_ocupados(token, inicio_utc_iso, fin_utc_iso):
     return calendario.get("busy", [])
 
 
+def contar_sesiones_por_dia(token, desde, hasta):
+    """Cuenta las sesiones de cada día entre `desde` y `hasta` (sin incluir
+    `hasta`). freeBusy junta los bloques seguidos y no sirve para contar, así
+    que se leen los eventos: cuenta todo evento con hora que bloquea la
+    agenda (las reservas de la web y las que se agregan a mano, de packs y
+    suscripciones). No cuentan los de día completo ni los marcados como
+    "Disponible"."""
+    inicio = datetime.combine(desde, time.min, tzinfo=ZONA_HORARIA)
+    fin = datetime.combine(hasta, time.min, tzinfo=ZONA_HORARIA)
+    parametros = {
+        "timeMin": inicio.astimezone(timezone.utc).isoformat(),
+        "timeMax": fin.astimezone(timezone.utc).isoformat(),
+        "singleEvents": "true",
+        "maxResults": "250",
+        "fields": "items(status,transparency,start),nextPageToken",
+    }
+    url_base = (
+        "https://www.googleapis.com/calendar/v3/calendars/"
+        f"{urllib.parse.quote(GOOGLE_CALENDAR_ID, safe='')}/events"
+    )
+    conteo = {}
+    while True:
+        request = urllib.request.Request(
+            f"{url_base}?{urllib.parse.urlencode(parametros)}",
+            headers={"Authorization": f"Bearer {token}"},
+        )
+        with urllib.request.urlopen(request) as response:
+            data = json.loads(response.read())
+        for evento in data.get("items", []):
+            inicio_evento = (evento.get("start") or {}).get("dateTime")
+            if (
+                not inicio_evento
+                or evento.get("status") == "cancelled"
+                or evento.get("transparency") == "transparent"
+            ):
+                continue
+            dia = datetime.fromisoformat(inicio_evento.replace("Z", "+00:00")).astimezone(ZONA_HORARIA).date()
+            conteo[dia] = conteo.get(dia, 0) + 1
+        if not data.get("nextPageToken"):
+            return conteo
+        parametros["pageToken"] = data["nextPageToken"]
+
+
+def dias_completos(desde, cantidad_dias):
+    """Días entre `desde` y los `cantidad_dias` siguientes que ya tienen el
+    máximo de sesiones. Lo usa la tira de días de la web."""
+    conteo = contar_sesiones_por_dia(obtener_token_acceso(), desde, desde + timedelta(days=cantidad_dias))
+    return sorted(dia.isoformat() for dia, sesiones in conteo.items() if sesiones >= MAXIMO_SESIONES_POR_DIA)
+
+
 def generar_slots(fecha, duracion_minutos):
     slots = []
-    cursor = datetime.combine(fecha, time(hour=HORA_INICIO), tzinfo=ZONA_HORARIA)
-    fin_dia = datetime.combine(fecha, time(hour=HORA_FIN), tzinfo=ZONA_HORARIA)
+    horario = HORARIO_ATENCION.get(fecha.weekday())
+    if horario is None:
+        return slots
+    hora_inicio, hora_fin = horario
+    cursor = datetime.combine(fecha, time(hour=hora_inicio), tzinfo=ZONA_HORARIA)
+    fin_dia = datetime.combine(fecha, time(hour=hora_fin), tzinfo=ZONA_HORARIA)
     paso = timedelta(minutes=PASO_SLOT_MINUTOS)
     duracion = timedelta(minutes=duracion_minutos)
     while cursor + duracion <= fin_dia:
@@ -112,7 +181,15 @@ def choca_con_margen(inicio_slot, fin_slot, bloques_ocupados):
 
 
 def calcular_horarios_disponibles(fecha, duracion_minutos):
+    """Devuelve (horarios, dia_completo)."""
+    slots = generar_slots(fecha, duracion_minutos)
+    if not slots:
+        # Domingo, o una duración que no cabe en el horario del día.
+        return [], False
+
     token = obtener_token_acceso()
+    if contar_sesiones_por_dia(token, fecha, fecha + timedelta(days=1)).get(fecha, 0) >= MAXIMO_SESIONES_POR_DIA:
+        return [], True
 
     inicio_dia = datetime.combine(fecha, time.min, tzinfo=ZONA_HORARIA)
     fin_dia = inicio_dia + timedelta(days=1)
@@ -131,20 +208,35 @@ def calcular_horarios_disponibles(fecha, duracion_minutos):
 
     ahora = datetime.now(ZONA_HORARIA)
     disponibles = []
-    for inicio_slot in generar_slots(fecha, duracion_minutos):
+    for inicio_slot in slots:
         if inicio_slot < ahora:
             continue
         fin_slot = inicio_slot + timedelta(minutes=duracion_minutos)
         if not choca_con_margen(inicio_slot, fin_slot, bloques_ocupados):
             disponibles.append(inicio_slot.strftime("%H:%M"))
 
-    return disponibles
+    return disponibles, False
 
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+
+            # ?desde=YYYY-MM-DD&dias=N: días llenos del rango, para la tira.
+            desde_str = query.get("desde", [None])[0]
+            if desde_str:
+                try:
+                    desde = date.fromisoformat(desde_str)
+                    cantidad_dias = int(query.get("dias", ["14"])[0])
+                    if not 1 <= cantidad_dias <= MAXIMO_DIAS_CONSULTA:
+                        raise ValueError
+                except ValueError:
+                    self._responder(400, {"error": f"Parámetros inválidos: 'desde' debe ser YYYY-MM-DD y 'dias' un entero entre 1 y {MAXIMO_DIAS_CONSULTA}."})
+                    return
+                self._responder(200, {"desde": desde_str, "dias": cantidad_dias, "dias_completos": dias_completos(desde, cantidad_dias)})
+                return
+
             fecha_str = query.get("fecha", [None])[0]
             duracion_str = query.get("duracion", [str(DURACION_POR_DEFECTO_MINUTOS)])[0]
 
@@ -161,11 +253,12 @@ class handler(BaseHTTPRequestHandler):
                 self._responder(400, {"error": "Parámetros inválidos: 'fecha' debe ser YYYY-MM-DD y 'duracion' un entero positivo de minutos."})
                 return
 
-            horarios = calcular_horarios_disponibles(fecha, duracion_minutos)
+            horarios, dia_completo = calcular_horarios_disponibles(fecha, duracion_minutos)
             self._responder(200, {
                 "fecha": fecha_str,
                 "duracion_minutos": duracion_minutos,
                 "horarios_disponibles": horarios,
+                "dia_completo": dia_completo,
             })
         except RuntimeError as error:
             self._responder(500, {"error": str(error)})

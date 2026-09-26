@@ -23,9 +23,18 @@ GOOGLE_SERVICE_ACCOUNT_FILE = os.path.join(
     "manosvivas-calendar-a2e0e23082e2.json",
 )
 GOOGLE_CALENDAR_ID = os.environ.get("GOOGLE_CALENDAR_ID", "manosvivascl@gmail.com")
-# Mismo horario de atención que ofrece /api/disponibilidad.
-HORA_INICIO = int(os.environ.get("DISPONIBILIDAD_HORA_INICIO", "9"))
-HORA_FIN = int(os.environ.get("DISPONIBILIDAD_HORA_FIN", "20"))
+# Mismo horario de atención y mismo tope diario que ofrece
+# /api/disponibilidad (lunes = 0; el domingo no está porque se cierra). La
+# última sesión tiene que TERMINAR a la hora de fin, con complementos.
+HORARIO_ATENCION = {
+    0: (9, 19),
+    1: (9, 19),
+    2: (9, 19),
+    3: (9, 19),
+    4: (9, 19),
+    5: (9, 14),
+}
+MAXIMO_SESIONES_POR_DIA = 4
 
 # Una reserva sin pagar se reutiliza si el mismo cliente vuelve con el mismo
 # servicio y horario dentro de este plazo, en vez de crear otra fila.
@@ -284,6 +293,39 @@ def _token_calendar():
     return cred.token
 
 
+def contar_sesiones_del_dia(token, dia):
+    """Misma cuenta que /api/disponibilidad: todo evento con hora que
+    bloquea la agenda ese día, sin los de día completo ni los marcados como
+    "Disponible"."""
+    inicio = datetime.combine(dia, datetime.min.time(), tzinfo=ZONA_HORARIA)
+    parametros = {
+        "timeMin": inicio.astimezone(timezone.utc).isoformat(),
+        "timeMax": (inicio + timedelta(days=1)).astimezone(timezone.utc).isoformat(),
+        "singleEvents": "true",
+        "maxResults": "250",
+        "fields": "items(status,transparency,start)",
+    }
+    request = urllib.request.Request(
+        "https://www.googleapis.com/calendar/v3/calendars/"
+        f"{urllib.parse.quote(GOOGLE_CALENDAR_ID, safe='')}/events?{urllib.parse.urlencode(parametros)}",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    try:
+        with urllib.request.urlopen(request) as response:
+            eventos = json.loads(response.read()).get("items", [])
+    except urllib.error.HTTPError as error:
+        raise RuntimeError(f"Error al consultar la agenda ({error.code}): {error.read().decode('utf-8', 'ignore')}")
+
+    return sum(
+        1
+        for evento in eventos
+        if (evento.get("start") or {}).get("dateTime")
+        and evento.get("status") != "cancelled"
+        and evento.get("transparency") != "transparent"
+        and datetime.fromisoformat(evento["start"]["dateTime"].replace("Z", "+00:00")).astimezone(ZONA_HORARIA).date() == dia
+    )
+
+
 def validar_horario(fecha_hora, minutos):
     """El horario que el cliente eligió puede haberse ocupado mientras
     llenaba el formulario, o venir precargado de una visita anterior. Se
@@ -299,9 +341,18 @@ def validar_horario(fecha_hora, minutos):
     )
     if inicio <= datetime.now(ZONA_HORARIA):
         raise no_disponible
-    apertura = inicio.replace(hour=HORA_INICIO, minute=0, second=0, microsecond=0)
-    cierre = inicio.replace(hour=HORA_FIN, minute=0, second=0, microsecond=0)
+    # Fuera del horario del día, o en domingo, se rechaza aunque la
+    # solicitud no venga de la web.
+    horario = HORARIO_ATENCION.get(inicio.weekday())
+    if horario is None:
+        raise no_disponible
+    apertura = inicio.replace(hour=horario[0], minute=0, second=0, microsecond=0)
+    cierre = inicio.replace(hour=horario[1], minute=0, second=0, microsecond=0)
     if inicio < apertura or fin > cierre:
+        raise no_disponible
+
+    token = _token_calendar()
+    if contar_sesiones_del_dia(token, inicio.date()) >= MAXIMO_SESIONES_POR_DIA:
         raise no_disponible
 
     # Se consulta la agenda ampliada en el margen, para ver también los
@@ -314,7 +365,7 @@ def validar_horario(fecha_hora, minutos):
             "items": [{"id": GOOGLE_CALENDAR_ID}],
         }).encode("utf-8"),
         method="POST",
-        headers={"Authorization": f"Bearer {_token_calendar()}", "Content-Type": "application/json"},
+        headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"},
     )
     try:
         with urllib.request.urlopen(request) as response:
