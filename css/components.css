@@ -1057,6 +1057,10 @@ textarea.campo__control {
   transform: translateY(-1px);
 }
 
+.reserva__estado .boton-whatsapp {
+  margin-top: 1rem;
+}
+
 .boton-whatsapp svg {
   width: 1.15rem;
   height: 1.15rem;

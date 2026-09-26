@@ -906,6 +906,12 @@
     }
   }
 
+  const BOTON_WHATSAPP =
+    '<a class="boton-whatsapp" href="https://wa.me/56995742775" target="_blank" rel="noopener">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">' +
+    '<path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.2-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg>' +
+    'Escríbeme por WhatsApp</a>';
+
   /* Un pago aprobado NO es una hora agendada: la reserva la confirma
      webhook-pago.py después, y es quien crea el evento en el calendario.
      Prometer "agendada" acá deja al cliente creyendo que tiene una hora
@@ -917,7 +923,8 @@
       ? '<p class="paso-reserva__titulo">Pago recibido.</p>' +
         '<p>Estoy confirmando tu hora. En unos minutos te llega un correo de confirmación a ' +
         MV.escaparHTML(estado.cliente.email) +
-        ' con el día, la hora y la dirección.</p><p>Si no te llega, revisa spam o escríbeme por WhatsApp y lo reviso.</p>'
+        ' con el día, la hora y la dirección.</p><p>Si no te llega, revisa spam o escríbeme y lo reviso.</p>' +
+        BOTON_WHATSAPP
       : '<p class="paso-reserva__titulo">Tu pago está en revisión.</p>' +
         '<p>Apenas Mercado Pago lo resuelva te aviso por correo a ' +
         MV.escaparHTML(estado.cliente.email) +

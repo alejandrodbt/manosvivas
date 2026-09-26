@@ -349,7 +349,7 @@ def html_confirmacion(reserva):
       </table>
 
       {nota_sesiones}
-      <p style="margin:0 0 24px;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#2A1D14;">Si necesitas cambiar la hora, escríbeme por WhatsApp con anticipación.</p>
+      <p style="margin:0 0 24px;font-family:'Plus Jakarta Sans',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#2A1D14;">Puedes reprogramar o cancelar sin costo hasta 24 h antes. Con menos aviso, la sesión se da por realizada.</p>
 
       <table role="presentation" cellpadding="0" cellspacing="0"><tr>
         <td style="background:#B25F2D;border-radius:999px;">
@@ -396,7 +396,8 @@ def texto_confirmacion(reserva):
         lineas += ["Esta es la primera sesión de tu ritual. Las siguientes las coordinamos juntos.", ""]
     lineas += [
         "Llego con camilla, toallas y todo lo necesario.",
-        f"Si necesitas cambiar la hora, escríbeme por WhatsApp: {WHATSAPP_URL}",
+        "Puedes reprogramar o cancelar sin costo hasta 24 h antes. Con menos aviso, la sesión se da por realizada.",
+        f"Escríbeme por WhatsApp: {WHATSAPP_URL}",
         "",
         "Alejandro Bermudez",
         "Manos Vivas · masajes a domicilio",
