@@ -420,7 +420,7 @@
     {
       cita: 'Resultado espectacular en una sola sesión. El trato humano es lo mejor. ale es muy divertido y amoroso',
       autor: 'Pamela Quiroga',
-      servicio: 'Pack drenaje linfático',
+      servicio: 'Masaje + drenaje linfático',
       estrellas: 5,
     },
   ];

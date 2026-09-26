@@ -733,9 +733,10 @@
   color: var(--accent-strong);
 }
 
-.plan-tarjeta__minimo {
-  font-family: var(--font-mono);
+/* Condiciones de packs y planes: texto chico y discreto bajo el precio. */
+.tarjeta-condiciones {
   font-size: 0.78rem;
+  line-height: 1.5;
   color: var(--text-faint);
 }
 
@@ -942,6 +943,19 @@
   padding-bottom: 1.5rem;
   color: var(--text-muted);
   max-width: 40rem;
+}
+
+/* Título pequeño de cada categoría. Su borde inferior hace de borde
+   superior de la primera pregunta del grupo. */
+.faq__grupo-titulo {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
 }
 
 /* ---------- Newsletter ---------- */
@@ -1347,6 +1361,13 @@ textarea.campo__control {
   margin-top: 0.15rem;
   font-size: 1.15rem;
   color: var(--text);
+}
+
+.pago-politica {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-faint);
 }
 
 .brick-pago {

@@ -440,7 +440,8 @@ main > section {
 /* ---------- FAQ ---------- */
 .faq__lista {
   max-width: 46rem;
-  border-top: 1px solid var(--border);
+  display: grid;
+  gap: clamp(2rem, 4vw, 2.75rem);
 }
 
 /* ---------- Newsletter ---------- */
